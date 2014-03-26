@@ -43,6 +43,17 @@ WPCONN.prototype.me = function (fn){
 };
 
 /**
+ * List of sites current user is member of
+ *
+ * @param {Function} fn
+ * @api private
+ */
+
+WPCONN.prototype.sites = function (fn){
+  req('sites', null, { token: this.tkn }, fn);
+};
+
+/**
  * Expose `WPCONN` module
  */
 
