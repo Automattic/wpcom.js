@@ -56,5 +56,17 @@ describe('WPCONN', function(){
         });
       });
     });
+
+    describe('sites', function(){
+      it('should require user sites object', function(done){
+        var wpconn = util.wpconn();
+
+        wpconn.sites(function(err, sites){
+          if (err) throw err;
+          done();
+        });
+      });
+    });
+
   });
 });
