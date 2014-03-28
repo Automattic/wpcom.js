@@ -53,7 +53,7 @@ WPCONN.prototype.me = function (fn){
  */
 
 WPCONN.prototype.sites = function (fn){
-  req('sites', null, { token: this.tkn }, fn);
+  this.req.exec('sites', null, fn);
 };
 
 /**
