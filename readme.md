@@ -1,4 +1,4 @@
-# WP-Connect
+# wp-connect
 
 ### Wordpress connect module ###
 
@@ -6,9 +6,10 @@
 
 ## API
 
-### WPCONN();
+### WPCONN(<token>);
 
-Create a new instance of WPCONN
+Create a new instance of WPCONN. If you wanna a way to get the access token
+then can use [WPOAuth](https://github.com/cloudup/wp-oauth) npm module.
 
 ```js
 var WPCONN = require('wp-connect');
@@ -19,10 +20,7 @@ var wpconn = WPCONN();
 
 ```js
 var WPCONN = require('wp-connect');
-var wpconn = new WPCONN();
-
-// set access token
-wpconn.token('<your token>');
+var wpconn = new WPCONN('<your token>');
 
 // get the user info
 wpconn.me(function(err, user){
@@ -40,10 +38,7 @@ Get the site information
 
 ```js
 var WPCONN = require('wp-connect');
-var wpconn = new WPCONN();
-
-// set access token
-wpconn.token('<your token here>');
+var wpconn = new WPCONN('<your token here>');
 
 // get site info
 wpconn.site.id('blog.wordpress.com');
@@ -54,7 +49,7 @@ wpconn.site.info(function(err, site){
 
 ### WPCONN#site.posts(params, fn);
 
-Get the site information
+Get the site posts
 
 ```js
 wpconn.site.id('blog.wordpress.com');
@@ -68,8 +63,19 @@ wpconn.site.posts({ number: 10 }, function(err, posts){
 Get post site data
 
 ```js
-// get post info
-wpconn.site.post.get(435, function(err, post){
+// get post data
+wpconn.site.post.get(435, params, function(err, post){
+  // post data object
+});
+```
+
+### WPCONN.site.post.getBySlug(slug, params, fn);
+
+Get post site data by the given slug
+
+```js
+// get post data
+wpconn.site.post.getBySlug('we-are-the-loosers', function(err, post){
   // post data object
 });
 ```
@@ -79,14 +85,25 @@ wpconn.site.post.get(435, function(err, post){
 Add a new post
 
 ```js
-// get post info
+// post data
 var data = {
   "title": "A new post",
+  "slug": "a-new-post",
   "content": "<div>The content of the new post</div>"
 };
 
 wpconn.site.post.add(data, function(err, new_post){
   // object data of the new post already added
+});
+```
+
+### WPCONN.site.post.edit(id, data, fn);
+
+Edit a post
+
+```js
+wpconn.site.post.edit(321, { title: "new Title !!!" }, function(err, edit_post){
+  // the title in edit_post has changed
 });
 ```
 
@@ -127,7 +144,7 @@ or rename the `test/data_example.json` file.
 }
 ```
 
-Then ...
+... and then
 
 ```cli
 $ make

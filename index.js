@@ -10,11 +10,14 @@ var debug = require('debug')('wp-connect');
 /**
  * Wordpress connect class
  *
+ * @param {String} token
  * @api public
  */
 
-function WPCONN(){
-  if (!(this instanceof WPCONN)) return new WPCONN();
+function WPCONN(token){
+  if (!(this instanceof WPCONN)) return new WPCONN(token);
+
+  this.tkn = token;
 
   // request instance
   this.req = new req(this);
@@ -22,17 +25,6 @@ function WPCONN(){
   // site stuff
   this.site = new Site(this);
 }
-
-/**
- * Set Access token
- *
- * @param {String} token
- * @api public
- */
-
-WPCONN.prototype.token = function(token){
-  this.tkn = token;
-};
 
 /**
  * User profile
