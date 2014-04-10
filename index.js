@@ -29,28 +29,6 @@ function WPCONN(token){
 }
 
 /**
- * User profile
- *
- * @param {Function} fn
- * @api private
- */
-
-WPCONN.prototype.me = function (fn){
-  this.req.exec('me', null, fn);
-};
-
-/**
- * List of sites current user is member of
- *
- * @param {Function} fn
- * @api private
- */
-
-WPCONN.prototype.sites = function (fn){
-  this.req.exec('sites', null, fn);
-};
-
-/**
  * Expose `WPCONN` module
  */
 
