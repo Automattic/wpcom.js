@@ -45,7 +45,7 @@ wpconn.site.info(function(err, site){
 
 ## Methods complete list
 
-| Method                            | Description                                |
+| #Me methods                                                                    |
 | --------------------------------- | ------------------------------------------ |
 | WPCONN#**me.info(params, fn)**    | Meta data about auth token's User          |
 | WPCONN#**me.sites(params, fn)**   | A list of the current user's sites         |
