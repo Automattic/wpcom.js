@@ -17,12 +17,19 @@ wpcom.me.info(function(err, user){
 // set site
 wpcom.site.id('blog.wordpress.com');
 
+// get site information
 wpcom.site.info(function(err, site){
   // `site` information object
 });
 
+// get site posts
 wpcom.site.posts(function(err, posts){
   // site `posts` object
+});
+
+// add a new post
+wpcom.site.post.add({ title: 'The new post title !!!' }, function(err, post){
+  // new `post` object
 });
 ```
 
