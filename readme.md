@@ -52,9 +52,7 @@ wpconn.site.info(function(err, site){
 | **.likes(params, fn)**   | List the currently authorized user's likes |
 | **.groups(params, fn)**  | A list of the current user's group         |
 | **.groups(params, fn)**  | A list of the current user's connections to third-party services |
-| --------------------------------- | ------------------------------------------ |
 | WPCONN#me.site methods            |                                            |
-| --------------------------------- | ------------------------------------------ |
 | **.id(site_id)**                  | Set site id                                |
 | **.info(params, fn)**             | Information about site.id                  |
 | **.posts(params, fn)**            | Matching posts                             |
