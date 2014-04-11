@@ -9,27 +9,27 @@ var req = require('./lib/req');
 var debug = require('debug')('wp-connect');
 
 /**
- * Wordpress connect class
+ * WordPress REST-API class
  *
- * @param {String} token
+ * @param {String} token (optional)
  * @api public
  */
 
-function WPCONN(token){
-  if (!(this instanceof WPCONN)) return new WPCONN(token);
+function WPCOM(token){
+  if (!(this instanceof WPCOM)) return new WPCOM(token);
 
   this.tkn = token;
 
   // request instance
   this.req = new req(this);
 
-  // resource methods
+  // add methods
   this.me = new Me(this);
   this.site = new Site(this);
 }
 
 /**
- * Expose `WPCONN` module
+ * Expose `WPCOM` module
  */
 
-module.exports = WPCONN;
+module.exports = WPCOM;
