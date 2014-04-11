@@ -4,6 +4,28 @@
 
   Nodejs module to get resources from [WordPress](http://www.wordpress.com) using the [developer.wordpress.com/docs/api/](REST API).
 
+## How to use it
+
+```js
+var wpcom = require('wpcom')('<your-token>');
+
+// get the user info
+wpcom.me.info(function(err, user){
+  // Meta data about auth token's User
+});
+
+// set site id and get information
+wpcom.site.id('blog.wordpress.com');
+
+wpcom.site.info(function(err, site){
+  // `site` data object
+});
+
+// get site posts
+wpcom.site.posts(function(err, posts){
+});
+```
+
 ## API
 
 ### WPCOM(<token>);
@@ -13,37 +35,6 @@ make admin actions or to access to protected resources.
 
 Note: If you wanna a way to get the access token
 then can use [node-wpcom-oauth](https://github.com/Automattic/node-wpcom-oauth) npm module.
-
-```js
-var wpcom = require('wpcom')();
-```
-
-### WPCOM#me.info();
-
-```js
-var wpcom = require('wpcom')('<your token>');
-
-// get the user info
-wpcom.me.info(function(err, user){
-  // user info related with the given access token
-});
-```
-
-### WPCOM#site.info(params, fn);
-
-Get the site information
-
-```js
-var wpcom = require('wpcom')('<your token>');
-
-// get site info
-wpcom.site.id('blog.wordpress.com');
-wpcom.site.info(function(err, site){
-  // site data object
-});
-```
-
-## Methods complete list
 
 ### WPCOM#me
 
