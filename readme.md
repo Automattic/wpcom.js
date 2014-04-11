@@ -45,10 +45,13 @@ wpconn.site.info(function(err, site){
 
 ## Methods complete list
 
-| Method                            | Description                        |
-| --------------------------------- |:----------------------------------:|
-| WPCONN#**me.info(params, fn)**    | Meta data about auth token's User  |
-| WPCONN#**me.sites(params, fn)**   | A list of the current user's sites |
+| Method                            | Description                                |
+| --------------------------------- |:------------------------------------------:|
+| WPCONN#**me.info(params, fn)**    | Meta data about auth token's User          |
+| WPCONN#**me.sites(params, fn)**   | A list of the current user's sites         |
+| WPCONN#**me.likes(params, fn)**   | List the currently authorized user's likes |
+| WPCONN#**me.groups(params, fn)**  | A list of the current user's group         |
+| WPCONN#**me.groups(params, fn)**  | A list of the current user's connections to third-party services |
 
 ## Example
 
