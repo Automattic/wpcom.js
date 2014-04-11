@@ -1,6 +1,6 @@
 
 {
-  "name": "wp-connect",
+  "name": "wpcom",
   "description": "Wordpress REST API module for nodejs",
   "version": "0.2.3",
   "author": {
