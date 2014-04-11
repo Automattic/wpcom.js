@@ -47,15 +47,14 @@ wpconn.site.info(function(err, site){
 
 | Methods                           | Descriptions                               |
 | --------------------------------- | ------------------------------------------ |
-| **#me.info(params, fn)**    | Meta data about auth token's User          |
-| **#me.sites(params, fn)**   | A list of the current user's sites         |
-| **#me.likes(params, fn)**   | List the currently authorized user's likes |
-| **#me.groups(params, fn)**  | A list of the current user's group         |
-| **#me.connections(params, fn)**  | A list of the current user's connections to third-party services |
-| **#site.id(site_id)**                  | Set site id                                |
-| **#site.info(params, fn)**             | Information about site.id                  |
-| **#site.posts(params, fn)**            | Matching posts                             |
-| --------------------------------- | ------------------------------------------ |
+| **#me.info**(params, fn)    | Meta data about auth token's User          |
+| **#me.sites**(params, fn)   | A list of the current user's sites         |
+| **#me.likes**(params, fn)   | List the currently authorized user's likes |
+| **#me.groups**(params, fn)  | A list of the current user's group         |
+| **#me.connections**(params, fn)  | A list of the current user's connections to third-party services |
+| **#site.id**(site_id)                  | Set site id                                |
+| **#site.info**(params, fn)             | Information about site.id                  |
+| **#site.posts**(params, fn)            | Matching posts                             |
 
 ## Example
 
