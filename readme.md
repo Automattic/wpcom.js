@@ -14,21 +14,21 @@ wpcom.me.info(function(err, user){
   // Meta data about auth token's User
 });
 
-// set site id and get information
+// set site
 wpcom.site.id('blog.wordpress.com');
 
 wpcom.site.info(function(err, site){
-  // `site` data object
+  // `site` information object
 });
 
-// get site posts
 wpcom.site.posts(function(err, posts){
+  // site `posts` object
 });
 ```
 
 ## API
 
-### WPCOM(<token>);
+### WPCOM('&lt;token&gt;');
 
 Create a new instance of WPCOM. `token` parameter is optional but it's needed to
 make admin actions or to access to protected resources.
