@@ -6,7 +6,7 @@
 var Me = require('./lib/me');
 var Site = require('./lib/site');
 var req = require('./lib/req');
-var debug = require('debug')('wp-connect');
+var debug = require('debug')('wpcom');
 
 /**
  * WordPress REST-API class
