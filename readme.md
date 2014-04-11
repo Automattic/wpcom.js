@@ -81,6 +81,8 @@ $ npm install
 $ node index.js
 ```
 
+Finally open a browser and load the page pointing to http://localhost:3000
+
 ## Test
 
 Create `data.json` file into `test/` folder to can run the tests. You can copy
@@ -102,6 +104,7 @@ or rename the `test/data_example.json` file.
     "content": "<div style=\"color: red;\">The content of the new testing post</div>"
   }
 }
+
 ```
 
 ... and then
@@ -109,6 +112,8 @@ or rename the `test/data_example.json` file.
 ```cli
 $ make
 ```
+
+**note**: for `public_site` and `private_site` don't add http:// to urls.
 
 ## License
 
