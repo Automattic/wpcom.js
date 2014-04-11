@@ -1,51 +1,51 @@
-# wpcom-connect
+# node-wpcom
 
-### Wordpress connect module ###
+### WordPress API for nodejs
 
-  Layer to get resources from [WordPress](http://www.wordpress.com) using the [developer.wordpress.com/docs/api/](REST API).
+  Nodejs module to get resources from [WordPress](http://www.wordpress.com) using the [developer.wordpress.com/docs/api/](REST API).
 
 ## API
 
-### WPCONN(<token>);
+### WPCOM(<token>);
 
-Create a new instance of WPCONN. If you wanna a way to get the access token
-then can use [WPOAuth](https://github.com/cloudup/wp-oauth) npm module.
+Create a new instance of WPCOM. `token` parameter is optional but it's needed to
+make admin actions or to access to protected resources.
+
+Note: If you wanna a way to get the access token
+then can use [node-wpcom-oauth](https://github.com/Automattic/node-wpcom-oauth) npm module.
 
 ```js
-var WPCONN = require('wpcom-connect');
-var wpconn = WPCONN();
+var wpcom = require('wpcom')();
 ```
 
-### WPCONN#me.info();
+### WPCOM#me.info();
 
 ```js
-var WPCONN = require('wpcom-connect');
-var wpconn = WPCONN('<your token>');
+var wpcom = require('wpcom')('<your token>');
 
 // get the user info
-wpconn.me.info(function(err, user){
+wpcom.me.info(function(err, user){
   // user info related with the given access token
 });
 ```
 
-### WPCONN#site.info(params, fn);
+### WPCOM#site.info(params, fn);
 
 Get the site information
 
 ```js
-var WPCONN = require('wpcom-connect');
-var wpconn = WPCONN();
+var wpcom = require('wpcom')('<your token>');
 
 // get site info
-wpconn.site.id('blog.wordpress.com');
-wpconn.site.info(function(err, site){
+wpcom.site.id('blog.wordpress.com');
+wpcom.site.info(function(err, site){
   // site data object
 });
 ```
 
 ## Methods complete list
 
-### WPCONN#me
+### WPCOM#me
 
 * **#me.info(params, fn)** Meta data about auth token's User
 * **#me.sites(params, fn)** A list of the current user's sites
@@ -53,15 +53,15 @@ wpconn.site.info(function(err, site){
 * **#me.groups(params, fn)** A list of the current user's group
 * **#me.connections(params, fn)** A list of the current user's connections to third-party services
 
-### WPCONN#site
+### WPCOM#site
 
-* **#site.id**(site_id) Set site id
-* **#site.info**(params, fn) Information about site.id
-* **#site.posts**(params, fn) Matching posts
+* **#site.id(site_id)** Set site id
+* **#site.info(params, fn)** Information about site.id
+* **#site.posts(params, fn)** Matching posts
 
-### WPCONN#site.post
+### WPCOM#site.post
 
-* **#site.post.get**(id, params, fn)** Return a single Post (by id)
+* **#site.post.get(id, params, fn)** Return a single Post (by id)
 * **#site.post.getBySlug(slug, params, fn)** Return a single Post (by id)
 * **#site.post.add(data, fn)** Create a post
 * **#site.post.edit(id, data, fn)** Edit a post
