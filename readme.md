@@ -45,27 +45,27 @@ wpconn.site.info(function(err, site){
 
 ## Methods complete list
 
-| WPCONN#me                         | Description                                |
-| --------------------------------- | ------------------------------------------ |
-| **#me.info**(params, fn)    | Meta data about auth token's User          |
-| **#me.sites**(params, fn)   | A list of the current user's sites         |
-| **#me.likes**(params, fn)   | List the currently authorized user's likes |
-| **#me.groups**(params, fn)  | A list of the current user's group         |
-| **#me.connections**(params, fn)  | A list of the current user's connections to third-party services |
+### WPCONN#me
 
-| WPCONN#site                       | Description                          |
-| --------------------------------- | ------------------------------------ |
-| **#site.id**(site_id)             | Set site id                          |
-| **#site.info**(params, fn)        | Information about site.id            |
-| **#site.posts**(params, fn)       | Matching posts                       |
+* **#me.info(params, fn)** Meta data about auth token's User
+* **#me.sites(params, fn)** A list of the current user's sites
+* **#me.likes(params, fn)** List the currently authorized user's likes
+* **#me.groups(params, fn)** A list of the current user's group
+* **#me.connections(params, fn)** A list of the current user's connections to third-party services
 
-| WPCONN#site.post                             | Description                     |
-| -------------------------------------------- | ------------------------------- |
-| **#site.posts.get**(id, params, fn)          | Return a single Post (by id)    |
-| **#site.posts.getBySlug**(slug, params, fn)  | Return a single Post (by id)    |
-| **#site.posts.add**(data, fn)                | Create a post                   |
-| **#site.posts.edit**(id, data, fn)           | Edit a post                     |
-| **#site.posts.del**(id, fn)                  | Delete a post                   |
+### WPCONN#site
+
+* **#site.id**(site_id) Set site id
+* **#site.info**(params, fn) Information about site.id
+* **#site.posts**(params, fn) Matching posts
+
+### WPCONN#site.post
+
+* **#site.post.get**(id, params, fn)** Return a single Post (by id)
+* **#site.post.getBySlug(slug, params, fn)** Return a single Post (by id)
+* **#site.post.add(data, fn)** Create a post
+* **#site.post.edit(id, data, fn)** Edit a post
+* **#site.post.del(id, fn)** Delete a post
 
 ## Example
 
