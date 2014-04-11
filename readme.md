@@ -52,9 +52,14 @@ wpconn.site.info(function(err, site){
 | **#me.likes**(params, fn)   | List the currently authorized user's likes |
 | **#me.groups**(params, fn)  | A list of the current user's group         |
 | **#me.connections**(params, fn)  | A list of the current user's connections to third-party services |
-| **#site.id**(site_id)                  | Set site id                                |
-| **#site.info**(params, fn)             | Information about site.id                  |
-| **#site.posts**(params, fn)            | Matching posts                             |
+| **#site.id**(site_id)                       | Set site id                          |
+| **#site.info**(params, fn)                  | Information about site.id            |
+| **#site.posts**(params, fn)                 | Matching posts                       |
+| **#site.post.get**(id, params, fn)          | Return a single Post (by id)         |
+| **#site.post.getBySlug**(slug, params, fn)  | Return a single Post (by id)         |
+| **#site.post.add**(data, fn)                | Create a post                        |
+| **#site.post.edit**(id, data, fn)           | Edit a post                          |
+| **#site.post.del**(id, fn)                  | Delete a post                        |
 
 ## Example
 
