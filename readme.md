@@ -1,4 +1,4 @@
-# wp-connect
+# wpcom-connect
 
 ### Wordpress connect module ###
 
@@ -12,33 +12,29 @@ Create a new instance of WPCONN. If you wanna a way to get the access token
 then can use [WPOAuth](https://github.com/cloudup/wp-oauth) npm module.
 
 ```js
-var WPCONN = require('wp-connect');
+var WPCONN = require('wpcom-connect');
 var wpconn = WPCONN();
 ```
 
-### WPCONN#me();
+### WPCONN#me.info();
 
 ```js
-var WPCONN = require('wp-connect');
-var wpconn = new WPCONN('<your token>');
+var WPCONN = require('wpcom-connect');
+var wpconn = WPCONN('<your token>');
 
 // get the user info
-wpconn.me(function(err, user){
+wpconn.me.info(function(err, user){
   // user info related with the given access token
 });
 ```
-
-### WPCONN#site.id(<id>);
-
-Set site identifier
 
 ### WPCONN#site.info(params, fn);
 
 Get the site information
 
 ```js
-var WPCONN = require('wp-connect');
-var wpconn = new WPCONN('<your token here>');
+var WPCONN = require('wpcom-connect');
+var wpconn = WPCONN();
 
 // get site info
 wpconn.site.id('blog.wordpress.com');
@@ -47,65 +43,11 @@ wpconn.site.info(function(err, site){
 });
 ```
 
-### WPCONN#site.posts(params, fn);
+## Methods complete list
 
-Get the site posts
-
-```js
-wpconn.site.id('blog.wordpress.com');
-wpconn.site.posts({ number: 10 }, function(err, posts){
-  // posts array
-});
-```
-
-### WPCONN.site.post.get(id, fn);
-
-Get post site data
-
-```js
-// get post data
-wpconn.site.post.get(435, params, function(err, post){
-  // post data object
-});
-```
-
-### WPCONN.site.post.getBySlug(slug, params, fn);
-
-Get post site data by the given slug
-
-```js
-// get post data
-wpconn.site.post.getBySlug('we-are-the-loosers', function(err, post){
-  // post data object
-});
-```
-
-### WPCONN.site.post.add(data, fn);
-
-Add a new post
-
-```js
-// post data
-var data = {
-  "title": "A new post",
-  "slug": "a-new-post",
-  "content": "<div>The content of the new post</div>"
-};
-
-wpconn.site.post.add(data, function(err, new_post){
-  // object data of the new post already added
-});
-```
-
-### WPCONN.site.post.edit(id, data, fn);
-
-Edit a post
-
-```js
-wpconn.site.post.edit(321, { title: "new Title !!!" }, function(err, edit_post){
-  // the title in edit_post has changed
-});
-```
+| ----------------------------- |:----------------------------------:|
+| WPCONN#me.info(params, fn)    | Meta data about auth token's User  |
+| WPCONN#me.sites(params, fn)   | A list of the current user's sites |
 
 ## Example
 
