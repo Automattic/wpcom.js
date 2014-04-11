@@ -45,17 +45,16 @@ wpconn.site.info(function(err, site){
 
 ## Methods complete list
 
-| WPCONN#me methods                 |                                            |
+| Methods                           | Descriptions                               |
 | --------------------------------- | ------------------------------------------ |
-| **.info(params, fn)**    | Meta data about auth token's User          |
-| **.sites(params, fn)**   | A list of the current user's sites         |
-| **.likes(params, fn)**   | List the currently authorized user's likes |
-| **.groups(params, fn)**  | A list of the current user's group         |
-| **.groups(params, fn)**  | A list of the current user's connections to third-party services |
-| WPCONN#me.site methods            |                                            |
-| **.id(site_id)**                  | Set site id                                |
-| **.info(params, fn)**             | Information about site.id                  |
-| **.posts(params, fn)**            | Matching posts                             |
+| **#me.info(params, fn)**    | Meta data about auth token's User          |
+| **#me.sites(params, fn)**   | A list of the current user's sites         |
+| **#me.likes(params, fn)**   | List the currently authorized user's likes |
+| **#me.groups(params, fn)**  | A list of the current user's group         |
+| **#me.connections(params, fn)**  | A list of the current user's connections to third-party services |
+| **#site.id(site_id)**                  | Set site id                                |
+| **#site.info(params, fn)**             | Information about site.id                  |
+| **#site.posts(params, fn)**            | Matching posts                             |
 | --------------------------------- | ------------------------------------------ |
 
 ## Example
