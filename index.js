@@ -11,7 +11,7 @@ var debug = require('debug')('wpcom');
 /**
  * WordPress REST-API class
  *
- * @param {String} token (optional)
+ * @param {String} [token]
  * @api public
  */
 

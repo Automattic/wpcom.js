@@ -44,7 +44,7 @@ post.id('<id>');
 post.slug('<slug>');
 ```
 
-### Post#get(params, fn)
+### Post#get([params], fn)
 
 Get post data by `id` or `slug`
 
