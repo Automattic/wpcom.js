@@ -16,7 +16,7 @@ var util = require('./util');
  * me
  */
 
-describe('me', function(){
+describe('WPCOM#Me', function(){
 
   describe('async', function(){
 

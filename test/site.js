@@ -18,26 +18,27 @@ var test = require('./data');
  * Create a `Site` instance
  */
 
-describe('site', function(){
+describe('WPCOM#Site', function(){
 
   describe('sync', function(){
 
     it('should be create a site object instance', function(){
-      var site = WPCOM().site(test.public_site);
+      var site = util.public_site();
+
       site
         .should.be.an.instanceOf(Site);
 
-      site
-        ._id.should.be.eql(test.public_site);
+      site._id
+        .should.be.eql(test.site.public.url);
     });
 
   });
 
   describe('async', function(){
 
-    describe('info', function(){
+    describe('get', function(){
       it('should require site data', function(done){
-        var site = WPCOM().site(test.public_site);
+        var site = util.public_site();
 
         site.get(function(err, info){
           if (err) throw err;
@@ -56,7 +57,7 @@ describe('site', function(){
     describe('posts', function(){
 
       it('should request posts list', function(done){
-        var site = WPCOM().site(test.public_site);
+        var site = util.public_site();
 
         site.posts(function(err, list){
           if (err) throw err;
@@ -77,7 +78,7 @@ describe('site', function(){
       });
 
       it('should request only one post', function(done){
-        var site = WPCOM().site(test.public_site);
+        var site = util.public_site();
 
         site.posts({ number: 1 }, function(err, list){
           if (err) throw err;

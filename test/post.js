@@ -106,7 +106,7 @@ describe('WPCOM#Site#Post', function(){
 
           data.site_ID
             .should.be.an.instanceOf(Number)
-            .and.be.eql(test.private_site_id);
+            .and.be.eql(test.site.private.id);
 
           done();
         });
