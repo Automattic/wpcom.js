@@ -22,16 +22,13 @@ describe('site', function(){
 
   describe('sync', function(){
 
-    it('should be an instance of `Site`', function(){
-      var wpcom = WPCOM();
-      wpcom.site.should.be.an.instanceOf(Site);
-    });
+    it('should be create a site object instance', function(){
+      var site = WPCOM().getSite(test.public_site);
+      site
+        .should.be.an.instanceOf(Site);
 
-    it('should be set site identifier', function(){
-      var wpcom = WPCOM();
-      wpcom.site.id(test.public_site);
-      wpcom.site._id
-        .should.be.eql(test.public_site);
+      site
+        ._id.should.be.eql(test.public_site);
     });
 
   });
@@ -40,10 +37,7 @@ describe('site', function(){
 
     describe('info', function(){
       it('should require site data', function(done){
-        var wpcom = WPCOM();
-        var site = wpcom.site;
-
-        site.id(test.public_site);
+        var site = WPCOM().getSite(test.public_site);
 
         site.info(function(err, info){
           if (err) throw err;
@@ -62,9 +56,9 @@ describe('site', function(){
     describe('posts', function(){
 
       it('should request posts list', function(done){
-        var wpcom = util.public_site();
+        var site = WPCOM().getSite(test.public_site);
 
-        wpcom.site.posts(function(err, list){
+        site.posts(function(err, list){
           if (err) throw err;
 
           // list object data testing
@@ -83,9 +77,9 @@ describe('site', function(){
       });
 
       it('should request only one post', function(done){
-        var wpcom = util.public_site();
+        var site = WPCOM().getSite(test.public_site);
 
-        wpcom.site.posts({ number: 1 }, function(err, list){
+        site.posts({ number: 1 }, function(err, list){
           if (err) throw err;
 
           // list object data testing

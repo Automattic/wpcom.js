@@ -24,15 +24,14 @@ Util.wpcom = function(){
 
 /**
  * Create a new WPCOM instance
- * setting with a public site id
+ * Create a site instance object
  *
  * @api public
  */
 
 Util.public_site = function(){
   var wpcom = WPCOM(test.token);
-  wpcom.site.id(test.public_site);
-  return wpcom;
+  return wpcom.getSite(test.public_site);
 };
 
 /**

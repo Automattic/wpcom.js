@@ -4,6 +4,7 @@
  */
 
 var WPCOM = require('../');
+var Site = require('../lib/site');
 var util = require('./util');
 
 /**
@@ -76,12 +77,13 @@ describe('testing data', function(){
       wpcom.should.be.an.instanceOf(WPCOM);
     });
 
-    it('should create a wpcom instance setting site `id`', function(){
-      var wpcom = util.public_site();
-      wpcom
-        .should.be.an.instanceOf(WPCOM);
+    it('should create a blog instance', function(){
+      var site = util.public_site();
 
-      wpcom.site._id
+      site
+        .should.be.an.instanceOf(Site);
+
+      site._id
         .should.be.eql(tdata.public_site);
     });
   });
