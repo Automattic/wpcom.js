@@ -78,6 +78,7 @@ describe('WPCOM#Site', function(){
       });
 
       it('should request only one post', function(done){
+
         var site = util.public_site();
 
         site.posts({ number: 1 }, function(err, list){
@@ -98,6 +99,27 @@ describe('WPCOM#Site', function(){
 
           done();
         });
+
+      });
+
+      it('should create a new blog post', function(done){
+
+        var site = util.private_site();
+
+        var post = site.addPost(test.new_post_data, function(err, data){
+          if (err) throw err;
+
+          // data object data testing
+          data
+            .should.be.an.instanceOf(Object);
+
+          // `post.site_Id`
+          data.site_ID
+            .should.be.eql(test.site.private.id);
+
+          done();
+        });
+
       });
     });
   });
