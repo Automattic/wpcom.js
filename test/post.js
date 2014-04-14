@@ -114,7 +114,7 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-    describe('edit', function(){
+    describe('update', function(){
 
       it('should edit the new added post', function(done){
         var site = util.private_site();
@@ -122,7 +122,7 @@ describe('WPCOM#Site#Post', function(){
 
         var edited_title = new_post.title + ' has been changed';
 
-        post.edit({ title: edited_title }, function(err, data){
+        post.update({ title: edited_title }, function(err, data){
           if (err) throw err;
 
           data
