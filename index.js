@@ -22,14 +22,22 @@ function WPCOM(token){
 
   // request instance
   this.req = new req(this);
-
-  // add methods
-  this.me = new Me(this);
 }
+
+/**
+ * Get me object instance
+ *
+ * @api public
+ */
+
+WPCOM.prototype.me = function(){
+  return Me(this);
+};
 
 /**
  * Get site object instance
  *
+ * @param {String} id
  * @api public
  */
 
