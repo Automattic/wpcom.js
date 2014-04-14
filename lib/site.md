@@ -40,10 +40,21 @@ post.posts(function(err, data){
 });
 ```
 
-### Site.post(id);
+### Site#post(id);
 
 Create a new `Post` instance.
 
 ```
 var post = site.post('<post-id>');
+```
+
+### Site#addPost(data, [fn])
+
+Add a new post to site. Return a `Post` instance. Emit `add` event.
+
+```js
+var new_post = site.addPost({ title: 'Hi!, it's a new post' });
+new_post.on('add', function(data){
+  console.log('A new post has been added at %s', post.date);
+});
 ```
