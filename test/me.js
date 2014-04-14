@@ -20,11 +20,11 @@ describe('me', function(){
 
   describe('async', function(){
 
-    describe('info()', function(){
+    describe('get()', function(){
       it('should require user information object', function(done){
         var me = util.wpcom().me();
 
-        me.info(function(err, me){
+        me.get(function(err, me){
           if (err) throw err;
 
           // testing object
