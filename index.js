@@ -3,10 +3,21 @@
  * Module dependencies.
  */
 
+var events = require('events');
+var util = require('util');
+
 var Me = require('./lib/me');
 var Site = require('./lib/site');
 var req = require('./lib/req');
 var debug = require('debug')('wpcom');
+
+/**
+ * Alias
+ */
+
+var Emitter = events.EventEmitter;
+
+/**
 
 /**
  * WordPress REST-API class
@@ -23,6 +34,14 @@ function WPCOM(token){
   // request instance
   this.req = new req(this);
 }
+
+/**
+ * Inherit from Emitter
+ */
+
+util.inherits(WPCOM, Emitter);
+
+/**
 
 /**
  * Get me object instance
