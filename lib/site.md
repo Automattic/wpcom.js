@@ -43,7 +43,7 @@ post.posts(function(err, data){
 
 Create a new `Post` instance.
 
-```
+```js
 var post = site.post('<post-id>');
 ```
 
