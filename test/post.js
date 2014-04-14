@@ -141,16 +141,17 @@ describe('WPCOM#Site#Post', function(){
     describe('delete', function(){
 
       it('should delete the new added post', function(done){
-        var wpcom = util.private_site();
+        var site = util.private_site();
+        var post = site.post(new_post.ID);
 
-        wpcom.site.post.del(new_post.ID, function(err, post){
+        post.delete(function(err, data){
           if (err) throw err;
 
-          post
+          data
             .should.be.ok
             .and.be.an.instanceOf(Object);
 
-          post.ID
+          data.ID
             .should.be.eql(new_post.ID);
 
           done();
