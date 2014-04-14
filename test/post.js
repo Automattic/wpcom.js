@@ -60,8 +60,10 @@ describe('WPCOM#Site#Post', function(){
       });
 
       it('should get by slug', function(done){
-        var wpcom = util.private_site();
-        wpcom.site.post.getbyslug(new_post.slug, function(err, post){
+        var site = util.private_site();
+        var post = site.post({ slug: new_post.slug });
+
+        post.getbyslug(function(err, post){
           if (err) throw err;
 
           post.should.be.eql(new_post);
