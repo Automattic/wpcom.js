@@ -42,6 +42,20 @@ describe('WPCOM#Site#Post', function(){
         .should.be.an.instanceOf(Post);
     });
 
+    it('should set post `id`', function(){
+      var post = WPCOM().site().post();
+      post.id(new_post.ID);
+
+      post._id.should.be.eql(new_post.ID);
+    });
+
+    it('should set post `slug`', function(){
+      var post = WPCOM().site().post();
+      post.slug(new_post.slug);
+
+      post._slug.should.be.eql(new_post.slug);
+    });
+
   });
 
   describe('async', function(){
