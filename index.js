@@ -25,8 +25,17 @@ function WPCOM(token){
 
   // add methods
   this.me = new Me(this);
-  this.site = new Site(this);
 }
+
+/**
+ * Get site object instance
+ *
+ * @api public
+ */
+
+WPCOM.prototype.getSite = function(id){
+  return Site(id, this);
+};
 
 /**
  * Expose `WPCOM` module
