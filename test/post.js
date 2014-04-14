@@ -18,13 +18,15 @@ var test = require('./data');
  * WPCOM instance
  */
 
-describe('post', function(){
+describe('WPCOM#Site#Post', function(){
 
   // Create a new_post before to start the tests
   var new_post;
   before(function(done){
-    var wpcom = util.private_site();
-    wpcom.site.post.add(test.new_post_data, function(err, post){
+    var site = util.private_site();
+    var post = site.post();
+
+    post.add(test.new_post_data, function(err, post){
       if (err) done(err);
 
       new_post = post;
@@ -34,9 +36,9 @@ describe('post', function(){
 
   describe('sync', function(){
 
-    it('should be an instance of `Site`', function(){
-      var wpcom = WPCOM();
-      wpcom.site.post
+    it('should create an `Post` instance from `Site`', function(){
+      var post = WPCOM().site().post();
+      post
         .should.be.an.instanceOf(Post);
     });
 
@@ -46,8 +48,10 @@ describe('post', function(){
 
     describe('get', function(){
       it('should get the recently added post', function(done){
-        var wpcom = util.private_site();
-        wpcom.site.post.get(new_post.ID, function(err, post){
+        var site = util.private_site();
+        var post = site.post(new_post.ID);
+
+        post.get(function(err, post){
           if (err) throw err;
 
           post.should.be.eql(new_post);

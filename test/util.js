@@ -43,8 +43,7 @@ Util.public_site = function(){
 
 Util.private_site = function(){
   var wpcom = WPCOM(test.token);
-  wpcom.site.id(test.private_site);
-  return wpcom;
+  return wpcom.site(test.private_site);
 };
 
 /**
