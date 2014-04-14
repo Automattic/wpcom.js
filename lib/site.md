@@ -1,5 +1,4 @@
 
-
 # Site class
 
 ## Create a Site object from `WPCOM`
@@ -53,7 +52,7 @@ var post = site.post('<post-id>');
 Add a new post to site. Return a `Post` instance. Emit `add` event.
 
 ```js
-var new_post = site.addPost({ title: 'Hi!, it's a new post' });
+var new_post = site.addPost({ title: 'Hi!, it is a new post' });
 new_post.on('add', function(data){
   console.log('A new post has been added at %s', post.date);
 });
