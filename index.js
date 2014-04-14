@@ -41,7 +41,7 @@ WPCOM.prototype.me = function(){
  * @api public
  */
 
-WPCOM.prototype.getSite = function(id){
+WPCOM.prototype.site = function(id){
   return Site(id, this);
 };
 
