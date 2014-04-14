@@ -44,9 +44,15 @@ post.id('<id>');
 post.slug('<slug>');
 ```
 
-### Post#get(fn)
+### Post#get(params, fn)
 
 Get post data by `id` or `slug`
+
+```js
+post.get(params, function(err, data){
+  // post data object
+});
+```
 
 ### WPCOM#getbyslug(fn)
 
