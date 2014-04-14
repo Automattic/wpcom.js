@@ -23,7 +23,7 @@ describe('site', function(){
   describe('sync', function(){
 
     it('should be create a site object instance', function(){
-      var site = WPCOM().getSite(test.public_site);
+      var site = WPCOM().site(test.public_site);
       site
         .should.be.an.instanceOf(Site);
 
@@ -37,9 +37,9 @@ describe('site', function(){
 
     describe('info', function(){
       it('should require site data', function(done){
-        var site = WPCOM().getSite(test.public_site);
+        var site = WPCOM().site(test.public_site);
 
-        site.info(function(err, info){
+        site.get(function(err, info){
           if (err) throw err;
 
           // check site info
@@ -56,7 +56,7 @@ describe('site', function(){
     describe('posts', function(){
 
       it('should request posts list', function(done){
-        var site = WPCOM().getSite(test.public_site);
+        var site = WPCOM().site(test.public_site);
 
         site.posts(function(err, list){
           if (err) throw err;
@@ -77,7 +77,7 @@ describe('site', function(){
       });
 
       it('should request only one post', function(done){
-        var site = WPCOM().getSite(test.public_site);
+        var site = WPCOM().site(test.public_site);
 
         site.posts({ number: 1 }, function(err, list){
           if (err) throw err;
