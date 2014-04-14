@@ -1,7 +1,7 @@
 {
   "get": {
     "method": "GET",
-    "path": "/sites/%site%/posts/%post_ID%"
+    "path": "/sites/%site%/posts/%post_id%"
   },
 
   "get_by_slug": {
