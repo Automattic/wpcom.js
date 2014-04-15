@@ -1,27 +1,27 @@
 
-# Site
+# Sites
 
-`Site` handler class.
+`Sites` handler class.
 
-## Create a `Site` instance from WPCOM
+## Create a `Sites` instance from WPCOM
 
 ```js
 var wpcom = require('wpcom')('<your-token>');
-var site = wpcom.site('<blog-id>');
+var site = wpcom.sites('<blog-id>');
 });
 ```
 
 ## API
 
-### Site(id, WPCOM);
+### Sites(id, WPCOM);
 
-Create a new `Site` instance giving `id` and `WPCOM` instance.
+Create a new `Sites` instance giving `id` and `WPCOM` instance.
 
 ```js
-var site = Site('<id>', WPCOM);
+var site = Sites('<id>', WPCOM);
 ```
 
-### Site#get([params], fn)
+### Sites#get([params], fn)
 
 Get site information
 
@@ -31,7 +31,7 @@ site.get(function(err, info){
 });
 ```
 
-### Site#posts([params], fn)
+### Sites#posts([params], fn)
 
 Get site posts
 
@@ -41,7 +41,7 @@ site.posts(function(err, list){
 });
 ```
 
-### Site#post(id);
+### Sites#post(id);
 
 Create a new `Post` instance.
 
@@ -49,7 +49,7 @@ Create a new `Post` instance.
 var post = site.post('<post-id>');
 ```
 
-### Site#addPost(data, fn)
+### Sites#addPost(data, fn)
 
 Add a new post to site. Return a `Post` instance.
 
@@ -58,7 +58,7 @@ var new_post = site.addPost({ title: 'It is my new post' }, function(err, post){
 });
 ```
 
-### Site#deletePost(id, fn)
+### Sites#deletePost(id, fn)
 
 Delete a blog post
 

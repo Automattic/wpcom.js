@@ -4,7 +4,7 @@
  */
 
 var WPCOM = require('../');
-var Site = require('../lib/site');
+var Sites = require('../lib/sites');
 var Post = require('../lib/post');
 var util = require('./util');
 
@@ -18,7 +18,7 @@ var test = require('./data');
  * WPCOM instance
  */
 
-describe('WPCOM#Site#Post', function(){
+describe('WPCOM#Sites#Post', function(){
 
   // Create a new_post before to start the tests
   var new_post;
@@ -33,7 +33,7 @@ describe('WPCOM#Site#Post', function(){
 
   describe('sync', function(){
 
-    it('should create an `Post` instance from `Site`', function(){
+    it('should create an `Post` instance from `Sites`', function(){
       var post = WPCOM().site().post();
       post
         .should.be.an.instanceOf(Post);

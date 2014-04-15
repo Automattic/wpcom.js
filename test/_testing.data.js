@@ -4,7 +4,7 @@
  */
 
 var WPCOM = require('../');
-var Site = require('../lib/site');
+var Sites = require('../lib/sites');
 var util = require('./util');
 
 /**
@@ -71,7 +71,7 @@ describe('testing data', function(){
       var site = util.public_site();
 
       site
-        .should.be.an.instanceOf(Site);
+        .should.be.an.instanceOf(Sites);
 
       site._id
         .should.be.eql(data.site.public.url);

@@ -5,7 +5,7 @@
  */
 
 var WPCOM = require('../');
-var Site = require('../lib/site');
+var Sites = require('../lib/sites');
 var util = require('./util');
 
 /**
@@ -15,10 +15,10 @@ var util = require('./util');
 var test = require('./data');
 
 /**
- * Create a `Site` instance
+ * Create a `Sites` instance
  */
 
-describe('WPCOM#Site', function(){
+describe('WPCOM#Sites', function(){
 
 
   // Create a new_post before to start the tests
@@ -38,7 +38,7 @@ describe('WPCOM#Site', function(){
       var site = util.public_site();
 
       site
-        .should.be.an.instanceOf(Site);
+        .should.be.an.instanceOf(Sites);
 
       site._id
         .should.be.eql(test.site.public.url);
