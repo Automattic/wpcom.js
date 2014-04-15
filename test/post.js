@@ -158,6 +158,34 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
+    describe('likes()', function(){
+
+      it('should get post likes', function(done){
+        var site = util.private_site();
+        var post = site.post(new_post.ID);
+
+        post.likes(function(err, data){
+          if (err) throw err;
+
+          data
+            .should.be.ok
+            .and.be.an.instanceOf(Object);
+
+          data.found
+            .should.be.an.instanceOf(Number);
+
+          data.i_like
+            .should.be.an.instanceOf(Boolean);
+
+          data.likes
+            .should.be.an.instanceOf(Array);
+
+          done();
+        });
+      });
+
+    });
+
   });
 
 });
