@@ -20,6 +20,18 @@ var test = require('./data');
 
 describe('WPCOM#Site', function(){
 
+
+  // Create a new_post before to start the tests
+  var new_post;
+  before(function(done){
+    util.addPost(function(err, post) {
+      if (err) return done(err);
+
+      new_post = post;
+      done();
+    });
+  });
+
   describe('sync', function(){
 
     it('should be create a site object instance', function(){
@@ -36,7 +48,7 @@ describe('WPCOM#Site', function(){
 
   describe('async', function(){
 
-    describe('get', function(){
+    describe('get()', function(){
       it('should require site data', function(done){
         var site = util.public_site();
 
@@ -54,7 +66,7 @@ describe('WPCOM#Site', function(){
       });
     });
 
-    describe('posts', function(){
+    describe('posts()', function(){
 
       it('should request posts list', function(done){
         var site = util.public_site();
@@ -101,6 +113,9 @@ describe('WPCOM#Site', function(){
         });
 
       });
+    });
+
+    describe('addPost()', function(){
 
       it('should create a new blog post', function(done){
 
@@ -109,13 +124,37 @@ describe('WPCOM#Site', function(){
         var post = site.addPost(test.new_post_data, function(err, data){
           if (err) throw err;
 
-          // data object data testing
           data
             .should.be.an.instanceOf(Object);
 
-          // `post.site_Id`
           data.site_ID
             .should.be.eql(test.site.private.id);
+
+          done();
+        });
+
+      });
+
+    });
+
+    describe('deletePost()', function(){
+
+      it('should delete a blog post', function(done){
+
+        var site = util.private_site();
+
+        var post = site.deletePost(new_post.ID, function(err, data){
+
+          if (err) throw err;
+
+          data
+            .should.be.an.instanceOf(Object);
+
+          data.site_ID
+            .should.be.eql(test.site.private.id);
+
+          data.ID
+            .should.be.eql(new_post.ID);
 
           done();
         });
