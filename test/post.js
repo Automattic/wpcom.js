@@ -57,7 +57,8 @@ describe('WPCOM#Site#Post', function(){
 
   describe('async', function(){
 
-    describe('get', function(){
+    describe('get()', function(){
+
       it('should get added post (by id)', function(done){
         var site = util.private_site();
         var post = site.post(new_post.ID);
@@ -84,7 +85,7 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-    describe('add', function(){
+    describe('add()', function(){
 
       it('should add a new post', function(done){
         var site = util.private_site();
@@ -111,7 +112,7 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-    describe('update', function(){
+    describe('update()', function(){
 
       it('should edit the new added post', function(done){
         var site = util.private_site();
@@ -135,7 +136,7 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-    describe('delete', function(){
+    describe('delete()', function(){
 
       it('should delete the new added post', function(done){
         var site = util.private_site();
