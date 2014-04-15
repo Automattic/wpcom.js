@@ -32,10 +32,31 @@ Note: If you wanna a way to get the access token can use [node-wpcom-oauth](http
 
 Create a `Me` object. More info in [Me doc page](./doc/me.md).
 
+```js
+var wpcom = require('wpcom')('<your-token>');
+var me = wpcom.me();
+
+// get user information
+me.get(function(err, info){
+});
+
+```
+## Example
+
 ### WPCOM#site('site-id')
 
 Create a `Site` object. More info in [Site doc page](./doc/site.md).
 
+```js
+var wpcom = require('wpcom')('<your-token>');
+var site = wpcom.site();
+
+// get blog posts
+site.posts(function(err, list){
+
+});
+
+```
 ## Example
 
 Into `example/` folder download the npm dependencies:
