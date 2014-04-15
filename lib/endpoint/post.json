@@ -22,5 +22,10 @@
   "delete": {
     "method": "POST",
     "path": "/sites/%site%/posts/%post_id%/delete"
+  },
+
+  "likes": {
+    "method": "GET",
+    "path": "/sites/%site%/posts/%post_id%/likes"
   }
 }
