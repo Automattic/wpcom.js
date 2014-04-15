@@ -16,7 +16,7 @@ var site = wpcom.site('<blog-id>');
 Create a new `Site` instance giving `id` and `WPCOM` instance.
 
 ```js
-var site = Site('<id>', WPCOMM);
+var site = Site('<id>', WPCOM);
 ```
 
 ### Site#get([params], fn)
@@ -47,13 +47,20 @@ Create a new `Post` instance.
 var post = site.post('<post-id>');
 ```
 
-### Site#addPost(data, [fn])
+### Site#addPost(data, fn)
 
-Add a new post to site. Return a `Post` instance. Emit `add` event.
+Add a new post to site. Return a `Post` instance.
 
 ```js
-var new_post = site.addPost({ title: 'Hi!, it is a new post' });
-new_post.on('add', function(data){
-  console.log('A new post has been added at %s', post.date);
+var new_post = site.addPost({ title: 'It is my new post' }, function(err, post){
+});
+```
+
+### Site#deletePost(id, fn)
+
+Delete a blog post
+
+```js
+var del_post = site.deletePost('<post-id>', function(err, post){
 });
 ```
