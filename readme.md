@@ -43,7 +43,7 @@ me.get(function(err, info){
 
 ### WPCOM#sites('site-id')
 
-Create a `Sites` object. More info in [Sites doc page](./doc/site.md).
+Create a `Sites` object. More info in [Sites doc page](./doc/sites.md).
 
 ```js
 var wpcom = require('wpcom')('<your-token>');
