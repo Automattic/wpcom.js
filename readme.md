@@ -39,9 +39,7 @@ var me = wpcom.me();
 // get user information
 me.get(function(err, info){
 });
-
 ```
-## Example
 
 ### WPCOM#site('site-id')
 
@@ -53,10 +51,9 @@ var site = wpcom.site();
 
 // get blog posts
 site.posts(function(err, list){
-
 });
-
 ```
+
 ## Example
 
 Into `example/` folder download the npm dependencies:
