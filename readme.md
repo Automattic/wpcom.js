@@ -41,7 +41,7 @@ me.get(function(err, info){
 });
 ```
 
-### WPCOM#site('site-id')
+### WPCOM#sites('site-id')
 
 Create a `Sites` object. More info in [Sites doc page](./doc/site.md).
 
