@@ -42,7 +42,7 @@ WPCOM.prototype.me = function(){
  * @api public
  */
 
-WPCOM.prototype.site = function(id){
+WPCOM.prototype.sites = function(id){
   return Sites(id, this);
 };
 

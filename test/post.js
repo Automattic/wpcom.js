@@ -34,20 +34,20 @@ describe('WPCOM#Sites#Post', function(){
   describe('sync', function(){
 
     it('should create an `Post` instance from `Sites`', function(){
-      var post = WPCOM().site().post();
+      var post = WPCOM().sites().post();
       post
         .should.be.an.instanceOf(Post);
     });
 
     it('should set post `id`', function(){
-      var post = WPCOM().site().post();
+      var post = WPCOM().sites().post();
       post.id(new_post.ID);
 
       post._id.should.be.eql(new_post.ID);
     });
 
     it('should set post `slug`', function(){
-      var post = WPCOM().site().post();
+      var post = WPCOM().sites().post();
       post.slug(new_post.slug);
 
       post._slug.should.be.eql(new_post.slug);
