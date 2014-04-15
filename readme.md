@@ -11,7 +11,7 @@
 var wpcom = require('wpcom')('<your-token>');
 
 // create a blog hanlder instance
-var blog = wpcom.site('blog.wordpress.com');
+var blog = wpcom.sites('blog.wordpress.com');
 
 // get blog posts
 blog.posts({ number: 8 }, function(err, list){
@@ -43,11 +43,11 @@ me.get(function(err, info){
 
 ### WPCOM#site('site-id')
 
-Create a `Site` object. More info in [Site doc page](./doc/site.md).
+Create a `Sites` object. More info in [Sites doc page](./doc/site.md).
 
 ```js
 var wpcom = require('wpcom')('<your-token>');
-var site = wpcom.site();
+var site = wpcom.sites();
 
 // get blog posts
 site.posts(function(err, list){
