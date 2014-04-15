@@ -1,11 +1,13 @@
 
 # Me
 
-Class to handler `/me` REST-API endpoint.
+`Me` handler class.
+
+## Create a `Me` instance from WPCOM
 
 ```js
 var wpcom = require('wpcom')('<your-token>');
-var me = wpcom.me('<blog-id>');
+var me = wpcom.me();
 });
 ```
 

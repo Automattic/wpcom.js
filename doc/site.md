@@ -1,7 +1,9 @@
 
-# Site class
+# Site
 
-## Create a Site object from `WPCOM`
+`Site` handler class.
+
+## Create a `Site` instance from WPCOM
 
 ```js
 var wpcom = require('wpcom')('<your-token>');
@@ -21,21 +23,21 @@ var site = Site('<id>', WPCOM);
 
 ### Site#get([params], fn)
 
-Get site data.
+Get site information
 
 ```js
-post.get(function(err, data){
-  // `site` data object
+site.get(function(err, info){
+  // `info` data object
 });
 ```
 
 ### Site#posts([params], fn)
 
-Get site data.
+Get site posts
 
 ```js
-post.posts(function(err, data){
-  // `posts` data object
+site.posts(function(err, list){
+  // `list` data object
 });
 ```
 
