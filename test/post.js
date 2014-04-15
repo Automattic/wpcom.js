@@ -23,11 +23,8 @@ describe('WPCOM#Site#Post', function(){
   // Create a new_post before to start the tests
   var new_post;
   before(function(done){
-    var site = util.private_site();
-    var post = site.post();
-
-    post.add(test.new_post_data, function(err, post){
-      if (err) done(err);
+    util.addPost(function(err, post) {
+      if (err) return done(err);
 
       new_post = post;
       done();

@@ -47,6 +47,16 @@ Util.private_site = function(){
 };
 
 /**
+ * Add a new post
+ */
+
+Util.addPost = function(fn){
+  var site = Util.private_site();
+  var post = site.post();
+  post.add(test.new_post_data, fn);
+};
+
+/**
  * Export module
  */
 
