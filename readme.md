@@ -30,15 +30,11 @@ Note: If you wanna a way to get the access token can use [node-wpcom-oauth](http
 
 ### WPCOM#me()
 
-Create a `Me` object. More info in `Me` doc page.
+Create a `Me` object. More info in [Me doc page](./doc/me.md).
 
 ### WPCOM#site('site-id')
 
-Create a `Site` object. More info in `Me` doc page.
-
-### WPCOM#site()
-
-Create a `Site` object. More info in `Site` doc page.
+Create a `Site` object. More info in [Site doc page](./doc/site.md).
 
 ## Example
 
