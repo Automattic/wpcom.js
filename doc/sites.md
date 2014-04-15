@@ -3,7 +3,7 @@
 
 `Sites` handler class.
 
-## Create a `Sites` instance from WPCOM
+### Create a `Sites` instance from WPCOM
 
 ```js
 var wpcom = require('wpcom')('<your-token>');

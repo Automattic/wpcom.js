@@ -1,15 +1,14 @@
 
-# Post class
+# Post
+
+`Post` handler class.
+
+### Create a `Post` instance from Blog
 
 ```js
 var wpcom = require('wpcom')('<your-token>');
-
-var blog = wpcom.blog('<blog-id>');
-
-var post = blog.post('<post-id>');
-
-post.get(function(err, data){
-  // post `data` object information
+var blog = wpcom.sites('blog.wordpress.com');
+var post = blog.post(342);
 });
 ```
 
@@ -17,8 +16,7 @@ post.get(function(err, data){
 
 ### Post(id, site, WPCOM);
 
-Create a new instance of `Post` class giving `id`, `site-id` and `WPCOM`
-instance.
+Create a new `Post` instance giving `id`, `site-id` and `WPCOM` instance.
 
 ```js
 var post = Post('<id>', '<site-id>', WPCOM);
@@ -26,27 +24,26 @@ var post = Post('<id>', '<site-id>', WPCOM);
 
 ### Post(data, site, WPCOM);
 
+Create a new `Post` instance giving `data` object, `site-id` and `WPCOM` instance.
+
+
 ```js
-var post = Post({ id: '<id>', slug: '<slug>' }, '<site-id>', WPCOM);
+var data = { id: '<id>', slug: '<slug>' };
+var post = Post(data, '<site-id>', WPCOM);
 ```
 
 ### Post.id(id)
 
-```js
-// Set post `id`.
-post.id('<id>');
-```
+Set post `id`
 
 ### Post.slug(slug)
 
-```js
-// Set post `slug`.
-post.slug('<slug>');
-```
+Set post `slug`.
 
 ### Post#get([params], fn)
 
-Get post data by `id` or `slug`
+Get post data by `id` or `slug` depending on which of these parameter is
+defined, giving priority to `id` over `slug`
 
 ```js
 post.get(params, function(err, data){
@@ -56,11 +53,11 @@ post.get(params, function(err, data){
 
 ### Post#getbyslug(fn)
 
-Get post data by `slug`
+Get post data by `slug`. `slug` must have been previously defined throught of
+constructor or using .slug() method.
 
 ```js
 var post = Post({ slug: '<slug>' }, '<site-id>', WPCOM);
-
 post.getbyslug(params, function(err, data){
   // post data object
 });
