@@ -9,5 +9,12 @@
       "method": "GET",
       "path": "/sites/%site%/posts"
     }
+  },
+
+  "media": {
+    "get": {
+      "method": "GET",
+      "path": "/sites/%site%/media"
+    }
   }
 }
