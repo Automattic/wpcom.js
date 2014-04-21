@@ -2,7 +2,7 @@
 {
   "get": {
     "method": "GET",
-    "path": "/sites/%site%/media/%post_id%"
+    "path": "/sites/%site%/media/%media_id%"
   },
 
   "add": {
@@ -12,11 +12,11 @@
 
   "update": {
     "method": "POST",
-    "path": "/sites/%site%/media/%post_id%"
+    "path": "/sites/%site%/media/%media_id%"
   },
 
   "delete": {
     "method": "POST",
-    "path": "/sites/%site%/media/%post_id%/delete"
+    "path": "/sites/%site%/media/%media_id%/delete"
   }
 }
