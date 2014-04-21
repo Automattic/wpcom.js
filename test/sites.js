@@ -120,7 +120,7 @@ describe('WPCOM#Sites', function(){
       it('should request media library list', function(done){
         var site = util.public_site();
 
-        site.media(function(err, list){
+        site.medias(function(err, list){
           if (err) throw err;
 
           // list object data testing
