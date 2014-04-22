@@ -2,3 +2,5 @@
 /test/data.json
 /npm-debug.log
 /tmp
+
+/examples/express/node_modules
