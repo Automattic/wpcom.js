@@ -17,10 +17,10 @@ module.exports = WPCOM;
  * WordPress.com REST API class.
  *
  * XMLHttpRequest (and CORS) API access method.
- * API authentication is done via an access `token` passed in,
+ * API authentication is done via an (optional) access `token`,
  * which needs to be retrieved via OAuth (see `wpcom-oauth` on npm).
  *
- * @param {String} token OAuth API access token
+ * @param {String} token (optional) OAuth API access token
  * @api public
  */
 
@@ -30,3 +30,17 @@ function WPCOM (token) {
   this.token = token;
 }
 inherits(WPCOM, _WPCOM);
+
+/**
+ * Overwrite the parent `sendRequest()` function so that we can
+ * add the `authToken` to every API request if it's present.
+ *
+ * @api private
+ */
+
+WPCOM.prototype.sendRequest = function (type, vars, params, fn){
+  if (this.token) {
+    params.authToken = this.token;
+  }
+  return _WPCOM.prototype.sendRequest.call(this, type, vars, params, fn);
+};
