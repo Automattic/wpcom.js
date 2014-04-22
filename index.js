@@ -69,13 +69,12 @@ WPCOM.prototype.sendRequest = function (type, vars, params, fn){
   debug('sendRequest()');
   debug('type: `%s`', type);
 
-  // options object || callback function
-  if ('function' == typeof params) {
-    fn = params;
-    params = {};
+  // params.query || callback function
+  if ('function' == typeof params.query) {
+    fn = params.query;
+    params.query = {};
   }
 
-  if (!params) params = {};
   if (!fn) fn = function(err){ if (err) throw err; };
 
   // endpoint config object
