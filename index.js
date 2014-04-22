@@ -64,20 +64,8 @@ WPCOM.prototype.freshlyPressed = function(params, fn){
  */
 
 WPCOM.prototype.sendRequest = function (type, vars, params, fn){
-  console.log(type, vars, params);
+  debug('sendRequest()');
   debug('type: `%s`', type);
-
-  // token
-  var token = params.token || this.token;
-  delete params.token;
-
-  // headers
-  var headers = {};
-  if (!token) {
-    debug('WARN: token is not defined');
-  } else {
-    headers.authorization = "Bearer " + token;
-  }
 
   // options object || callback function
   if ('function' == typeof params) {
@@ -90,7 +78,6 @@ WPCOM.prototype.sendRequest = function (type, vars, params, fn){
 
   // endpoint config object
   var end = ends(type);
-  console.log(end);
 
   // request method
   var method = (params.method || end.method || 'get').toLowerCase();
