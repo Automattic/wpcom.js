@@ -86,7 +86,6 @@ Create `data.json` file into `test/` folder to can run the tests. You can copy
 or rename the `test/data_example.json` file.
 
 ```json
-
 {
   "token": {
     "global": "<global token>"
@@ -108,7 +107,6 @@ or rename the `test/data_example.json` file.
     "content": "<div style=\"color: red;\">The content of the new testing post</div>"
   }
 }
-
 ```
 
 ... and then
