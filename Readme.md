@@ -114,7 +114,7 @@ or rename the `test/data_example.json` file.
 $ make
 ```
 
-**Note**: don't add `http://` in`public_site` and `private_site` values.
+**Note**: Don't add `http://` in `public_site` and `private_site` values.
 
 
 ## License
