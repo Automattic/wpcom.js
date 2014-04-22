@@ -13,9 +13,12 @@
     "extend": "1.2.1",
     "debug": "*",
     "dot-component": "0.1.1",
-    "superagent": "0.17.0"
+    "superagent": "0.17.0",
+    "inherits": "2.0.1"
   },
   "devDependencies": {
+    "browserify": "3.44.0",
+    "add-component-symlinks": "1.0.3",
     "mocha": "*",
     "should": "*"
   }
