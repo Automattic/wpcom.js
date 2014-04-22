@@ -39,8 +39,19 @@ inherits(WPCOM, _WPCOM);
  */
 
 WPCOM.prototype.sendRequest = function (type, vars, params, fn){
-  if (this.token) {
-    params.authToken = this.token;
+  // options object || callback function
+  if ('function' == typeof params) {
+    fn = params;
+    params = {};
   }
+
+  if (!params) params = {};
+
+  // token
+  var token = params.token || this.token;
+  delete params.token;
+
+  if (token) params.authToken = token;
+
   return _WPCOM.prototype.sendRequest.call(this, type, vars, params, fn);
 };
