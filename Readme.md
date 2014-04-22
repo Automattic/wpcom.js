@@ -12,7 +12,6 @@
 $ npm install wpcom
 ```
 
-
 ## How to use it
 
 ```js

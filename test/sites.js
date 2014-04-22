@@ -7,6 +7,7 @@
 var WPCOM = require('../');
 var Sites = require('../lib/sites');
 var util = require('./util');
+var assert = require('assert');
 
 /**
  * Testing data
@@ -37,11 +38,8 @@ describe('WPCOM#Sites', function(){
     it('should be create a site object instance', function(){
       var site = util.public_site();
 
-      site
-        .should.be.an.instanceOf(Sites);
-
-      site._id
-        .should.be.eql(test.site.public.url);
+      assert.ok(site instanceof Sites);
+      assert.equal(test.site.public.url, site._id);
     });
 
   });
@@ -55,12 +53,9 @@ describe('WPCOM#Sites', function(){
         site.get(function(err, info){
           if (err) throw err;
 
-          // check site info
-          info.ID
-            .should.be.an.instanceOf(Number);
+          assert.equal('number', typeof info.ID);
+          assert.equal('string', typeof info.name);
 
-          info.name
-            .should.be.an.instanceOf(String);
           done();
         });
       });
@@ -75,15 +70,13 @@ describe('WPCOM#Sites', function(){
           if (err) throw err;
 
           // list object data testing
-          list
-            .should.be.an.instanceOf(Object);
+          assert.equal('object', typeof list);
 
           // `posts list` object data testing
-          list.found
-            .should.be.an.instanceOf(Number);
+          assert.equal('number', typeof list.found);
 
-          list.posts
-            .should.be.an.instanceOf(Array);
+          assert.equal('object', typeof list.posts);
+          assert.ok(list.posts instanceof Array);
 
           done();
         });
@@ -97,22 +90,16 @@ describe('WPCOM#Sites', function(){
           if (err) throw err;
 
           // list object data testing
-          list
-            .should.be.an.instanceOf(Object);
-
-          // `posts list` object data testing
-          list.found
-            .should.be.an.instanceOf(Number);
-
-          // get only one post
-          list.posts
-            .should.be.an.instanceOf(Array)
-            .and.length(1);
+          assert.equal('object', typeof list);
+          assert.equal('number', typeof list.found);
+          assert.equal('object', typeof list.posts);
+          assert.ok(list.posts instanceof Array);
 
           done();
         });
 
       });
+
     });
 
     describe('media()', function(){
@@ -124,17 +111,13 @@ describe('WPCOM#Sites', function(){
           if (err) throw err;
 
           // list object data testing
-          list
-            .should.be.an.instanceOf(Object);
-
-          // `posts list` object data testing
-          list.found
-            .should.be.an.instanceOf(Number);
-
-          list.media
-            .should.be.an.instanceOf(Array);
+          assert.equal('object', typeof list);
+          assert.equal('number', typeof list.found);
+          assert.equal('object', typeof list.media);
+          assert.ok(list.media instanceof Array);
 
           done();
+
         });
 
       });
@@ -149,11 +132,8 @@ describe('WPCOM#Sites', function(){
         var post = site.addPost(test.new_post_data, function(err, data){
           if (err) throw err;
 
-          data
-            .should.be.an.instanceOf(Object);
-
-          data.site_ID
-            .should.be.eql(test.site.private.id);
+          assert.equal('object', typeof data);
+          assert.equal(test.site.private.id, data.site_ID);
 
           done();
         });
@@ -172,20 +152,18 @@ describe('WPCOM#Sites', function(){
 
           if (err) throw err;
 
-          data
-            .should.be.an.instanceOf(Object);
-
-          data.site_ID
-            .should.be.eql(test.site.private.id);
-
-          data.ID
-            .should.be.eql(new_post.ID);
+          assert.equal('object', typeof data);
+          assert.equal(test.site.private.id, data.site_ID);
+          assert.equal(new_post.ID, data.ID);
 
           done();
+
         });
 
       });
+
     });
+
   });
 
 });

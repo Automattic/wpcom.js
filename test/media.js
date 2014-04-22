@@ -7,6 +7,7 @@ var WPCOM = require('../');
 var Sites = require('../lib/sites');
 var Media = require('../lib/media');
 var util = require('./util');
+var assert = require('assert');
 
 /**
  * Testing data
@@ -36,8 +37,8 @@ describe('WPCOM#Sites#Media', function(){
 
     it('should create an `Media` instance from `Sites`', function(){
       var media = WPCOM().sites().media();
-      media
-        .should.be.an.instanceOf(Media);
+      assert.ok(media instanceof Media);
+
     });
 
   });
