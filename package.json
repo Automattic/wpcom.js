@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "browserify": "3.44.0",
-    "add-component-symlinks": "1.0.3",
     "mocha": "*",
     "should": "*"
   }

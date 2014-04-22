@@ -11,7 +11,6 @@ NODE ?= node
 NPM ?= $(NODE) $(shell which npm)
 MOCHA ?= $(NODE) $(BIN)/mocha
 BROWSERIFY ?= $(NODE) $(BIN)/browserify
-ADD_COMPONENT_SYMLINKS ?= $(NODE) $(BIN)/add-component-symlinks
 
 all: dist/wpcom.js dist/wpcom-proxy.js
 
@@ -35,7 +34,6 @@ dist/wpcom-proxy.js: node_modules index.js wpcom+proxy.js dist lib/*
 
 node_modules: package.json
 	@NODE_ENV= $(NPM) install
-	@$(ADD_COMPONENT_SYMLINKS)
 	@touch node_modules
 
 test:
