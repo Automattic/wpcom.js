@@ -82,9 +82,7 @@ WPCOM.prototype.sendRequest = function (type, vars, params, fn){
   var end = ends(type);
 
   // request method
-  var method = (params.method || end.method || 'GET').toLowerCase();
-  delete params.method;
-  debug('method: `%s`', method);
+  params.method = (params.method || end.method || 'GET').toLowerCase();
 
   // build endpoint url
   var endpoint = end.path;
