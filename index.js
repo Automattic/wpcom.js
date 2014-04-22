@@ -16,7 +16,9 @@ var debug = require('debug')('wpcom');
 
 function WPCOM(request){
   if (!(this instanceof WPCOM)) return new WPCOM(request);
-  if ('function' !== typeof request) throw new TypeError('a `request` WP.com function must be passed in');
+  if ('function' !== typeof request) {
+    throw new TypeError('a `request` WP.com function must be passed in');
+  }
   this.request = request;
 }
 
