@@ -25,7 +25,7 @@ clean:
 	@rm -rf node_modules dist
 
 dist:
-	@mkdir $@
+	@mkdir -p $@
 
 dist/wpcom.js: node_modules index.js wpcom+xhr.js dist lib/*
 	@$(BROWSERIFY) -s WPCOM wpcom+xhr.js > $@
