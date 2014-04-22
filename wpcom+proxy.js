@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-var _WPCOM = require('./');
+var _WPCOM = require('./index.js');
 var request = require('wpcom-proxy-request');
 var inherits = require('inherits');
 
