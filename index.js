@@ -50,7 +50,7 @@ WPCOM.prototype.sites = function(id){
  */
 
 WPCOM.prototype.freshlyPressed = function(params, fn){
-  this.wpcom.sendRequest('freshly-pressed.get', null, params, fn);
+  this.sendRequest('freshly-pressed.get', null, params, fn);
 };
 
 /**
