@@ -63,9 +63,13 @@ site.posts(function(err, list){
 });
 ```
 
-## Example
+## Examples
 
-Into `example/` folder download the npm dependencies:
+### Express
+
+Into `example/express` folder:
+
+... download the npm dependencies:
 
 ```bash
 $ npm install
@@ -78,6 +82,15 @@ $ node index.js
 ```
 
 Finally open a browser and load the page pointing to http://localhost:3000
+Keep in mind that this app gets the config data from test/data.json file
+
+### Node.js
+
+Into `example/node` run:
+
+```nash
+$ node freshlyPressed.js
+```
 
 ## Test
 
