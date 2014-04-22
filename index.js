@@ -66,8 +66,7 @@ WPCOM.prototype.freshlyPressed = function(params, fn){
  */
 
 WPCOM.prototype.sendRequest = function (type, vars, params, fn){
-  debug('sendRequest()');
-  debug('type: `%s`', type);
+  debug('sendRequest("%s")', type);
 
   // options object || callback function
   if ('function' == typeof params) {
