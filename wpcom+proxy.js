@@ -22,9 +22,8 @@ module.exports = WPCOM;
  * @api public
  */
 
-function WPCOM (token) {
-  if (!(this instanceof WPCOM)) return new WPCOM(token);
+function WPCOM () {
+  if (!(this instanceof WPCOM)) return new WPCOM();
   _WPCOM.call(this, request);
-  this.token = token;
 }
 inherits(WPCOM, _WPCOM);
