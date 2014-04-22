@@ -42,6 +42,18 @@ WPCOM.prototype.sites = function(id){
 };
 
 /**
+ * List Freshly Pressed Posts
+ *
+ * @param {Object} params (optional)
+ * @param {Function} fn callback function
+ * @api public
+ */
+
+WPCOM.prototype.freshlyPressed = function(params, fn){
+  this.wpcom.sendRequest('freshly-pressed.get', null, params, fn);
+};
+
+/**
  * Request to WordPress REST API
  *
  * @param {String} type endpoint type
