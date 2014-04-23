@@ -36,6 +36,10 @@ node_modules: package.json
 	@NODE_ENV= $(NPM) install
 	@touch node_modules
 
+example-server-side:
+	cd example/server-side/; $(NPM) install
+	$(NODE) example/server-side/index.js
+
 test:
 	@$(MOCHA) \
 		--require should \
