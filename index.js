@@ -72,7 +72,7 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
 
   debug('sendRequest("%s")', params.path);
 
-  // set `method` and `path` request params
+  // set `method` request param
   params.method = (params.method || 'get').toUpperCase();
 
   // `query` is optional
