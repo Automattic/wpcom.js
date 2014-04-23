@@ -40,7 +40,7 @@ example-server:
 	cd example/server/; $(NPM) install
 	$(NODE) example/server/index.js
 
-example-browser: dist
+example-browser: all
 	cp dist/* example/browser/public/
 	cd example/browser/; $(NPM) install
 	$(NODE) example/browser/index.js
