@@ -3,7 +3,6 @@
   [WordPress.com][] JavaScript API client designed for Node.JS and
   browsers.
 
-
 ## How to use
 
 ### Node.JS
@@ -67,32 +66,7 @@ site.posts(function(err, list){
 
 ## Examples
 
-### Express
-
-Into `example/express` folder:
-
-... download the npm dependencies:
-
-```bash
-$ npm install
-```
-
-... and then run the application
-
-```bash
-$ node index.js
-```
-
-Finally open a browser and load the page pointing to http://localhost:3000
-Keep in mind that this app gets the config data from test/data.json file
-
-### Node.js
-
-Into `example/node` run:
-
-```nash
-$ node freshlyPressed.js
-```
+[Examples](./example/Readme.md) doc page
 
 ## Test
 
