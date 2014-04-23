@@ -84,7 +84,7 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
   // `body` is optional
   if ('function' == typeof body) {
     fn = body;
-    query = null;
+    body = null;
   }
 
   // pass `query` and/or `body` to request params
