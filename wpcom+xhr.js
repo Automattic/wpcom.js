@@ -20,7 +20,7 @@ module.exports = WPCOM;
  * API authentication is done via an (optional) access `token`,
  * which needs to be retrieved via OAuth (see `wpcom-oauth` on npm).
  *
- * @param {String} [token] OAuth API access token
+ * @param {String} token (optional) OAuth API access token
  * @api public
  */
 
@@ -39,11 +39,12 @@ inherits(WPCOM, _WPCOM);
  * @api private
  */
 
-WPCOM.prototype.sendRequest = function (options, query, body, fn){
-  if ('string' == typeof options) options = { path: options };
+WPCOM.prototype.sendRequest = function (params, query, body, fn){
+  if ('string' == typeof params) params = { path: params };
 
   // token
-  options.token = options.token || this.token;
+  var token = params.token || this.token;
+  if (token) params.authToken = token;
 
-  return _WPCOM.prototype.sendRequest.call(this, options, query, body, fn);
+  return _WPCOM.prototype.sendRequest.call(this, params, query, body, fn);
 };

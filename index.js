@@ -57,49 +57,42 @@ WPCOM.prototype.freshlyPressed = function(params, fn){
 /**
  * Request to WordPress REST API
  *
- * @param {String||Object} options 
+ * @param {String||Object} params 
  * @param {Object} [query]
  * @param {Object} [body]
  * @param {Function} fn
  * @api private
  */
 
-WPCOM.prototype.sendRequest = function (options, query, body, fn){
-  // params request object
-  var params = {};
-
-  if ('string' == typeof options) {
-    options = { path: options };
+WPCOM.prototype.sendRequest = function (params, query, body, fn){
+  // `params` can be the path (String)
+  if ('string' == typeof params) {
+    params = { path: params };
   }
 
-  debug('sendRequest("%s")', options.path);
+  debug('sendRequest("%s")', params.path);
 
-  // token
-  if (options.token) {
-    params.authToken = options.token;
-  }
+  // set `method` and `path` request params
+  params.method = (params.method || 'get').toUpperCase();
+  params.path = params.path;
 
-  // set method and path request
-  params.method = (options.method || 'get').toUpperCase();
-  params.path = options.path;
-
-  // query parameter is optional
+  // `query` is optional
   if ('function' == typeof query) {
     fn = query;
     query = {};
   }
 
-  // body parameter is optional
+  // `body` is optional
   if ('function' == typeof body) {
     fn = body;
     query = {};
   }
 
-  // pass query and/or body object to request params
+  // pass `query` and/or `body` to request params
   if (query) params.query = query;
   if (body) params.body = body;
 
-  // callback function is optional
+  // callback `fn` function is optional
   if (!fn) fn = function(err){ if (err) throw err; };
 
   // request method
