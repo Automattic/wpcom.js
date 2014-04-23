@@ -65,6 +65,7 @@ WPCOM.prototype.freshlyPressed = function(params, fn){
  */
 
 WPCOM.prototype.sendRequest = function (options, query, body, fn){
+  // params request object
   var params = {};
 
   if ('string' == typeof options) {
@@ -73,25 +74,32 @@ WPCOM.prototype.sendRequest = function (options, query, body, fn){
 
   debug('sendRequest("%s")', options.path);
 
+  // token
   if (options.token) {
     params.authToken = options.token;
   }
 
+  // set method and path request
   params.method = (options.method || 'get').toUpperCase();
   params.path = options.path;
 
+  // query parameter is optional
   if ('function' == typeof query) {
     fn = query;
     query = {};
   }
 
+  // body parameter is optional
   if ('function' == typeof body) {
     fn = body;
     query = {};
   }
 
+  // pass query and/or body object to request params
   if (query) params.query = query;
   if (body) params.body = body;
+
+  // callback function is optional
   if (!fn) fn = function(err){ if (err) throw err; };
 
   // request method
