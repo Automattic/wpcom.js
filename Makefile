@@ -40,10 +40,10 @@ example-server:
 	cd example/server/; $(NPM) install
 	$(NODE) example/server/index.js
 
-example-browser: all
-	cp dist/* example/browser/public/
-	cd example/browser/; $(NPM) install
-	$(NODE) example/browser/index.js
+example-browser-proxy: all
+	cp dist/* example/browser-proxy-request/public/
+	cd example/browser-proxy-request/; $(NPM) install
+	$(NODE) example/browser-proxy-request/index.js
 
 test:
 	@$(MOCHA) \
