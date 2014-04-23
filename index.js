@@ -1,11 +1,10 @@
-
 /**
+
  * Module dependencies.
  */
 
 var Me = require('./lib/me');
 var Site = require('./lib/site');
-var ends = require('./lib/endpoint');
 var debug = require('debug')('wpcom');
 
 /**
@@ -20,6 +19,7 @@ function WPCOM(request){
     throw new TypeError('a `request` WP.com function must be passed in');
   }
   this.request = request;
+  this.params = {};
 }
 
 /**
@@ -58,42 +58,35 @@ WPCOM.prototype.freshlyPressed = function(params, fn){
 /**
  * Request to WordPress REST API
  *
- * @param {String} type endpoint type
- * @param {Object} vars to build endpoint
- * @param {Object} params
+ * @param {Object} options 
+ * @param {Object} [query]
+ * @param {Object} [body]
  * @param {Function} fn
  * @api private
  */
 
-WPCOM.prototype.sendRequest = function (type, vars, params, fn){
-  debug('sendRequest("%s")', type);
+WPCOM.prototype.sendRequest = function (options, query, body, fn){
+  debug('sendRequest("%s")', options.path);
 
-  // params.query || callback function
-  if ('function' == typeof params.query) {
-    fn = params.query;
-    params.query = {};
+  this.params.method = (options.method || 'GET').toUpperCase();
+  this.params.path = options.path;
+
+  if ('function' == typeof query) {
+    fn = query;
+    query = {};
   }
 
+  if ('function' == typeof body) {
+    fn = body;
+    query = {};
+  }
+
+  if (query) this.params.query = query;
+  if (body) this.params.body = body;
   if (!fn) fn = function(err){ if (err) throw err; };
 
-  // endpoint config object
-  var end = ends(type);
-
   // request method
-  params.method = (params.method || end.method || 'GET').toUpperCase();
-
-  // build endpoint url
-  var endpoint = end.path;
-  if (vars) {
-    for (var k in vars) {
-      var rg = new RegExp("%" + k + "%");
-      endpoint = endpoint.replace(rg, vars[k]);
-    }
-  }
-  params.path = endpoint;
-  debug('endpoint: `%s`', endpoint);
-
-  this.request(params, fn);
+  this.request(this.params, fn);
 };
 
 /**
