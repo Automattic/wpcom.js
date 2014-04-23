@@ -19,7 +19,6 @@ function WPCOM(request){
     throw new TypeError('a `request` WP.com function must be passed in');
   }
   this.request = request;
-  this.params = {};
 }
 
 /**
@@ -66,14 +65,20 @@ WPCOM.prototype.freshlyPressed = function(params, fn){
  */
 
 WPCOM.prototype.sendRequest = function (options, query, body, fn){
+  var params = {};
+
   if ('string' == typeof options) {
     options = { path: options };
   }
 
   debug('sendRequest("%s")', options.path);
 
-  this.params.method = (options.method || 'GET').toUpperCase();
-  this.params.path = options.path;
+  if (options.token) {
+    params.authToken = options.token;
+  }
+
+  params.method = (options.method || 'get').toUpperCase();
+  params.path = options.path;
 
   if ('function' == typeof query) {
     fn = query;
@@ -85,12 +90,12 @@ WPCOM.prototype.sendRequest = function (options, query, body, fn){
     query = {};
   }
 
-  if (query) this.params.query = query;
-  if (body) this.params.body = body;
+  if (query) params.query = query;
+  if (body) params.body = body;
   if (!fn) fn = function(err){ if (err) throw err; };
 
   // request method
-  this.request(this.params, fn);
+  this.request(params, fn);
 };
 
 /**
