@@ -65,7 +65,7 @@ WPCOM.prototype.freshlyPressed = function(params, fn){
  */
 
 WPCOM.prototype.sendRequest = function (params, query, body, fn){
-  // `params` can be the path (String)
+  // `params` can be just the path (String)
   if ('string' == typeof params) {
     params = { path: params };
   }
@@ -74,18 +74,17 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
 
   // set `method` and `path` request params
   params.method = (params.method || 'get').toUpperCase();
-  params.path = params.path;
 
   // `query` is optional
   if ('function' == typeof query) {
     fn = query;
-    query = {};
+    query = null;
   }
 
   // `body` is optional
   if ('function' == typeof body) {
     fn = body;
-    query = {};
+    query = null;
   }
 
   // pass `query` and/or `body` to request params
