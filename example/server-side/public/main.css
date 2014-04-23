@@ -8,20 +8,9 @@ h1 {
   color: #a04;
 }
 
-h2 {
+h4 {
   margin-top: 50px;
-}
-
-h2.err {
-  background-color: #fee;
-  color: red;
-  padding: 5px 20px;
-}
-
-h2.ok {
-  background-color: #efe;
-  color: #080;
-  padding: 5px 20px;
+  text-transform: uppercase;
 }
 
 ul,
@@ -31,6 +20,20 @@ ul li {
   padding: 0;
 }
 
-.author em {
-  color: #a04;
+em {
+  padding: 3px 5px;
+  color: #666;
+  background-color: #f5f5f5;
+  border-radius: 2px;
+  font-style: normal;
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px solid #eee;
+  margin-top: 20px;
+}
+
+.excerpt {
+  color: #555;
 }
