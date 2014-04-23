@@ -25,7 +25,9 @@ var me = wpcom.me();
 
 me.get(function(err, me){
   if (err) throw err;
+  console.log('me: ', me);
 
+  // inject username DOM element
   var div = document.createElement('div');
   div.innerHTML = 'Your WordPress.com "username" is: <b>@' + me.username + '<\/b>';
   document.body.appendChild(div);
