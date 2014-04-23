@@ -66,11 +66,11 @@ WPCOM.prototype.freshlyPressed = function(params, fn){
  */
 
 WPCOM.prototype.sendRequest = function (options, query, body, fn){
-  debug('sendRequest("%s")', options.path);
-
   if ('string' == typeof options) {
     options = { path: options };
   }
+
+  debug('sendRequest("%s")', options.path);
 
   this.params.method = (options.method || 'GET').toUpperCase();
   this.params.path = options.path;
