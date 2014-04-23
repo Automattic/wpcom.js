@@ -58,7 +58,7 @@ WPCOM.prototype.freshlyPressed = function(params, fn){
 /**
  * Request to WordPress REST API
  *
- * @param {Object} options 
+ * @param {String||Object} options 
  * @param {Object} [query]
  * @param {Object} [body]
  * @param {Function} fn
@@ -67,6 +67,10 @@ WPCOM.prototype.freshlyPressed = function(params, fn){
 
 WPCOM.prototype.sendRequest = function (options, query, body, fn){
   debug('sendRequest("%s")', options.path);
+
+  if ('string' == typeof options) {
+    options = { path: options };
+  }
 
   this.params.method = (options.method || 'GET').toUpperCase();
   this.params.path = options.path;
