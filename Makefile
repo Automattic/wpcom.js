@@ -44,5 +44,4 @@ test:
 		--bail \
 		--reporter spec
 
-
 .PHONY: standalone install clean test
