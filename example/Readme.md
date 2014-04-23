@@ -5,22 +5,10 @@
 
 It's an express application that gets the blog posts making a server-side request.
 
-Into `example/server-side` folder
+run `make example-server-side` to start the application
 
 ```bash
-$ cd example/server-side
-```
-
-... download npm dependencies:
-
-```bash
-$ npm install
-```
-
-... run the application
-
-```bash
-$ node index.js
+$ make example-server-side
 ```
 
 Finally open a browser and load the page pointing to http://localhost:3000
