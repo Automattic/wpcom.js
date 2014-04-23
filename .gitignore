@@ -3,4 +3,5 @@ node_modules
 /npm-debug.log
 /tmp
 
-/example/express/node_modules
+/example/browser/public/wpcom-proxy.js
+/example/browser/public/wpcom.js
