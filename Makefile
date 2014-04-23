@@ -36,9 +36,14 @@ node_modules: package.json
 	@NODE_ENV= $(NPM) install
 	@touch node_modules
 
-example-server-side:
-	cd example/server-side/; $(NPM) install
-	$(NODE) example/server-side/index.js
+example-server:
+	cd example/server/; $(NPM) install
+	$(NODE) example/server/index.js
+
+example-browser: dist
+	cp dist/* example/browser/public/
+	cd example/browser/; $(NPM) install
+	$(NODE) example/browser/index.js
 
 test:
 	@$(MOCHA) \
