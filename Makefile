@@ -37,12 +37,12 @@ node_modules: package.json
 	@touch node_modules
 
 example-server:
-	cd example/server/; $(NPM) install
-	$(NODE) example/server/index.js
+	cd examples/server/; $(NPM) install
+	$(NODE) examples/server/index.js
 
 example-browser-proxy: all
-	cd example/browser-proxy-request/; $(NPM) install
-	$(NODE) example/browser-proxy-request/index.js
+	cd examples/browser-proxy-request/; $(NPM) install
+	$(NODE) examples/browser-proxy-request/index.js
 
 test:
 	@$(MOCHA) \
