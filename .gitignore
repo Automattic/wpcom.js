@@ -1,7 +1,5 @@
 node_modules
-/test/data.json
-/npm-debug.log
-/tmp
+npm-debug.log
 
-/example/*/public/wpcom-proxy.js
-/example/*/public/wpcom.js
+/test/data.json
+/tmp
