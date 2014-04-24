@@ -41,7 +41,6 @@ example-server:
 	$(NODE) example/server/index.js
 
 example-browser-proxy: all
-	cp dist/* example/browser-proxy-request/public/
 	cd example/browser-proxy-request/; $(NPM) install
 	$(NODE) example/browser-proxy-request/index.js
 
