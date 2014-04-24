@@ -5,10 +5,9 @@
 
 var express = require('express');
 
-var app = express();
-app.use(express.static(__dirname + './../../dist'));
-app.use(express.static(__dirname));
+express()
+.use(express.static(__dirname + './../../dist'))
+.use(express.static(__dirname))
+.listen(3000);
 
-var port = 80;
-app.listen(port);
-console.log('wpcom app started on port %s', port);
+console.log('wpcom app started on port 3000');
