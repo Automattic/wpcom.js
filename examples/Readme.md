@@ -27,6 +27,6 @@ Simple node.js script to get freshly pressed list.
 
 Into `examples/node` run:
 
-```nash
+```bash
 $ node freshlyPressed.js
 ```
