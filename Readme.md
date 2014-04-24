@@ -40,7 +40,7 @@ make admin actions or to access to protected resources.
 
 ### WPCOM#me()
 
-Create a `Me` object. More info in [Me doc page](./doc/me.md).
+Create a `Me` object. More info in [Me doc page](./docs/me.md).
 
 ```js
 var wpcom = require('wpcom')('<your-token>');
@@ -53,7 +53,7 @@ me.get(function(err, info){
 
 ### WPCOM#site('site-id')
 
-Create a `Site` object. More info in [Site doc page](./doc/site.md).
+Create a `Site` object. More info in [Site doc page](./docs/site.md).
 
 ```js
 var wpcom = require('wpcom')('<your-token>');
@@ -63,6 +63,21 @@ var site = wpcom.site();
 site.posts(function(err, list){
 });
 ```
+
+### WPCOM#freshlyPressed([query], fn)
+
+View Freshly Pressed posts from the WordPress.com homepage.
+
+```js
+wpcom.freshlyPressed(function(err, data){
+  if (err) throw err;
+  console.log('"Freshly Pressed" Posts:');
+  data.posts.forEach(function (post) {
+    console.log('  %s - %s', post.title, post.short_URL);
+  });
+});
+```
+
 
 ## Examples
 

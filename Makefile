@@ -46,7 +46,6 @@ example-browser-proxy: all
 
 test:
 	@$(MOCHA) \
-		--require should \
 		--timeout 10s \
 		--slow 3s \
 		--bail \
