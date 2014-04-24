@@ -81,7 +81,7 @@ wpcom.freshlyPressed(function(err, data){
 
 ## Examples
 
-[Examples](./example/Readme.md) doc page
+[Examples](./examples/Readme.md) doc page
 
 ## Test
 
