@@ -41,6 +41,16 @@ site.posts(function(err, list){
 });
 ```
 
+### Site#medias([params], fn)
+
+Get site media
+
+```js
+site.medias(function(err, list){
+  // `list` data object
+});
+```
+
 ## Site - Post
 
 ### Site#post(id);
