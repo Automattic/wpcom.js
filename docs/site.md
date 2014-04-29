@@ -7,7 +7,7 @@
 
 ```js
 var wpcom = require('wpcom')('<your-token>');
-var site = wpcom.site('<blog-id>');
+var post = wpcom.site('<site-id>').post('<post-id>');
 });
 ```
 
