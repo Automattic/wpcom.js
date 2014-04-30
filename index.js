@@ -89,19 +89,7 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
 
   // pass `query` and/or `body` to request params
   if (query) params.query = query;
-
-  if (body) {
-    // get `formData` from body
-    if (body.formData) {
-      params.formData = body.formData;
-      delete body.formData;
-    }
-
-    // pass `body` if it has keys
-    if (Object.keys(body).length) {
-      params.body = body;
-    }
-  }
+  if (body) params.body = body;
 
   // callback `fn` function is optional
   if (!fn) fn = function(err){ if (err) throw err; };
