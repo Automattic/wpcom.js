@@ -62,12 +62,12 @@ describe('WPCOM#Site', function(){
       });
     });
 
-    describe('posts()', function(){
+    describe('postsList()', function(){
 
       it('should request posts list', function(done){
         var site = util.public_site();
 
-        site.posts(function(err, list){
+        site.postsList(function(err, list){
           if (err) throw err;
 
           // list object data testing
@@ -87,7 +87,7 @@ describe('WPCOM#Site', function(){
 
         var site = util.public_site();
 
-        site.posts({ number: 1 }, function(err, list){
+        site.postsList({ number: 1 }, function(err, list){
           if (err) throw err;
 
           // list object data testing
@@ -104,12 +104,12 @@ describe('WPCOM#Site', function(){
 
     });
 
-    describe('media()', function(){
+    describe('mediaList()', function(){
 
       it('should request media library list', function(done){
         var site = util.private_site();
 
-        site.medias(function(err, list){
+        site.mediaList(function(err, list){
           if (err) throw err;
 
           // list object data testing
