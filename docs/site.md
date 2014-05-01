@@ -31,22 +31,22 @@ site.get(function(err, info){
 });
 ```
 
-### Site#posts([params], fn)
+### Site#postsList([params], fn)
 
-Get site posts
+Get site posts list
 
 ```js
-site.posts(function(err, list){
+site.postsList(function(err, list){
   // `list` data object
 });
-```
+```/
 
-### Site#medias([params], fn)
+### Site#mediaList([params], fn)
 
-Get site media
+Get site media list
 
 ```js
-site.medias(function(err, list){
+site.mediaList(function(err, list){
   // `list` data object
 });
 ```
