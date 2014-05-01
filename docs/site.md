@@ -39,7 +39,7 @@ Get site posts list
 site.postsList(function(err, list){
   // `list` data object
 });
-```/
+```
 
 ### Site#mediaList([params], fn)
 
