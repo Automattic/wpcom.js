@@ -201,13 +201,13 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-    describe('like()', function(){
+    describe('like.add()', function(){
 
       it('should get post likes', function(done){
         var site = util.private_site();
-        var post = site.post(new_post.ID);
+        var like = site.post(new_post.ID).like();
 
-        post.like(function(err, data){
+        like.add(function(err, data){
           if (err) throw err;
 
           assert.ok(data);
