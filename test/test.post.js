@@ -223,6 +223,26 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
+    describe('like.delete()', function(){
+
+      it('should remove your like from the post', function(done){
+        util.private_site()
+        .post(new_post.ID)
+        .like()
+        .del(function(err, data){
+          if (err) throw err;
+
+          assert.ok(data);
+          assert.ok(data.success);
+          assert.equal(0, data.like_count);
+          assert.ok(!(data.i_like));
+
+          done();
+        });
+      });
+
+    });
+
     describe('delete()', function(){
 
       it('should delete the new added post', function(done){
