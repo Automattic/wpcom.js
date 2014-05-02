@@ -160,31 +160,13 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-    describe('delete()', function(){
+    describe('likesList()', function(){
 
-      it('should delete the new added post', function(done){
+      it('should get post likes list', function(done){
         var site = util.private_site();
         var post = site.post(new_post.ID);
 
-        post.delete(function(err, data){
-          if (err) throw err;
-
-          assert.ok(data);
-          assert.equal(new_post.ID, data.ID);
-
-          done();
-        });
-      });
-
-    });
-
-    describe('likes()', function(){
-
-      it('should get post likes', function(done){
-        var site = util.private_site();
-        var post = site.post(new_post.ID);
-
-        post.likes(function(err, data){
+        post.likesList(function(err, data){
           if (err) throw err;
 
           assert.ok(data);
@@ -203,7 +185,7 @@ describe('WPCOM#Site#Post', function(){
 
     describe('like.add()', function(){
 
-      it('should get post likes', function(done){
+      it('should add a post like', function(done){
         var site = util.private_site();
         var like = site.post(new_post.ID).like();
 
@@ -218,6 +200,24 @@ describe('WPCOM#Site#Post', function(){
           done();
         });
 
+      });
+
+    });
+
+    describe('delete()', function(){
+
+      it('should delete the new added post', function(done){
+        var site = util.private_site();
+        var post = site.post(new_post.ID);
+
+        post.delete(function(err, data){
+          if (err) throw err;
+
+          assert.ok(data);
+          assert.equal(new_post.ID, data.ID);
+
+          done();
+        });
       });
 
     });
