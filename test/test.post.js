@@ -204,6 +204,25 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
+    describe('like.mine()', function(){
+
+      it('should get the post like status of mine', function(done){
+        util.private_site()
+        .post(new_post.ID)
+        .like()
+        .mine(function(err, data){
+          if (err) throw err;
+
+          assert.ok(data);
+          assert.equal(1, data.like_count);
+          assert.ok(data.i_like);
+
+          done();
+        });
+      });
+
+    });
+
     describe('delete()', function(){
 
       it('should delete the new added post', function(done){
