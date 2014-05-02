@@ -196,6 +196,28 @@ describe('WPCOM#Site#Post', function(){
 
           done();
         });
+
+      });
+
+    });
+
+    describe('like()', function(){
+
+      it('should get post likes', function(done){
+        var site = util.private_site();
+        var post = site.post(new_post.ID);
+
+        post.like(function(err, data){
+          if (err) throw err;
+
+          assert.ok(data);
+          assert.ok(data.success);
+          assert.ok(data.i_like);
+          assert.equal(1, data.like_count);
+
+          done();
+        });
+
       });
 
     });
