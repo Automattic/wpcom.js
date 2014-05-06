@@ -183,7 +183,7 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-    describe('like.add()', function(){
+    describe('post.like.add()', function(){
 
       it('should add a post like', function(done){
         var site = util.private_site();
@@ -204,7 +204,7 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-    describe('like.mine()', function(){
+    describe('post.like.mine()', function(){
 
       it('should get the post like status of mine', function(done){
         util.private_site()
@@ -223,7 +223,24 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-    describe('reblog.mine()', function(){
+    describe('post.reblog.add()', function(){
+
+      it('should get the post reblog status of mine', function(done){
+        util.private_site()
+        .post(new_post.ID)
+        .reblog()
+        .add(test.site.reblog, function(err, data){
+          if (err) throw err;
+
+          assert.ok(data);
+          assert.ok(data.can_reblog);
+          done();
+        });
+      });
+
+    });
+
+    describe('post.reblog.mine()', function(){
 
       it('should get the post reblog status of mine', function(done){
         util.private_site()
@@ -240,7 +257,7 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-    describe('like.delete()', function(){
+    describe('post.like.delete()', function(){
 
       it('should remove your like from the post', function(done){
         util.private_site()
