@@ -223,6 +223,23 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
+    describe('reblog.mine()', function(){
+
+      it('should get the post reblog status of mine', function(done){
+        util.private_site()
+        .post(new_post.ID)
+        .reblog()
+        .mine(function(err, data){
+          if (err) throw err;
+
+          assert.ok(data);
+          assert.ok(data.can_reblog);
+          done();
+        });
+      });
+
+    });
+
     describe('like.delete()', function(){
 
       it('should remove your like from the post', function(done){
