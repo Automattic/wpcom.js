@@ -66,6 +66,7 @@ site.mediaList(function(err, list){
 ### Site#post(id)
 
 Create a new `Post` instance.
+More info in [Site post page](./post.md).
 
 ```js
 var post = site.post('<post-id>');
