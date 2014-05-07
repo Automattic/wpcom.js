@@ -193,11 +193,6 @@ describe('WPCOM#Site', function(){
 
           assert.ok(data);
           assert.ok(data.media instanceof Array);
-          assert.equal(1, data.media.length);
-
-          var m = data.media[0];
-
-          assert.equal(0, m.id);
           done();
         });
 
