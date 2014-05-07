@@ -225,11 +225,28 @@ describe('WPCOM#Site#Post', function(){
 
     describe('post.reblog.add()', function(){
 
-      it('should get the post reblog status of mine', function(done){
+      it('should get reblog the added post', function(done){
         util.private_site()
         .post(new_post.ID)
         .reblog()
         .add(test.site.reblog, function(err, data){
+          if (err) throw err;
+
+          assert.ok(data);
+          assert.ok(data.can_reblog);
+          done();
+        });
+      });
+
+    });
+
+    describe('post.reblog.to()', function(){
+
+      it('should get reblog the added post', function(done){
+        util.private_site()
+        .post(new_post.ID)
+        .reblog()
+        .to(test.site.reblog.destination_site_id, 'great !!!', function(err, data){
           if (err) throw err;
 
           assert.ok(data);
