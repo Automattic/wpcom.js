@@ -13,7 +13,7 @@ Create a new `Like` instance giving `post-id`, `site-id` and `WPCOM` instance.
 var like = Like('<post-id>', '<site-id>', WPCOM);
 ```
 
-### Like#statu(fn)
+### Like#state(fn)
 
 `Like#mine` alias.
 

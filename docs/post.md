@@ -89,7 +89,7 @@ wpcom
 ### Post#like()
 
 Create and return a new `Like` instance.
-More info in [Site Like page](./like.md).
+More info in [Like doc page](./like.md).
 
 ```js
 var like = wpcom.sites('blog.wordpress.com').post(342).like();
@@ -98,8 +98,8 @@ var like = wpcom.sites('blog.wordpress.com').post(342).like();
 ### Post#reblog()
 
 Create and return a new `Reblog` instance.
-More info in [Site Like page](./reblog.md).
+More info in [Reblog doc page](./reblog.md).
 
 ```js
-var like = wpcom.sites('blog.wordpress.com').post(342).reblog();
+var reblog = wpcom.sites('blog.wordpress.com').post(342).reblog();
 ```
