@@ -188,11 +188,30 @@ describe('WPCOM#Site', function(){
       it('should create a new site media', function(done){
         var site = util.private_site();
 
-        var media = site.addMediaFile(test.new_media_data.media, function(err, data){
+        var media = site.addMediaFile(test.new_media_data.media_urls, function(err, data){
           if (err) throw err;
 
           assert.ok(data);
           assert.ok(data.media instanceof Array);
+          done();
+        });
+
+      });
+
+    });
+
+
+    describe('site.addMediaUrl([\'url1\', \'url2\'])', function(){
+
+      it('should create a new site media', function(done){
+        var site = util.private_site();
+
+        var media = site.addMediaUrl(test.new_media_data.media_urls, function(err, data){
+          if (err) throw err;
+
+          assert.ok(data);
+          assert.ok(data.media instanceof Array);
+          assert.equal(test.new_media_data.media_urls.length, data.media.length);
           done();
         });
 
