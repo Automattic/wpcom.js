@@ -192,14 +192,9 @@ describe('WPCOM#Site#Post', function(){
         post.related({ size: 5 }, function(err, data){
           if (err) throw err;
 
-          console.log('-> data -> ', data);
-
           assert.ok(data);
-
-          assert.equal('number', typeof data.found);
-          assert.equal('boolean', typeof data.i_like);
-          assert.equal('object', typeof data.likes);
-          assert.ok(data.likes instanceof Array);
+          assert.equal('number', typeof data.total);
+          assert.ok(data.hits instanceof Array);
 
           done();
         });
