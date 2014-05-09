@@ -183,12 +183,12 @@ describe('WPCOM#Site', function(){
 
     });
 
-    describe('site.addMediaFile(\'/path/to/file\')', function(){
+    describe('site.addMediaFiles(\'/path/to/file\')', function(){
 
       it('should create a new media from a file', function(done){
         var site = util.private_site();
 
-        var media = site.addMediaFile(test.new_media_data.files, function(err, data){
+        var media = site.addMediaFiles(test.new_media_data.files, function(err, data){
           if (err) throw err;
 
           assert.ok(data);
@@ -202,12 +202,12 @@ describe('WPCOM#Site', function(){
     });
 
 
-    describe('site.addMediaUrl([\'url1\', \'url2\'])', function(){
+    describe('site.addMediaUrls([\'url1\', \'url2\'])', function(){
 
       it('should create a new site media', function(done){
         var site = util.private_site();
 
-        var media = site.addMediaUrl(test.new_media_data.media_urls, function(err, data){
+        var media = site.addMediaUrls(test.new_media_data.media_urls, function(err, data){
           if (err) throw err;
 
           assert.ok(data);
