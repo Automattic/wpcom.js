@@ -23,12 +23,6 @@
         console.log(data);
       });
 
-      wpcom
-      .site('publicsiteapitesting.wordpress.com')
-      .addMediaFiles('/Users/retrofox/pipo.png', function(err, data){
-        console.log(data);
-      });
-
       wpcom.me().get(function(err, me){
         if (err) throw err;
         console.log(me);
