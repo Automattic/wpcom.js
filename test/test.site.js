@@ -144,7 +144,7 @@ describe('WPCOM#Site', function(){
 
     describe('site.commentsList()', function(){
 
-      it('should request media library list', function(done){
+      it('should request comments list', function(done){
         var site = util.private_site();
 
         site.commentsList(function(err, list){
@@ -155,6 +155,28 @@ describe('WPCOM#Site', function(){
           assert.equal('number', typeof list.found);
           assert.equal('object', typeof list.comments);
           assert.ok(list.comments instanceof Array);
+
+          done();
+
+        });
+
+      });
+
+    });
+
+    describe('site.followsList()', function(){
+
+      it('should request follows list', function(done){
+        var site = util.private_site();
+
+        site.followsList(function(err, list){
+          if (err) throw err;
+
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('number', typeof list.found);
+          assert.equal('object', typeof list.users);
+          assert.ok(list.users instanceof Array);
 
           done();
 
