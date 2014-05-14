@@ -186,6 +186,28 @@ describe('WPCOM#Site', function(){
 
     });
 
+    describe('site.categoriesList()', function(){
+
+      it('should request categories list', function(done){
+        var site = util.private_site();
+
+        site.categoriesList(function(err, list){
+          if (err) throw err;
+
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('number', typeof list.found);
+          assert.equal('object', typeof list.categories);
+          assert.ok(list.categories instanceof Array);
+
+          done();
+
+        });
+
+      });
+
+    });
+
     describe('site.addPost()', function(){
 
       it('should create a new blog post', function(done){
