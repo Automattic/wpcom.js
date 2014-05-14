@@ -230,6 +230,30 @@ describe('WPCOM#Site', function(){
 
     });
 
+    describe('site.statsList()', function(){
+
+      it('should request stats list', function(done){
+        var site = util.private_site();
+
+        site.statsList(function(err, list){
+          if (err) throw err;
+
+          // list object data testing
+          assert.equal('string', typeof Date(list.day));
+          assert.equal('object', typeof list.stats);
+          assert.ok(list.stats instanceof Object);
+
+          assert.equal('object', typeof list.visits);
+          assert.ok(list.visits instanceof Object);
+
+          done();
+
+        });
+
+      });
+
+    });
+
     describe('site.addPost()', function(){
 
       it('should create a new blog post', function(done){
