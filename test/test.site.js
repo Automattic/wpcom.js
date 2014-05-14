@@ -208,6 +208,28 @@ describe('WPCOM#Site', function(){
 
     });
 
+    describe('site.tagsList()', function(){
+
+      it('should request tags list', function(done){
+        var site = util.private_site();
+
+        site.tagsList(function(err, list){
+          if (err) throw err;
+
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('number', typeof list.found);
+          assert.equal('object', typeof list.tags);
+          assert.ok(list.tags instanceof Array);
+
+          done();
+
+        });
+
+      });
+
+    });
+
     describe('site.addPost()', function(){
 
       it('should create a new blog post', function(done){
