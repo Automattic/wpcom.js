@@ -203,20 +203,41 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
-
     describe('post.like.add()', function(){
 
       it('should add a post like', function(done){
-        var site = util.private_site();
-        var like = site.post(new_post.ID).like();
-
-        like.add(function(err, data){
+        util
+        .private_site()
+        .post(new_post.ID)
+        .like()
+        .add(function(err, data){
           if (err) throw err;
 
           assert.ok(data);
           assert.ok(data.success);
           assert.ok(data.i_like);
           assert.equal(1, data.like_count);
+
+          done();
+        });
+
+      });
+
+    });
+
+    describe('post.comment.add()', function(){
+
+      it('should add a post comment', function(done){
+        util
+        .private_site()
+        .post(new_post.ID)
+        .comment()
+        .add({ content: 'Nice post Buddy !!!' }, function(err, data){
+          if (err) throw err;
+
+          assert.equal('number', typeof data.ID);
+          assert.equal('object', typeof data.post);
+          assert.ok(data.post instanceof Object);
 
           done();
         });
