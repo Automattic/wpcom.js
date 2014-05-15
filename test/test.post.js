@@ -333,6 +333,24 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
+    describe('post.comments()', function(){
+
+      it('should get the post like status of mine', function(done){
+        util.private_site()
+        .post(new_post.ID)
+        .comments(function(err, data){
+          if (err) throw err;
+
+          assert.equal('number', typeof data.found);
+          assert.equal('object', typeof data.comments);
+          assert.ok(data.comments instanceof Array);
+
+          done();
+        });
+      });
+
+    });
+
   });
 
 });
