@@ -230,12 +230,12 @@ describe('WPCOM#Site', function(){
 
     });
 
-    describe('site.statsList()', function(){
+    describe('site.stats()', function(){
 
       it('should request stats list', function(done){
         var site = util.private_site();
 
-        site.statsList(function(err, list){
+        site.stats(function(err, list){
           if (err) throw err;
 
           // list object data testing
@@ -254,12 +254,12 @@ describe('WPCOM#Site', function(){
 
     });
 
-    describe('site.statsVisitsList()', function(){
+    describe('site.statsVisits()', function(){
 
       it('should request stats list', function(done){
         var site = util.private_site();
 
-        site.statsVisitsList(function(err, list){
+        site.statsVisits(function(err, list){
           if (err) throw err;
 
           // list object data testing
