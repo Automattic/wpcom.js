@@ -248,6 +248,28 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
+    describe('post.comment.update()', function(){
+
+      it('should add a post comment', function(done){
+        util
+        .private_site()
+        .post(new_post.ID)
+        .comment(comment_added.ID)
+        .update('Awful post Buddy !!!', function(err, data){
+          if (err) throw err;
+
+          assert.equal('number', typeof data.ID);
+          assert.equal('object', typeof data.post);
+          assert.ok(data.post instanceof Object);
+          assert.equal(comment_added.ID, data.ID);
+
+          done();
+        });
+
+      });
+
+    });
+
     describe('post.like.mine()', function(){
 
       it('should get the post like status of mine', function(done){
