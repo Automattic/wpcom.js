@@ -22,14 +22,16 @@ var test = require('./data');
 describe('WPCOM#Site#Post', function(){
   // var to store post in `add()` test
   var post_added;
+  var comment_added;
 
   // Create a new_post before to start the tests
   var new_post;
   before(function(done){
-    util.addPost(function(err, post) {
+    util.addPost(function(err, post, comment) {
       if (err) throw err;
 
       new_post = post;
+      comment_added = comment;
       done();
     });
   });
