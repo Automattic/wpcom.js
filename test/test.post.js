@@ -250,7 +250,7 @@ describe('WPCOM#Site#Post', function(){
 
     describe('post.comment.update()', function(){
 
-      it('should add a post comment', function(done){
+      it('should update a post comment', function(done){
         util
         .private_site()
         .post(new_post.ID)
@@ -262,6 +262,28 @@ describe('WPCOM#Site#Post', function(){
           assert.equal('object', typeof data.post);
           assert.ok(data.post instanceof Object);
           assert.equal(comment_added.ID, data.ID);
+
+          done();
+        });
+
+      });
+
+    });
+
+    describe('post.comment.reply()', function(){
+
+      it('should add a reply to a post comment', function(done){
+        util
+        .private_site()
+        .post(new_post.ID)
+        .comment(comment_added.ID)
+        .reply('it sucks !!!', function(err, data){
+          if (err) throw err;
+
+          assert.equal('number', typeof data.ID);
+          assert.equal('object', typeof data.post);
+          assert.ok(data.post instanceof Object);
+          assert.equal(comment_added.ID, data.parent.ID);
 
           done();
         });
