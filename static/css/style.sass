@@ -25,7 +25,7 @@ a
  letter-spacing: 1.5px
  font-size: 1em
  font-weight: 600
- padding: 70px 20px
+ padding: 70px 0
  
 .project-title
  color: #2f7097
@@ -33,6 +33,7 @@ a
  letter-spacing: 1px
  margin-bottom: 30px
  opacity: 0
+ padding: 0 20px
  
 .project-desc
  font-family: 'Merriweather', serif
@@ -43,6 +44,7 @@ a
  position: relative
  opacity: 0
  top: 60px
+ padding: 0 20px
  
 button
  border-radius: 3px
@@ -62,18 +64,23 @@ button
  opacity: 0
  top: 60px
 
-.editor-wrap
+.editor-outer
+ position: absolute
+ bottom: -60px
+ opacity: 0.1
+ width: 100%
+
+.editor-inner
+ margin: 0 auto
  margin-top: 80px
  background-color: #2b303b
  max-width: 900px
- height: 300px
+ min-height: 300px
+ overflow: scroll
  border-radius: 3px 3px 0px 0px
  text-align: left
- opacity: 0.1
- position: relative
- bottom: -60px
  
-.editor-wrap .editor-block
+.editor-inner .editor-block
  height: 200px
  
 #footer
@@ -86,6 +93,7 @@ button
 #footer a
  margin-top: 10px
  display: block
+ padding: 0 20px
  
 .foot-img
  background-image: url("http://automattic.com/wp-content/themes/a8c/automattic-2011/images/automattic-logo-2x.png")
@@ -110,6 +118,28 @@ button
  top: 12px
  position: relative
  
+@media screen and (max-height: 600px)
+ #wrapper
+  height: auto
+ .editor-outer
+  display: none
 
+@media screen and (max-width: 540px)
+ #wrapper
+  height: auto
+ .project-title
+  font-size: 1.75em
+  line-height: 1.4em
+ .project-desc
+  font-size: 1em
+  line-height: 1.4em
+  margin-bottom: 50px
+ .editor-outer
+  display: none
+ #footer a
+  margin-top: 6px
+ .main-title
+  padding: 50px 20px
 
+ 
  

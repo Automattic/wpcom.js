@@ -34,7 +34,7 @@ $(".git-button").velocity(
   }
 );
 
-$(".editor-wrap").velocity(
+$(".editor-outer").velocity(
   { 
     opacity: 1,
 		bottom: 0
