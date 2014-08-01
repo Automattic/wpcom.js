@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 
+var Follow = require('./lib/follow');
 var Me = require('./lib/me');
 var Site = require('./lib/site');
 var debug = require('debug')('wpcom');
@@ -41,6 +42,17 @@ WPCOM.prototype.me = function(){
 
 WPCOM.prototype.site = function(id){
   return new Site(id, this);
+};
+
+/**
+ * Get `Follow` object instance
+ *
+ * @param {String} site_id
+ * @api public
+ */
+
+WPCOM.prototype.follower = function(site_id){
+  return new Follow(site_id, this);
 };
 
 /**
