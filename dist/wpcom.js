@@ -106,7 +106,7 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
 
 module.exports = WPCOM;
 
-},{"./lib/me":4,"./lib/site":8,"debug":9}],2:[function(_dereq_,module,exports){
+},{"./lib/me":5,"./lib/site":9,"debug":10}],2:[function(_dereq_,module,exports){
 
 
 /**
@@ -228,7 +228,72 @@ Comment.prototype.del = function(fn){
 
 module.exports = Comment;
 
-},{"debug":9}],3:[function(_dereq_,module,exports){
+},{"debug":10}],3:[function(_dereq_,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var debug = _dereq_('debug')('wpcom:like');
+
+/**
+ * Follow methods
+ *
+ * @param {String} site_id site id
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Follow(site_id, wpcom){
+  if (!site_id) {
+    throw new Error('`side id` is not correctly defined');
+  }
+
+  if (!(this instanceof Follow)) return new Follow(site_id, wpcom);
+
+  this.wpcom = wpcom;
+  this._site_id = site_id;
+}
+
+/**
+ * :FOLLOW:
+ * List a site's followers
+ * in reverse-chronological
+ * order
+ *
+ */
+Follow.prototype.followers = function(fn) {
+  this.wpcom.sendRequest('/sites/' + this._site_id + '/follows/', null, null, fn);
+};
+
+/**
+ * :FOLLOW:
+ * Follow the site
+ *
+ */
+Follow.prototype.follow = function(fn) {
+  this.wpcom.sendRequest({method: 'POST', path: '/sites/' + this._site_id + '/follows/new'}, null, null, fn);
+};
+
+/**
+ * :FOLLOW:
+ * Unfollow the site
+ *
+ */
+Follow.prototype.unfollow = function(fn) {
+  this.wpcom.sendRequest({method: 'POST', path: '/sites/' + this._site_id + '/follows/delete'}, null, null, fn);
+};
+
+/**
+ * :FOLLOW:
+ * Get the follow status for current 
+ * user on current blog site
+ *
+ */
+Follow.prototype.is_following = function(fn) {
+  this.wpcom.sendRequest('/sites/' + this._site_id + '/follows/mine', null, null, fn);
+};
+},{"debug":10}],4:[function(_dereq_,module,exports){
 
 /**
  * Module dependencies.
@@ -307,7 +372,7 @@ Like.prototype.del = function(fn){
 
 module.exports = Like;
 
-},{"debug":9}],4:[function(_dereq_,module,exports){
+},{"debug":10}],5:[function(_dereq_,module,exports){
 
 /**
  * Module dependencies.
@@ -393,7 +458,7 @@ Me.prototype.connections = function(query, fn){
 
 module.exports = Me;
 
-},{"debug":9}],5:[function(_dereq_,module,exports){
+},{"debug":10}],6:[function(_dereq_,module,exports){
 
 /**
  * Module dependencies.
@@ -495,7 +560,7 @@ Media.prototype.del = function(fn){
 
 module.exports = Media;
 
-},{"debug":9}],6:[function(_dereq_,module,exports){
+},{"debug":10}],7:[function(_dereq_,module,exports){
 
 /**
  * Module dependencies.
@@ -699,7 +764,7 @@ Post.prototype.comments = function(query, fn){
 
 module.exports = Post;
 
-},{"./comment":2,"./like":3,"./reblog":7,"debug":9}],7:[function(_dereq_,module,exports){
+},{"./comment":2,"./like":4,"./reblog":8,"debug":10}],8:[function(_dereq_,module,exports){
 
 /**
  * Module dependencies.
@@ -788,7 +853,7 @@ Reblog.prototype.to = function(dest, note, fn){
 
 module.exports = Reblog;
 
-},{"debug":9}],8:[function(_dereq_,module,exports){
+},{"debug":10}],9:[function(_dereq_,module,exports){
 
 /**
  * Module dependencies.
@@ -797,6 +862,7 @@ module.exports = Reblog;
 var Post = _dereq_('./post');
 var Media = _dereq_('./media');
 var Comment = _dereq_('./comment');
+var Follow = _dereq_('./follow');
 var debug = _dereq_('debug')('wpcom:site');
 
 /**
@@ -995,12 +1061,22 @@ Site.prototype.comment = function(id){
 };
 
 /**
+ * :FOLLOW:
+ * Create a `Follow` instance
+ *
+ * @api public
+ */
+Site.prototype.follower = function() {
+  return Follow(this._id, this.wpcom);
+}
+
+/**
  * Expose `Site` module
  */
 
 module.exports = Site;
 
-},{"./comment":2,"./media":5,"./post":6,"debug":9}],9:[function(_dereq_,module,exports){
+},{"./comment":2,"./follow":3,"./media":6,"./post":7,"debug":10}],10:[function(_dereq_,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -1149,7 +1225,7 @@ function load() {
 
 exports.enable(load());
 
-},{"./debug":10}],10:[function(_dereq_,module,exports){
+},{"./debug":11}],11:[function(_dereq_,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -1348,7 +1424,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":11}],11:[function(_dereq_,module,exports){
+},{"ms":12}],12:[function(_dereq_,module,exports){
 /**
  * Helpers.
  */
@@ -1461,7 +1537,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],12:[function(_dereq_,module,exports){
+},{}],13:[function(_dereq_,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -1486,7 +1562,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],13:[function(_dereq_,module,exports){
+},{}],14:[function(_dereq_,module,exports){
 
 /**
  * Module dependencies.
@@ -1605,7 +1681,7 @@ function toTitle (str) {
   });
 }
 
-},{"debug":9,"superagent":14}],14:[function(_dereq_,module,exports){
+},{"debug":10,"superagent":15}],15:[function(_dereq_,module,exports){
 /**
  * Module dependencies.
  */
@@ -2656,7 +2732,7 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":15,"reduce":16}],15:[function(_dereq_,module,exports){
+},{"emitter":16,"reduce":17}],16:[function(_dereq_,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -2822,7 +2898,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],16:[function(_dereq_,module,exports){
+},{}],17:[function(_dereq_,module,exports){
 
 /**
  * Reduce `arr` with `fn`.
@@ -2847,7 +2923,7 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
-},{}],17:[function(_dereq_,module,exports){
+},{}],18:[function(_dereq_,module,exports){
 
 /**
  * Module dependencies.
@@ -2910,6 +2986,6 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
   return _WPCOM.prototype.sendRequest.call(this, params, query, body, fn);
 };
 
-},{"./index.js":1,"inherits":12,"wpcom-xhr-request":13}]},{},[17])
-(17)
+},{"./index.js":1,"inherits":13,"wpcom-xhr-request":14}]},{},[18])
+(18)
 });
