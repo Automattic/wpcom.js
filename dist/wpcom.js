@@ -293,6 +293,8 @@ Follow.prototype.unfollow = function(fn) {
 Follow.prototype.is_following = function(fn) {
   this.wpcom.sendRequest('/sites/' + this._site_id + '/follows/mine', null, null, fn);
 };
+
+module.exports = Follow;
 },{"debug":10}],4:[function(_dereq_,module,exports){
 
 /**
