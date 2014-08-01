@@ -246,7 +246,7 @@ var debug = _dereq_('debug')('wpcom:like');
 
 function Follow(site_id, wpcom){
   if (!site_id) {
-    throw new Error('`side id` is not correctly defined');
+    throw new Error('`site id` is not correctly defined');
   }
 
   if (!(this instanceof Follow)) return new Follow(site_id, wpcom);
