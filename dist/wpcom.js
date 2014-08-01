@@ -1070,12 +1070,6 @@ Site.prototype.follower = function() {
   return Follow(this._id, this.wpcom);
 }
 
-Site.prototype.followme = function(fn) {
-  var follower = Follow(this._id, this.wpcom);
-  follower.follow(fn);
-  return follower;
-}
-
 /**
  * Expose `Site` module
  */
