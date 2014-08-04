@@ -45,17 +45,6 @@ WPCOM.prototype.site = function(id){
 };
 
 /**
- * Get `Follow` object instance
- *
- * @param {String} site_id
- * @api public
- */
-
-WPCOM.prototype.follower = function(site_id){
-  return new Follow(site_id, this);
-};
-
-/**
  * List Freshly Pressed Posts
  *
  * @param {Object} [query]
