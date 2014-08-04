@@ -9,15 +9,56 @@
 Createa a new `Follow` instance giving `site-id` and `WPCOM` instance.
 
 ```js
-var Follow = Follow('<site-id>', WPCOM);
+var follower = Follow('<site-id>', WPCOM);
 ```
 
-### Follow#follow(fn)
+### Follow#follow(query, fn)
+
+`Follow#add` alias
+
+### Follow#add(query, fn)
 
 Follow the current blog
 
 ```js
 wpcom
 .sites('blog.wordpress.com')
-.follower
-.follow();
+.follow()
+.add(function(err, data){
+	// response handler
+});
+```
+
+### Follow#unfollow(query, fn)
+
+`Follow#del` alias
+
+### Follow#del(query, fn)
+
+Unfollow the current blog
+
+```js
+wpcom
+.sites('blog.wordpress.com')
+.follow()
+.del(function(err, data){
+	// respnose handler
+});
+```
+
+### Follow#state(query, fn)
+
+`Follow#mine` alias.
+
+### Follow#mine(query, fn)
+
+Get your Follow status for a Site
+
+```js
+wpcom
+.sites('blog.wordpress.com')
+.follow()
+.mine(function(error, data){
+	
+});
+```
