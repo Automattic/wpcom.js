@@ -3,7 +3,6 @@
  * Module dependencies.
  */
 
-var Follow = require('./lib/follow');
 var Me = require('./lib/me');
 var Site = require('./lib/site');
 var debug = require('debug')('wpcom');
