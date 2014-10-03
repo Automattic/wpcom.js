@@ -83,7 +83,7 @@ describe('WPCOM#Site#Media', function(){
         var site = util.private_site();
         var edited_title = "This is the new title";
 
-	site
+        site
         .media(new_media.media[0].id)
         .update( { title: edited_title }, function(err, data){
           if (err) throw err;
