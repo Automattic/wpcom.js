@@ -21,7 +21,7 @@ var test = require('./data');
  */
 
 describe('WPCOM#Site#Media', function(){
-  var post_added;
+  var media_added;
 
   // Create a new_media before to start the tests
 
@@ -39,11 +39,11 @@ describe('WPCOM#Site#Media', function(){
     var site = util.private_site();
 
     // clean new_post post
-    site.deleteMedia(media_added.media[0].id, function(err, data) {
+    site.deleteMedia(media_added.media[0].ID, function(err, data) {
       if (err) throw err;
 
-      // clean post_added post
-      site.deleteMedia(media_added.media[1].id, function(err, data) {
+      // clean media_added post
+      site.deleteMedia(media_added.media[1].ID, function(err, data) {
         if (err) throw err;
         done();
       });
@@ -70,7 +70,7 @@ describe('WPCOM#Site#Media', function(){
         media.get(function(err, info){
           if (err) throw err;
 
-          assert.equal(3, info.id);
+          assert.equal(3, info.ID);
           done();
         });
       });
@@ -84,7 +84,7 @@ describe('WPCOM#Site#Media', function(){
         var edited_title = "This is the new title";
 
         site
-        .media(new_media.media[0].id)
+        .media(new_media.media[0].ID)
         .update( { title: edited_title }, function(err, data){
           if (err) throw err;
 
@@ -152,11 +152,11 @@ describe('WPCOM#Site#Media', function(){
         var site = util.private_site();
 
         site
-        .media(new_media.media[0].id)
+        .media(new_media.media[0].ID)
         .del(function(err, data){
           if (err) throw err;
 
-          assert.equal(new_media.media[0].id, data.id);
+          assert.equal(new_media.media[0].ID, data.ID);
           done();
         });
 
