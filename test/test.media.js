@@ -21,7 +21,7 @@ var test = require('./data');
  */
 
 describe('WPCOM#Site#Media', function(){
-  var media_added;
+  var add_urls_array;
 
   // Create a new_media before to start the tests
 
@@ -38,16 +38,23 @@ describe('WPCOM#Site#Media', function(){
   after(function(done){
     var site = util.private_site();
 
-    // clean new_post post
-    site.deleteMedia(media_added.media[0].ID, function(err, data) {
+    // clean media added through of array by urls
+    site.deleteMedia(add_urls_array.media[0].ID, function(err, data) {
       if (err) throw err;
 
-      // clean media_added post
-      site.deleteMedia(media_added.media[1].ID, function(err, data) {
+      site.deleteMedia(add_urls_array.media[1].ID, function(err, data) {
         if (err) throw err;
-        done();
+
+        site.deleteMedia(add_urls_array.media[2].ID, function(err, data) {
+          if (err) throw err;
+
+          done();
+        });
+
       });
+
     });
+
   });
 
   describe('sync', function(){
@@ -123,7 +130,7 @@ describe('WPCOM#Site#Media', function(){
 
     });
 
-    describe('media.addUrls([\'url1\', \'url2\'])', function(){
+    describe('media.addUrls(["url1", {object}, "url2"])', function(){
 
       it('should create a new media', function(done){
         var site = util.private_site();
@@ -137,7 +144,7 @@ describe('WPCOM#Site#Media', function(){
           assert.ok(data.media instanceof Array);
           assert.equal(test.new_media_data.media_urls.length, data.media.length);
 
-          media_added = data;
+          add_urls_array = data;
 
           done();
         });
