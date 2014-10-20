@@ -35,7 +35,7 @@ media.get(function(err, data){
 });
 ```
 
-###` Media#addFiles(data, fn)
+###` Media#addFiles([query, ]files, fn)
 
 ```js
 var media = Media('<id>', '<site-id>', WPCOM);
@@ -69,7 +69,7 @@ media.add([
 
 ```
 
-### Media#addUrls(data, fn)
+### Media#addUrls([query, ]media, fn)
 
 ```js
 var media = Media('<id>', '<site-id>', WPCOM);
