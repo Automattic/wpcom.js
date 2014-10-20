@@ -22,6 +22,7 @@ var test = require('./data');
 
 describe('WPCOM#Site#Media', function(){
   var add_urls_array;
+  var add_urls_object;
 
   // Create a new_media before to start the tests
 
@@ -48,7 +49,12 @@ describe('WPCOM#Site#Media', function(){
         site.deleteMedia(add_urls_array.media[2].ID, function(err, data) {
           if (err) throw err;
 
-          done();
+          site.deleteMedia(add_urls_object.media[0].ID, function(err, data) {
+            if (err) throw err;
+
+            done();
+          });
+
         });
 
       });
@@ -109,15 +115,9 @@ describe('WPCOM#Site#Media', function(){
       it('should create a new media from a file', function(done){
         var site = util.private_site();
 
-        // pass streams
-        var files = [];
-        for (var i = 0; i < test.new_media_data.files.length; i++) {
-          files.push(fs.createReadStream(test.new_media_data.files[i]));
-        }
-
         site
         .media()
-        .addFiles(files, function(err, data){
+        .addFiles(test.new_media_data.files, function(err, data){
           if (err) throw err;
 
           assert.ok(data);
@@ -126,6 +126,25 @@ describe('WPCOM#Site#Media', function(){
           done();
         });
 
+      });
+
+    });
+
+    describe('media.addUrls(object)', function(){
+
+      it('should create a new media from an object', function(done){
+        var site = util.private_site();
+        var media_object = test.new_media_data.media_urls[1];
+
+        site
+        .media()
+        .addUrls(media_object, function(err, data){
+          if (err) throw err;
+
+          assert.ok(data);
+          add_urls_object = data;
+          done();
+        });
       });
 
     });
