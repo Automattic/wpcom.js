@@ -47,7 +47,7 @@ test:
 
 test-all:
 	@$(MOCHA) \
-		--timeout 10s \
+		--timeout 60s \
 		--slow 3s \
 		--bail \
 		--reporter spec
