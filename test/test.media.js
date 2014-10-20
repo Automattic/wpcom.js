@@ -98,7 +98,7 @@ describe('WPCOM#Site#Media', function(){
 
         site
         .media(new_media.media[0].ID)
-        .update( { title: edited_title }, function(err, data){
+        .update({ apiVersion: '1.1' }, { title: edited_title }, function(err, data){
           if (err) throw err;
 
           assert.ok(data);
