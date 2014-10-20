@@ -88,7 +88,7 @@ media.add({
     // file data object
 });
 
-// add a media url using an Array
+// add many media url using an Array
 media.add([
     'http://file/01/to/upload.png',
     {
