@@ -230,6 +230,27 @@ describe('WPCOM#Site', function(){
 
     });
 
+    describe('site.connectionsList()', function(){
+
+      it('should request connections list', function(done){
+        var site = util.private_site();
+
+        site.connectionsList(function(err, list){
+          if (err) throw err;
+
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('object', typeof list.connections);
+          assert.ok(list.connections instanceof Array);
+
+          done();
+
+        });
+
+      });
+
+    });
+
     describe('site.stats()', function(){
 
       it('should request stats data', function(done){

@@ -61,6 +61,16 @@ site.mediaList(function(err, list){
 });
 ```
 
+### Site#connectionsList([query, ]fn)
+
+Get site connections list
+
+```js
+site.connectionsList(function(err, list){
+  // `list` data object
+});
+```
+
 ## Site - Post
 
 ### Site#post(id)
