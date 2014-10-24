@@ -118,3 +118,13 @@ Add a new media to site. Return a `Media` instance.
 var new_media = site.addMedia({ urls: [] }, function(err, list){
 });
 ```
+
+## Site - Connection
+
+### Site#connection(id)
+
+Create a new `Connection` instance.
+
+```js
+var connection = site.connection('<connection-id>');
+```
