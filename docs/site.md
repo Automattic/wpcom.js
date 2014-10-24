@@ -128,3 +128,12 @@ Create a new `Connection` instance.
 ```js
 var connection = site.connection('<connection-id>');
 ```
+
+### Site#deleteConnection(data, fn)
+
+Delete a site connection
+
+```js
+site.deleteConnection('<connection-id>', function(err, connection){
+});
+```

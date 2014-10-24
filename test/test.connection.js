@@ -71,6 +71,9 @@ describe('WPCOM#Site#Connection', function(){
 
     });
 
+    // @TODO: Add delete test, but this is not possible while being idempotent, since there is
+    // currently no connection create endpoint
+
   });
 
 });

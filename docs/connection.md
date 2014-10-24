@@ -33,3 +33,16 @@ wpcom
   // connection data object
 });
 ```
+
+### Connection#del(fn) - Connection#delete(fn)
+
+Delete a connection
+
+```js
+wpcom
+.sites('blog.wordpress.com')
+.connection(123)
+.del(function(err, data){
+  // deleted connection data object
+});
+```
