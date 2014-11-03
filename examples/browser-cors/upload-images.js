@@ -2,8 +2,6 @@
 var site_id = ""; // <- your site here
 var client_id = ""; // <- your client id here
 
-console.log('-> site_id -> ', site_id);
-
 if (!client_id.length) {
   alert('Define your client_id !! :-)');
 }
