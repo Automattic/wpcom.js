@@ -1,6 +1,6 @@
 
-var site_id = "retrofocs.wordpress.com"; // <- your site here
-var client_id = "37501"; // <- your client id here
+var site_id = ""; // <- your site here
+var client_id = ""; // <- your client id here
 
 console.log('-> site_id -> ', site_id);
 
