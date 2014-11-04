@@ -49,6 +49,8 @@ getAccess(function(token){
 /**
  * Return access token gotten from URL or by localStorage
  *
+ * @param {Function} fn callback
+ * @return {String} token
  * @api private
  */
 
