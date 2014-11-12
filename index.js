@@ -14,11 +14,12 @@ var wpcomXhrRequest = require('wpcom-xhr-request');
  * @param {String} token (optional) OAuth API access token
  * @api public
  */
-module.exports = function(token) {
-	return WPCOM(request);
 
-	function request(params, fn) {
-		params.authToken = token;
-		return wpcomXhrRequest(params, fn);
-	}
+module.exports = function(token){
+  return WPCOM(request);
+
+  function request(params, fn){
+    params.authToken = token;
+    return wpcomXhrRequest(params, fn);
+  }
 };
