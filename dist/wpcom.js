@@ -96,7 +96,11 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
   }
 
   // pass `query` and/or `body` to request params
-  if (query) params.query = query;
+  if (query) {
+    params.query = query;
+    delete query.apiVersion;
+  }
+
   if (body) params.body = body;
 
   // callback `fn` function is optional
@@ -112,7 +116,7 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
 
 module.exports = WPCOM;
 
-},{"./lib/batch":2,"./lib/me":8,"./lib/site":12,"debug":14}],2:[function(require,module,exports){
+},{"./lib/batch":2,"./lib/me":8,"./lib/site":12,"debug":15}],2:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -171,7 +175,7 @@ Batch.prototype.run = function(query, fn){
 
 module.exports = Batch;
 
-},{"debug":14}],3:[function(require,module,exports){
+},{"debug":15}],3:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -269,7 +273,7 @@ Category.prototype.del = function(fn){
 
 module.exports = Category;
 
-},{"debug":14}],4:[function(require,module,exports){
+},{"debug":15}],4:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -414,7 +418,7 @@ Comment.prototype.likesList = function(query, fn){
 
 module.exports = Comment;
 
-},{"./commentlike":5,"debug":14}],5:[function(require,module,exports){
+},{"./commentlike":5,"debug":15}],5:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -493,7 +497,7 @@ CommentLike.prototype.del = function(fn){
 
 module.exports = CommentLike;
 
-},{"debug":14}],6:[function(require,module,exports){
+},{"debug":15}],6:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -566,7 +570,7 @@ Follow.prototype.mine = function(query, fn) {
 
 module.exports = Follow;
 
-},{"debug":14}],7:[function(require,module,exports){
+},{"debug":15}],7:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -645,7 +649,7 @@ Like.prototype.del = function(fn){
 
 module.exports = Like;
 
-},{"debug":14}],8:[function(require,module,exports){
+},{"debug":15}],8:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -731,13 +735,20 @@ Me.prototype.connections = function(query, fn){
 
 module.exports = Me;
 
-},{"debug":14}],9:[function(require,module,exports){
+},{"debug":15}],9:[function(require,module,exports){
 
 /**
  * Module dependencies.
  */
 
+var fs = require('fs');
 var debug = require('debug')('wpcom:media');
+
+/**
+ * Default api version
+ */
+
+var api_version = '1.1';
 
 /**
  * Media methods
@@ -756,7 +767,7 @@ function Media(id, sid, wpcom){
   this._id = id;
 
   if (!this._id) {
-    debug('WARN: media id is not defined');
+    debug('WARN: media `id` is not defined');
   }
 }
 
@@ -769,75 +780,164 @@ function Media(id, sid, wpcom){
  */
 
 Media.prototype.get = function(query, fn){
-  var path = '/sites/' + this._sid + '/media/' + this._id;
-  return this.wpcom.sendRequest(path, query, null, fn);
+  var params = {
+    apiVersion: query.apiVersion || api_version,
+    path: '/sites/' + this._sid + '/media/' + this._id
+  };
+
+  return this.wpcom.sendRequest(params, query, null, fn);
 };
 
 /**
  * Edit media
  *
+ * @param {Object} [query]
  * @param {Object} body
  * @param {Function} fn
  * @api public
  */
 
-Media.prototype.update = function(body, fn){
-  var path = '/sites/' + this._sid + '/media/' + this._id;
-  return this.wpcom.sendRequest({ path: path, method: 'post' }, null, body, fn);
+Media.prototype.update = function(query, body, fn){
+  if ('function' == typeof body) {
+    fn = body;
+    body = query;
+    query = {};
+  }
+
+  var params = {
+    apiVersion: query.apiVersion || api_version,
+    path: '/sites/' + this._sid + '/media/' + this._id,
+    method: 'post'
+  };
+
+  return this.wpcom.sendRequest(params, query, body, fn);
 };
 
 /**
  * Add media file
  *
- * @param {String|Array} files
+ * @param {Object} [query]
+ * @param {String|Object|Array} files
  * @param {Function} fn
  */
 
-Media.prototype.addFiles = function(files, fn){
-  var path = '/sites/' + this._sid + '/media/new';
-  var params = { path: path, method: 'post', formData: [] };
-
-  // process formData
-  files = Array.isArray(files) ? files : [ files ];
-  for (var i = 0; i < files.length; i++) {
-    params.formData.push(['media[]', files[i]]);
+Media.prototype.addFiles = function(query, files, fn){
+  if ('function' == typeof files) {
+    fn = files;
+    files = query;
+    query = {};
   }
 
-  return this.wpcom.sendRequest(params, null, null, fn);
+  var params = {
+    apiVersion: query.apiVersion || api_version,
+    path: '/sites/' + this._sid + '/media/new',
+    method: 'post',
+    formData: []
+  };
+
+  // process formData
+  files = Array.isArray(files) ? files : [files];
+
+  for (var i = 0; i < files.length; i++) {
+    var f = files[i];
+
+    f = 'string' == typeof f ? fs.createReadStream(f) : f;
+
+    if ('undefined' == typeof f.lastModified &&
+        'undefined' == typeof f._readableState) {
+
+      // process file attributes like as `title`, `description`, ...
+      for (var k in f) {
+        debug('add %o => %o', k, f[k]);
+        if ('file' != k) {
+          var param = 'attrs[' + i + '][' + k + ']';
+          params.formData.push([param, f[k]]);
+        }
+      }
+      // set file path
+      f = f.file;
+      f = 'string' == typeof f ? fs.createReadStream(f) : f;
+    }
+
+    params.formData.push(['media[]', f]);
+  }
+
+  return this.wpcom.sendRequest(params, query, null, fn);
 };
 
 /**
  * Add media files from URL
  *
- * @param {String|Array} files
+ * @param {Object} [query]
+ * @param {String|Array|Object} files
  * @param {Function} fn
  */
 
-Media.prototype.addUrls = function(files, fn){
-  var path = '/sites/' + this._sid + '/media/new';
-  var params = { path: path, method: 'post' };
+Media.prototype.addUrls = function(query, media, fn){
+  if ('function' == typeof media) {
+    fn = media;
+    media = query;
+    query = {};
+  }
+
+  var params = {
+    apiVersion: query.apiVersion || api_version,
+    path: '/sites/' + this._sid + '/media/new',
+    method: 'post'
+  };
+
   var body = { media_urls: [] };
 
   // process formData
-  files = Array.isArray(files) ? files : [ files ];
-  for (var i = 0; i < files.length; i++) {
-    body.media_urls.push(files[i]);
+  media = Array.isArray(media) ? media : [ media ];
+  for (var i = 0; i < media.length; i++) {
+    var m = media[i];
+    var url;
+
+    if ('string' == typeof m) {
+      url = m;
+    } else {
+      if (!body.attrs) body.attrs = [];
+
+      // add attributes
+      body.attrs[i] = {};
+      for (var k in m) {
+        if ('url' != k) {
+          body.attrs[i][k] = m[k];
+        }
+      }
+      url = m[k];
+    }
+
+    // push url into [media_url]
+    body.media_urls.push(url);
   }
 
-  return this.wpcom.sendRequest(params, null, body, fn);
+  return this.wpcom.sendRequest(params, query, body, fn);
 };
 
 /**
  * Delete media
  *
+ * @param {Object} [query]
  * @param {Function} fn
  * @api public
  */
 
 Media.prototype['delete'] =
-Media.prototype.del = function(fn){
-  var path = '/sites/' + this._sid + '/media/' + this._id + '/delete';
-  return this.wpcom.sendRequest({ path: path, method: 'post' }, null, null, fn);
+Media.prototype.del = function(query, fn){
+  if ('function' == typeof query) {
+    fn = query;
+    query = {};
+  }
+
+  var params = {
+    apiVersion: query.apiVersion || api_version,
+    path: '/sites/' + this._sid + '/media/' + this._id + '/delete',
+    method: 'post'
+  };
+
+  return this.wpcom.sendRequest(params, query, null, fn);
 };
 
 /**
@@ -846,7 +946,7 @@ Media.prototype.del = function(fn){
 
 module.exports = Media;
 
-},{"debug":14}],10:[function(require,module,exports){
+},{"debug":15,"fs":14}],10:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -1050,7 +1150,7 @@ Post.prototype.comments = function(query, fn){
 
 module.exports = Post;
 
-},{"./comment":4,"./like":7,"./reblog":11,"debug":14}],11:[function(require,module,exports){
+},{"./comment":4,"./like":7,"./reblog":11,"debug":15}],11:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -1139,7 +1239,7 @@ Reblog.prototype.to = function(dest, note, fn){
 
 module.exports = Reblog;
 
-},{"debug":14}],12:[function(require,module,exports){
+},{"debug":15}],12:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -1293,28 +1393,30 @@ Site.prototype.media = function(id){
  * :MEDIA:
  * Add a media from a file
  *
+ * @param {Object} [query]
  * @param {Array|String} files
  * @param {Function} fn
  * @return {Post} new Post instance
  */
 
-Site.prototype.addMediaFiles = function(files, fn){
+Site.prototype.addMediaFiles = function(query, files, fn){
   var media = Media(null, this._id, this.wpcom);
-  return media.addFiles(files, fn);
+  return media.addFiles(query, files, fn);
 };
 
 /**
  * :MEDIA:
  * Add a new media from url
  *
+ * @param {Object} [query]
  * @param {Array|String} files
  * @param {Function} fn
  * @return {Post} new Post instance
  */
 
-Site.prototype.addMediaUrls = function(files, fn){
+Site.prototype.addMediaUrls = function(query, files, fn){
   var media = Media(null, this._id, this.wpcom);
-  return media.addUrls(files, fn);
+  return media.addUrls(query, files, fn);
 };
 
 /**
@@ -1383,7 +1485,7 @@ Site.prototype.tag = function(slug){
 
 module.exports = Site;
 
-},{"./category":3,"./comment":4,"./follow":6,"./media":9,"./post":10,"./tag":13,"debug":14}],13:[function(require,module,exports){
+},{"./category":3,"./comment":4,"./follow":6,"./media":9,"./post":10,"./tag":13,"debug":15}],13:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -1481,7 +1583,9 @@ Tag.prototype.del = function(fn){
 
 module.exports = Tag;
 
-},{"debug":14}],14:[function(require,module,exports){
+},{"debug":15}],14:[function(require,module,exports){
+
+},{}],15:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -1630,7 +1734,7 @@ function load() {
 
 exports.enable(load());
 
-},{"./debug":15}],15:[function(require,module,exports){
+},{"./debug":16}],16:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -1829,7 +1933,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":16}],16:[function(require,module,exports){
+},{"ms":17}],17:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -1942,7 +2046,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -1967,7 +2071,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -2088,7 +2192,7 @@ function toTitle (str) {
   });
 }
 
-},{"debug":14,"superagent":19}],19:[function(require,module,exports){
+},{"debug":15,"superagent":20}],20:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -3166,7 +3270,7 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":20,"reduce":21}],20:[function(require,module,exports){
+},{"emitter":21,"reduce":22}],21:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -3332,7 +3436,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 
 /**
  * Reduce `arr` with `fn`.
@@ -3357,7 +3461,7 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -3420,5 +3524,5 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
   return _WPCOM.prototype.sendRequest.call(this, params, query, body, fn);
 };
 
-},{"./index.js":1,"inherits":17,"wpcom-xhr-request":18}]},{},[22])(22)
+},{"./index.js":1,"inherits":18,"wpcom-xhr-request":19}]},{},[23])(23)
 });
