@@ -79,6 +79,25 @@ Util.addMedia = function(fn){
 };
 
 /**
+ * Get media files
+ */
+
+Util.getFiles = function(){
+  // pre-process files array
+  var files = test.new_media_data.files;
+  for (var i = 0; i < files.length; i++) {
+    var f = files[i];
+
+    if ('string' == typeof f) {
+      files[i] = fs.createReadStream(files[i]);
+    } else {
+      files[i].file = fs.createReadStream(files[i].file);
+    }
+  }
+  return files;
+};
+
+/**
  * Export module
  */
 
