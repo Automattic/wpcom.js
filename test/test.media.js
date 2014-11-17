@@ -114,18 +114,7 @@ describe('WPCOM#Site#Media', function(){
 
       it('should create a new media from a file', function(done){
         var site = util.private_site();
-
-        // pre-process files array
-        var files = test.new_media_data.files;
-        for (var i = 0; i < files.length; i++) {
-          var f = files[i];
-
-          if ('string' == typeof f) {
-            files[i] = fs.createReadStream(files[i]);
-          } else {
-            files[i].file = fs.createReadStream(files[i].file);
-          }
-        }
+        var files = util.getFiles();
 
         site
         .media()
