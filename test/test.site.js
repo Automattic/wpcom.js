@@ -474,7 +474,7 @@ describe('WPCOM#Site', function(){
         var site = util.private_site();
 
         // pre-process files array
-        var files = test.getFiles();
+        var files = util.getFiles();
 
         var media = site.addMediaFiles(files, function(err, data){
           if (err) throw err;
