@@ -74,7 +74,9 @@ Util.addPost = function(fn){
 
 Util.addMedia = function(fn){
   var site = Util.private_site();
-  var file = fs.createReadStream(test.new_media_data.files[1]);
+  var file = test.new_media_data.files[1];
+  file = file._readableState ? file : fs.createReadStream(file);
+
   site.addMediaFiles(file, fn);
 };
 
@@ -84,16 +86,22 @@ Util.addMedia = function(fn){
 
 Util.getFiles = function(){
   // pre-process files array
-  var files = test.new_media_data.files;
-  for (var i = 0; i < files.length; i++) {
-    var f = files[i];
+  var files = [];
+  for (var i = 0; i < test.new_media_data.files.length; i++) {
 
+    var f = test.new_media_data.files[i];
     if ('string' == typeof f) {
-      files[i] = fs.createReadStream(files[i]);
+      files.push(fs.createReadStream(f));
     } else {
-      files[i].file = fs.createReadStream(files[i].file);
+      files.push({
+        title: f.title,
+        description: f.description,
+        caption: f.caption,
+        file: fs.createReadStream(f.file)
+      });
     }
   }
+
   return files;
 };
 
