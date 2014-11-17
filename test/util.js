@@ -74,7 +74,8 @@ Util.addPost = function(fn){
 
 Util.addMedia = function(fn){
   var site = Util.private_site();
-  site.addMediaFiles(test.new_media_data.files[1], fn);
+  var file = fs.createReadStream(test.new_media_data.files[1]);
+  site.addMediaFiles(file, fn);
 };
 
 /**
