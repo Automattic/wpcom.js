@@ -27,10 +27,10 @@ describe('WPCOM#apiVersion', function(){
         var wpcom = util.wpcom();
         var site = util.private_site();
         var files = util.getFiles();
+        var urls = test.new_media_data.media_urls;
 
         site
-        .addMediaUrls({ apiVersion: '1.1' }, files[1],
-        function(err, data){
+        .addMediaUrls({ apiVersion: '1.1' }, urls[1], function(err, data){
           if (err) throw err;
 
           assert.ok(data);
@@ -40,8 +40,7 @@ describe('WPCOM#apiVersion', function(){
             if (err) throw err;
 
             site
-            .addMediaFiles({ apiVersion: '1.1' }, files[0],
-            function(err, data){
+            .addMediaFiles({ apiVersion: '1.1' }, files[0], function(err, data){
               if (err) throw err;
 
               assert.ok(data);
