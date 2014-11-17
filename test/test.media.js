@@ -123,7 +123,7 @@ describe('WPCOM#Site#Media', function(){
 
           assert.ok(data);
           assert.ok(data.media instanceof Array);
-          assert.equal(test.new_media_data.files.length, data.media.length);
+          assert.equal(files.length, data.media.length);
           done();
         });
 
