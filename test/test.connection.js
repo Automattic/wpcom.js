@@ -33,8 +33,30 @@ describe('WPCOM#Site#Connection', function(){
 
   describe('async', function(){
 
+    var resetConnections = function(done){
+      // Delete every site connection for this token before each test
+      // NOTE: Because the token is deleted forever if no remaining sites make
+      // use of it, be sure to have your `connection_keyring_token_id` in use
+      // by a site other than `site.private.id`
+      var site = util.private_site();
+      site.connectionsList(function(err, list){
+        var remaining = list.connections.length;
+
+        if (0 === remaining) done();
+
+        list.connections.forEach(function(conn){
+          site.connection(conn.ID).del(function(){
+            if (0 === --remaining) done();
+          });
+        });
+      });
+    };
+
     describe('connection.get()', function(){
       var connection;
+
+      before(resetConnections);
+
       before(function(done){
         var site = util.private_site();
         site.addConnection(test.connection_keyring_token_id, function(err, info){
@@ -69,6 +91,8 @@ describe('WPCOM#Site#Connection', function(){
 
     describe('connection.add()', function(){
 
+      before(resetConnections);
+
       it('should create a single connection', function(done){
         var site = util.private_site();
         site.addConnection(test.connection_keyring_token_id, function(err, info){
@@ -90,6 +114,9 @@ describe('WPCOM#Site#Connection', function(){
 
     describe('connection.del()', function(){
       var connection;
+
+      before(resetConnections);
+
       before(function(done){
         var site = util.private_site();
         site.addConnection(test.connection_keyring_token_id, function(err, info){
