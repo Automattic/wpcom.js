@@ -55,8 +55,7 @@ describe('WPCOM#Site#Connection', function(){
 
           [
             'ID',
-            'token_ID',
-            'conn_ID',
+            'keyring_token_ID',
             'site_ID',
             'user_ID',
             'shared',
