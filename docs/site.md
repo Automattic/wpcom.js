@@ -129,6 +129,15 @@ Create a new `Connection` instance.
 var connection = site.connection('<connection-id>');
 ```
 
+### Site#addConnection(body, fn)
+
+Add a new connection to the site. Return a `Connection` instance. Body can be either Keyring token ID or an object containing `keyring_token_id` and any other options.
+
+```js
+var new_connection = site.addConnection({ keyring_token_id: 12345, shared: false }, function(err, conn){
+});
+```
+
 ### Site#deleteConnection(data, fn)
 
 Delete a site connection

@@ -34,6 +34,19 @@ wpcom
 });
 ```
 
+### Connection#add(body, fn)
+
+Add a new connection to the site. Body can be either Keyring token ID or an object containing `keyring_token_id` and any other options.
+
+```js
+wpcom
+.sites('blog.wordpress.com')
+.connection(null)
+.add(12345, function(err, data){
+  // connection data object
+});
+```
+
 ### Connection#del(fn) - Connection#delete(fn)
 
 Delete a connection

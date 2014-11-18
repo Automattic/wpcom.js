@@ -42,5 +42,6 @@
     ]
   },
 
-  "media_id": <media-id>
+  "media_id": <media-id>,
+  "connection_keyring_token_id": <token-id>
 }
