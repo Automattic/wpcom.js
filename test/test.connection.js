@@ -33,20 +33,17 @@ describe('WPCOM#Site#Connection', function(){
 
   describe('async', function(){
 
-    var connection;
-    before(function(done){
-      var site = util.private_site();
-      site.connectionsList(function(err, list){
-        if (err) throw err;
-
-        assert.notEqual(0, list.connections.length);
-
-        connection = list.connections[0];
-        done();
-      });
-    });
-
     describe('connection.get()', function(){
+      var connection;
+      before(function(done){
+        var site = util.private_site();
+        site.addConnection(test.connection_keyring_token_id, function(err, info){
+          if (err) throw err;
+
+          connection = info;
+          done();
+        });
+      });
 
       it('should get single connection', function(done){
         var site = util.private_site();
