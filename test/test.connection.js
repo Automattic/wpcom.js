@@ -88,8 +88,31 @@ describe('WPCOM#Site#Connection', function(){
 
     });
 
-    // @TODO: Add delete test, but this is not possible while being idempotent, since there is
-    // currently no connection create endpoint
+    describe('connection.del()', function(){
+      var connection;
+      before(function(done){
+        var site = util.private_site();
+        site.addConnection(test.connection_keyring_token_id, function(err, info){
+          if (err) throw err;
+
+          connection = info;
+          done();
+        });
+      });
+
+      it('should delete single connection', function(done){
+        var site = util.private_site();
+        site.connection(connection.ID).del(function(err, info){
+          if (err) throw err;
+
+          assert.equal(connection.ID, info.ID);
+          assert.equal(true, info.deleted);
+
+          done();
+        });
+      });
+
+    });
 
   });
 
