@@ -1,4 +1,14 @@
 
+2.6.0 / 2014-11-12
+==================
+
+ * media: fix bug in checking File on server-side
+
+2.5.0 / 2014-11-12
+==================
+
+ * media: fix checking File parameter in #addFiles method
+
 2.4.0 / 2014-11-03
 ==================
 
