@@ -525,8 +525,6 @@ describe('WPCOM#Site#Post', function(){
 
               done();
             });
-
-          done();
         });
       });
 
