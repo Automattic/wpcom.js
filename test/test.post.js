@@ -531,6 +531,7 @@ describe('WPCOM#Site#Post', function(){
       });
 
     });
+
     describe('post.comments()', function(){
 
       it('should get the post like status of mine', function(done){
