@@ -508,6 +508,29 @@ describe('WPCOM#Site#Post', function(){
 
     });
 
+    describe('post.restore()', function(){
+
+      it('should restore a post from trash', function(done){
+        var site = util.private_site();
+        var post = site.post(new_post.ID);
+
+        post.delete(function(err, data){
+          if (err) throw err;
+
+            post.restore(function(err, data){
+              if (err) throw err;
+
+              assert.ok(data);
+              assert.equal(new_post.status, data.status);
+
+              done();
+            });
+
+          done();
+        });
+      });
+
+    });
     describe('post.comments()', function(){
 
       it('should get the post like status of mine', function(done){
