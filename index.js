@@ -28,6 +28,10 @@ function XhrWPCOM(token){
   this.token = token;
 }
 
+/**
+ * Mixin `WPCOM`
+ */
+
 inherits(XhrWPCOM, WPCOM);
 
 /**
@@ -49,7 +53,10 @@ XhrWPCOM.prototype.setToken = function(token){
  */
 
 XhrWPCOM.prototype.sendRequest = function(params, query, body, fn) {
-  if ('string' == typeof params) params = { path: params };
+  if ('string' == typeof params) {
+    params = { path: params };
+  }
+
   // token
   var token = params.token || this.token;
   if (token) params.authToken = token;
