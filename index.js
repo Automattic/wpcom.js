@@ -7,6 +7,12 @@ var request = require('wpcom-xhr-request');
 var inherits = require('inherits');
 
 /**
+ * Export `XhrWPCOM`
+ */
+
+module.exports = XhrWPCOM;
+
+/**
  * WordPress.com REST API class.
  *
  * XMLHttpRequest (and CORS) API access method.
@@ -62,5 +68,3 @@ XhrWPCOM.prototype.sendRequest = function(params, query, body, fn) {
   if (token) params.authToken = token;
   return WPCOM.prototype.sendRequest.call(this, params, query, body, fn);
 };
-
-module.exports = XhrWPCOM;
