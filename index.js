@@ -20,6 +20,7 @@ var inherits = require('inherits');
  * @param {String} [token] - OAuth API access token
  * @public
  */
+
 function XhrWPCOM(token) {
   if (!(this instanceof WPCOM)) return new WPCOM(token);
   WPCOM.call(this, request);
@@ -34,6 +35,7 @@ inherits(XhrWPCOM, WPCOM);
  * @param {String} token - API token to use for requests
  * @public
  */
+
 XhrWPCOM.prototype.setToken = function(token) {
   this.token = token;
 };
@@ -44,6 +46,7 @@ XhrWPCOM.prototype.setToken = function(token) {
  *
  * @api private
  */
+
 XhrWPCOM.prototype.sendRequest = function (params, query, body, fn) {
   if ('string' == typeof params) params = { path: params };
   // token
