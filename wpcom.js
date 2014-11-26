@@ -5,6 +5,7 @@
 
 var Me = require('./lib/me');
 var Site = require('./lib/site');
+var Users = require('./lib/users');
 var Batch = require('./lib/batch');
 var debug = require('debug')('wpcom');
 
@@ -43,6 +44,16 @@ WPCOM.prototype.me = function(){
 
 WPCOM.prototype.site = function(id){
   return new Site(id, this);
+};
+
+/**
+ * Get `Users` object instance
+ *
+ * @api public
+ */
+
+WPCOM.prototype.users = function(){
+  return new Users(this);
 };
 
 
