@@ -1486,11 +1486,18 @@ Tag.prototype.del = function(fn){
 module.exports = Tag;
 
 },{"debug":15}],13:[function(require,module,exports){
+
 /**
  * Module dependencies.
  */
 
 var debug = require('debug')('wpcom:users');
+
+/**
+ * Expose `Users` module
+ */
+
+module.exports = Users;
 
 /**
  * Create a `Users` instance
@@ -1499,8 +1506,11 @@ var debug = require('debug')('wpcom:users');
  * @api public
  */
 
-function Users(wpcom){
-  if (!(this instanceof Users)) return new Users(wpcom);
+function Users(wpcom) {
+  if (!(this instanceof Users)) {
+    return new Users(wpcom);
+  }
+
   this.wpcom = wpcom;
 }
 
@@ -1512,16 +1522,9 @@ function Users(wpcom){
  * @api public
  */
 
-Users.prototype.suggest = function(query, fn){
+Users.prototype.suggest = function (query, fn) {
   return this.wpcom.sendRequest('/users/suggest', query, null, fn);
 };
-
-/**
- * Expose `Users` module
- */
-
-module.exports = Users;
-
 },{"debug":15}],14:[function(require,module,exports){
 
 },{}],15:[function(require,module,exports){
@@ -3393,8 +3396,10 @@ var debug = require('debug')('wpcom');
  * @api public
  */
 
-function WPCOM(request){
-  if (!(this instanceof WPCOM)) return new WPCOM(request);
+function WPCOM(request) {
+  if (!(this instanceof WPCOM)) {
+    return new WPCOM(request);
+  }
 
   if ('function' !== typeof request) {
     throw new TypeError('a `request` WP.com function must be passed in');
@@ -3409,7 +3414,7 @@ function WPCOM(request){
  * @api public
  */
 
-WPCOM.prototype.me = function(){
+WPCOM.prototype.me = function () {
   return new Me(this);
 };
 
@@ -3420,7 +3425,7 @@ WPCOM.prototype.me = function(){
  * @api public
  */
 
-WPCOM.prototype.site = function(id){
+WPCOM.prototype.site = function (id) {
   return new Site(id, this);
 };
 
@@ -3430,12 +3435,12 @@ WPCOM.prototype.site = function(id){
  * @api public
  */
 
-WPCOM.prototype.users = function(){
+WPCOM.prototype.users = function () {
   return new Users(this);
 };
 
 
-WPCOM.prototype.batch = function(){
+WPCOM.prototype.batch = function () {
   return new Batch(this);
 };
 
@@ -3447,7 +3452,7 @@ WPCOM.prototype.batch = function(){
  * @api public
  */
 
-WPCOM.prototype.freshlyPressed = function(query, fn){
+WPCOM.prototype.freshlyPressed = function (query, fn) {
   return this.sendRequest('/freshly-pressed', query, null, fn);
 };
 
@@ -3461,9 +3466,9 @@ WPCOM.prototype.freshlyPressed = function(query, fn){
  * @api private
  */
 
-WPCOM.prototype.sendRequest = function (params, query, body, fn){
+WPCOM.prototype.sendRequest = function (params, query, body, fn) {
   // `params` can be just the path (String)
-  if ('string' == typeof params) {
+  if ('string' === typeof params) {
     params = { path: params };
   }
 
@@ -3473,13 +3478,13 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
   params.method = (params.method || 'get').toUpperCase();
 
   // `query` is optional
-  if ('function' == typeof query) {
+  if ('function' === typeof query) {
     fn = query;
     query = null;
   }
 
   // `body` is optional
-  if ('function' == typeof body) {
+  if ('function' === typeof body) {
     fn = body;
     body = null;
   }
@@ -3490,10 +3495,14 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn){
     delete query.apiVersion;
   }
 
-  if (body) params.body = body;
+  if (body) {
+    params.body = body;
+  }
 
   // callback `fn` function is optional
-  if (!fn) fn = function(err){ if (err) throw err; };
+  if (!fn) {
+    fn = function (err) { if (err) { throw err; } };
+  }
 
   // request method
   return this.request(params, fn);
