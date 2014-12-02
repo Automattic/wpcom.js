@@ -36,12 +36,12 @@ exports.get = function (wpcom, def, params, query, fn) {
 };
 
 /**
- * Request alias
+ * Make `update` request
  *
  * @param {WPCOM} wpcom
  * @param {Object} def
  * @param {Object|String} params
- * @param {Object} query
+ * @param {Object} [query]
  * @param {Object} body
  * @param {Function} fn
  * @api public
@@ -54,6 +54,8 @@ exports.update = function (wpcom, def, params, query, body, fn) {
     query = {};
   }
 
+  query = query || {};
+
   // params can be s string
   params = 'string' === typeof params ? { path : params } : params;
 
@@ -64,4 +66,24 @@ exports.update = function (wpcom, def, params, query, body, fn) {
   params.method = 'post';
 
   return wpcom.sendRequest(params, query, body, fn);
+};
+
+/**
+ * Make a `delete` request
+ *
+ * @param {WPCOM} wpcom
+ * @param {Object} def
+ * @param {Object|String} params
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+exports.del = function (wpcom, def, params, query, fn) {
+  if ('function' == typeof query) {
+    fn = query;
+    query = {};
+  }
+
+  return exports.update(wpcom, def, params, query, null, fn);
 };
