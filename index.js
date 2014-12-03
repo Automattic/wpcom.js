@@ -45,7 +45,12 @@ function WPCOM(token, reqHandler) {
 
     this.request = function (params, fn) {
       params = params || {};
-      params.authToken = token;
+
+      // token is optional
+      if (token) {
+        params.authToken = token;
+      }
+
       return request(params, fn);
     };
   } else {
