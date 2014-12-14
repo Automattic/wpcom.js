@@ -350,7 +350,7 @@ body {
 }
 @media screen and (min-width: 1200px) {
   .editor-inner {
-    margin: 0 auto;
+    margin: 30px auto 0;
     max-width: 900px;
   }
 }
