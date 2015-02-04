@@ -16,7 +16,7 @@ var fixture = require('./fixture');
  * Create a `Site` instance
  */
 
-describe('batch', function(){
+describe('site.batch()', function(){
 
   it('should require site data', function(done){
 
