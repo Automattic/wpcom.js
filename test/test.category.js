@@ -6,25 +6,28 @@
 var WPCOM = require('../');
 var Site = require('../lib/site');
 var Category = require('../lib/category');
-var util = require('./util');
 var assert = require('assert');
 
 /**
  * Testing data
  */
 
-var test = require('./data');
+var fixture = require('./fixture');
 
-describe('WPCOM#Site#Category', function(){
+describe('WPCOM#Site#Category', function() {
+
+  // Create `wpcom` and `site` global instances 
+  var wpcom = WPCOM(fixture.site.private.token);
+  var site = wpcom.site(fixture.site.private.url);
+
+  // global var to store category added
   var category_added;
 
   // Create a new_category before to start tests
   var new_category;
   before(function(done){
-    var site = WPCOM(test.site.private.token).site(test.site.private.id);
-    var cat = site.category();
-
-    cat.add(test.new_category_data, function(err, category) {
+    site.category()
+    .add(fixture.category, function(err, category) {
       if (err) throw err;
 
       new_category = category;
@@ -33,11 +36,8 @@ describe('WPCOM#Site#Category', function(){
   });
 
   after(function(done){
-    var site = WPCOM(test.site.private.token).site(test.site.private.id);
-    var cat = site.category(new_category.slug);
-
-    // clean new_category category
-    cat.delete(function(err, category) {
+    site.category(new_category.slug)
+    .delete(function(err, category) {
       if (err) throw err;
 
       done();
@@ -49,10 +49,8 @@ describe('WPCOM#Site#Category', function(){
     describe('category.get()', function(){
 
       it('should get added category', function(done){
-        var site = util.private_site();
-        var cat = site.category(new_category.slug);
-
-        cat.get(function(err, data){
+        site.category(new_category.slug)
+        .get(function(err, data){
           if (err) throw err;
 
           assert.ok(data);
@@ -68,10 +66,10 @@ describe('WPCOM#Site#Category', function(){
     describe('category.add()', function(){
 
       it('should add a new category', function(done){
-        var site = util.private_site();
         var category = site.category();
-        test.new_category_data.name += '- Added';
-        category.add(test.new_category_data, function(err, data){
+
+        fixture.category.name += '- Added';
+        category.add(fixture.category, function(err, data){
           if (err) throw err;
 
           // checking some data date
@@ -90,9 +88,7 @@ describe('WPCOM#Site#Category', function(){
     describe('category.update()', function(){
 
       it('should edit the new added category', function(done){
-        var site = util.private_site();
         var category = site.category(category_added.slug);
-
         var new_name = 'new category name';
 
         category.update({ name: new_name }, function(err, data){
@@ -113,10 +109,8 @@ describe('WPCOM#Site#Category', function(){
     describe('category.delete()', function(){
 
       it('should delete the new added category', function(done){
-        var site = util.private_site();
-        var cat = site.category(category_added.slug);
-
-        cat.delete(function(err, data){
+        site.category(category_added.slug)
+        .delete(function(err, data){
           if (err) throw err;
 
           assert.ok(data);
