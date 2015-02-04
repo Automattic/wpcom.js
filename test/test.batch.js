@@ -3,54 +3,44 @@
  * Module dependencies
  */
 
-var Site = require('../lib/site');
-var util = require('./util');
+var WPCOM = require('../');
 var assert = require('assert');
 
 /**
  * Testing data
  */
 
-var test = require('./data');
+var fixture = require('./fixture');
 
 /**
  * Create a `Site` instance
  */
 
-describe('WPCOM#Site', function(){
+describe('batch', function(){
 
-  describe('async', function(){
+  it('should require site data', function(done){
 
-    describe('wpcom.batch()', function(){
-      it('should require site data', function(done){
+    var wpcom = WPCOM();
+    var batch = wpcom.batch();
+    var site = wpcom.site(fixture.site.public.url);
 
-        var wpcom = util.wpcom();
-        var batch = wpcom.batch();
+    var url_site = '/sites/' + site._id;
+    var url_posts = '/sites/' + site._id + '/posts';
+    var url_me = '/me';
 
-        var site = util.public_site();
+    batch
+    .add(url_site)
+    .add(url_posts)
+    .add(url_me)
+    .run(function(err, data){
+      if (err) throw err;
 
-        var url_site = '/sites/' + site._id;
-        var url_posts = '/sites/' + site._id + '/posts';
-        var url_me = '/me';
+      assert.ok(data);
+      assert.ok(data[url_site]);
+      assert.ok(data[url_posts]);
+      assert.ok(data[url_me]);
 
-        batch
-        .add(url_site)
-        .add(url_posts)
-        .add(url_me)
-        .run(function(err, data){
-          if (err) throw err;
-
-          assert.ok(data);
-          assert.ok(data[url_site]);
-          assert.ok(data[url_posts]);
-          assert.ok(data[url_me]);
-
-          done();
-        });
-      });
+      done();
     });
-
   });
-
 });
-
