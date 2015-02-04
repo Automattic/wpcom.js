@@ -8,13 +8,7 @@ var Site = require('../lib/site');
 var assert = require('assert');
 
 /**
- * Package
- */
-
-var pkg = require('../package.json');
-
-/**
- * Testing data
+ * Fixture
  */
 
 var fixture = require('./fixture');
@@ -23,25 +17,20 @@ var fixture = require('./fixture');
  * Sync tests
  */
 
-describe('data', function(){
-  describe('package', function(){
-    it('version should have x.x.x format', function(){
-      assert.ok((pkg.version).match(/\d\.\d\.\d/));
-    });
-  });
+describe('fixture', function() {
 
-  describe('fixture', function(){
+  describe('general', function() {
     it('`public_site` should be defined', function(){
       assert.equal('string', typeof fixture.site.public.url);
     });
 
-    it('`private_site` should be defined', function(){
+    it('`private_site` should be defined', function() {
       assert.equal('string', typeof fixture.site.private.url);
       assert.equal('number', typeof fixture.site.private.id);
       assert.equal('string', typeof fixture.site.private.token);
     });
 
-    it('`post` should be ok', function(){
+    it('`post` should be ok', function() {
       assert.ok(fixture.post);
       assert.equal('object', typeof fixture.post);
 
