@@ -22,7 +22,6 @@ describe('fixture', function() {
   describe('general', function() {
     it('`private_site` should be defined', function() {
       assert.equal('string', typeof fixture.site.url);
-      assert.equal('number', typeof fixture.site.id);
       assert.equal('string', typeof fixture.site.token);
     });
 
