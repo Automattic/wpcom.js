@@ -135,10 +135,8 @@ describe('wpcom.site.post', function(){
     });
   });
 
-  describe('post.likesList()', function(){
-
+  describe('wpcom.site.post.likesList', function(){
     it('should get post likes list', function(done){
-      var site = util.private_site();
       var post = site.post(testing_post.ID);
 
       post.likesList(function(err, data){
@@ -153,9 +151,7 @@ describe('wpcom.site.post', function(){
 
         done();
       });
-
     });
-
   });
 /*
   describe('post.related()', function(){
