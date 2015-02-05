@@ -10,110 +10,95 @@ var assert = require('assert');
  * Testing data
  */
 
-var test = require('./data');
-var util = require('./util');
+var fixture = require('./fixture');
 
 /**
  * me
  */
 
-describe('WPCOM#Me', function(){
+describe('me', function(){
+  var wpcom = WPCOM(fixture.site.private.token);
+  var me = wpcom.me();
 
-  describe('async', function(){
+  describe('me.get()', function(){
+    it('should require user information object', function(done){
+      me.get(function(err, me){
+        if (err) throw err;
 
-    describe('me.get()', function(){
-      it('should require user information object', function(done){
-        var me = util.wpcom().me();
+        // testing object
+        assert.ok(me);
+        assert.equal('object', typeof me);
 
-        me.get(function(err, me){
-          if (err) throw err;
+        // testing user data
+        assert.equal('number', typeof me.ID);
 
-          // testing object
-          assert.ok(me);
-          assert.equal('object', typeof me);
-
-          // testing user data
-          assert.equal('number', typeof me.ID);
-
-          done();
-        });
-      });
-
-      it('should require user passin query parameter', function(done){
-        var me = util.wpcom().me();
-
-        me.get({ context: 'info' }, function(err, me){
-          if (err) throw err;
-
-          // testing object
-          assert.ok(me);
-          assert.equal('object', typeof me);
-
-          // testing user data
-          assert.equal('number', typeof me.ID);
-
-          done();
-        });
+        done();
       });
     });
 
-    describe('me.sites()', function(){
-      it('should require user sites object', function(done){
-        var me = util.wpcom().me();
+    it('should require user passing query parameter', function(done){
+      me.get({ context: 'info' }, function(err, me){
+        if (err) throw err;
 
-        me.sites(function(err, sites){
-          if (err) throw err;
-          done();
-        });
+        // testing object
+        assert.ok(me);
+        assert.equal('object', typeof me);
+
+        // testing user data
+        assert.equal('number', typeof me.ID);
+
+        done();
       });
     });
+  });
 
-    describe('me.likes()', function(){
-      it('should require user likes', function(done){
-        var me = util.wpcom().me();
-
-        me.likes(function(err, data){
-          if (err) throw err;
-
-          assert.equal('number', typeof data.found);
-          assert.equal('object', typeof data.likes);
-          assert.ok(data.likes instanceof Array);
-
-          done();
-        });
+  describe('me.sites()', function(){
+    it('should require user sites object', function(done){
+      me.sites(function(err, sites){
+        if (err) throw err;
+        done();
       });
     });
+  });
 
-    describe('me.groups()', function(){
-      it('should require groups', function(done){
-        var me = util.wpcom().me();
+  describe('me.likes()', function(){
+    it('should require user likes', function(done){
+      me.likes(function(err, data){
+        if (err) throw err;
 
-        me.groups(function(err, data){
-          if (err) throw err;
+        assert.equal('number', typeof data.found);
+        assert.equal('object', typeof data.likes);
+        assert.ok(data.likes instanceof Array);
 
-          assert.equal('object', typeof data.groups);
-          assert.ok(data.groups instanceof Array);
-
-          done();
-        });
+        done();
       });
     });
+  });
 
-    describe('me.connections()', function(){
-      it('should require third-party connections', function(done){
-        var me = util.wpcom().me();
+  describe('me.groups()', function(){
+    it('should require groups', function(done){
+      me.groups(function(err, data){
+        if (err) throw err;
 
-        me.connections(function(err, data){
-          if (err) throw err;
+        assert.equal('object', typeof data.groups);
+        assert.ok(data.groups instanceof Array);
 
-          assert.equal('object', typeof data.connections);
-          assert.ok(data.connections instanceof Array);
-
-          done();
-        });
+        done();
       });
     });
+  });
 
+  describe('me.connections()', function(){
+    it('should require third-party connections', function(done){
+      me.connections(function(err, data){
+        if (err) throw err;
+
+        assert.equal('object', typeof data.connections);
+        assert.ok(data.connections instanceof Array);
+
+        done();
+      });
+    });
   });
 
 });
