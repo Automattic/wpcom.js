@@ -60,7 +60,6 @@ describe('site.category', function() {
         done();
       });
     });
-
   });
 
   describe('site.category.add()', function(){
@@ -82,7 +81,6 @@ describe('site.category', function() {
         done();
       });
     });
-
   });
 
   describe('site.category.update()', function(){
@@ -103,7 +101,6 @@ describe('site.category', function() {
         done();
       });
     });
-
   });
 
   describe('site.category.delete()', function(){
@@ -120,7 +117,6 @@ describe('site.category', function() {
         done();
       });
     });
-
   });
 
 });
