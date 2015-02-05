@@ -26,7 +26,6 @@ describe('wpcom.site.post', function(){
 
   // var to store post in `add()` test
   var new_post;
-  var new_comment;
   var site_ID;
 
   // Create a testing_post before to start the tests
@@ -36,22 +35,13 @@ describe('wpcom.site.post', function(){
       if (err) throw err;
 
       testing_post = data_post;
-      
-      // Add comment to post
-      site
-      .post(testing_post.ID)
-      .comment()
-      .add(fixture.post_comment, function (err, data_comment) {
-        if (err) throw err;
+      site.get(function(err, data_site){
+        if (err) return done(err);
 
-        new_comment = data_comment;
-        site.get(function(err, data_site){
-          if (err) return done(err);
+        site_ID = data_site.ID;
+        done();
+      });
 
-          site_ID = data_site.ID;
-          done();
-        });
-      })
     });
   });
 
@@ -153,6 +143,7 @@ describe('wpcom.site.post', function(){
       });
     });
   });
+
 /*
   describe('post.related()', function(){
 
@@ -174,178 +165,6 @@ describe('wpcom.site.post', function(){
 
   });
 */
-
-  describe('post.comment.add()', function(){
-
-    it('should add a post comment', function(done){
-      util
-      .private_site()
-      .post(testing_post.ID)
-      .comment()
-      .add({ content: 'Nice post Buddy !!!' }, function(err, data){
-        if (err) throw err;
-
-        assert.equal('number', typeof data.ID);
-        assert.equal('object', typeof data.post);
-        assert.ok(data.post instanceof Object);
-
-        done();
-      });
-
-    });
-
-  });
-
-  describe('post.comment.update()', function(){
-
-    it('should update a post comment', function(done){
-      util
-      .private_site()
-      .post(testing_post.ID)
-      .comment(new_comment.ID)
-      .update('Awful post Buddy !!!', function(err, data){
-        if (err) throw err;
-
-        assert.equal('number', typeof data.ID);
-        assert.equal('object', typeof data.post);
-        assert.ok(data.post instanceof Object);
-        assert.equal(new_comment.ID, data.ID);
-
-        done();
-      });
-
-    });
-
-  });
-
-  describe('post.comment.reply()', function(){
-
-    it('should add a reply to a post comment', function(done){
-      util
-      .private_site()
-      .post(testing_post.ID)
-      .comment(new_comment.ID)
-      .reply('it sucks !!!', function(err, data){
-        if (err) throw err;
-
-        assert.equal('number', typeof data.ID);
-        assert.equal('object', typeof data.post);
-        assert.ok(data.post instanceof Object);
-        assert.equal(new_comment.ID, data.parent.ID);
-
-        done();
-      });
-
-    });
-
-  });
-
-  describe('post.comment.delete()', function(){
-
-    it('should delete a comment', function(done){
-      util
-      .private_site()
-      .post(testing_post.ID)
-      .comment(new_comment.ID)
-      .del(function(err, data){
-        if (err) throw err;
-
-        assert.equal('number', typeof data.ID);
-        assert.equal('object', typeof data.post);
-        assert.ok(data.post instanceof Object);
-        assert.equal(new_comment.ID, data.ID);
-
-        done();
-      });
-
-    });
-
-  });
-
-  describe('post.comment.like()', function(){
-
-    it('should add a comment like', function(done){
-      util
-      .private_site()
-      .post(testing_post.ID)
-      .comment(new_comment.ID)
-      .like()
-      .add(function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.equal(1, data.like_count);
-        assert.ok(data.i_like);
-
-        done();
-      });
-
-    });
-
-  });
-
-  describe('post.comment.like.mine()', function(){
-
-    it('should get the comment like status of mine', function(done){
-      util.private_site()
-      .post(testing_post.ID)
-      .comment(new_comment.ID)
-      .like()
-      .mine(function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.equal(1, data.like_count);
-        assert.ok(data.i_like);
-
-        done();
-      });
-    });
-
-  });
-
-  describe('post.comment.likesList()', function(){
-
-    it('should get comment likes list', function(done){
-      util.private_site()
-      .post(testing_post.ID)
-      .comment(new_comment.ID)
-      .likesList(function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.equal('number', typeof data.found);
-        assert.equal('boolean', typeof data.i_like);
-        assert.equal('object', typeof data.likes);
-        assert.ok(data.likes instanceof Array);
-
-        done();
-      });
-
-    });
-
-  });
-
-  describe('post.comment.like.delete()', function(){
-
-    it('should remove your like from the comment', function(done){
-      util.private_site()
-      .post(testing_post.ID)
-      .comment(new_comment.ID)
-      .like()
-      .del(function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.ok(data.success);
-        assert.equal(0, data.like_count);
-        assert.ok(!(data.i_like));
-
-        done();
-      });
-    });
-
-  });
 
   describe('post.reblog.add()', function(){
 
