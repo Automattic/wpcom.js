@@ -17,11 +17,9 @@ var fixture = require('./fixture');
  */
 
 describe('wpcom.site', function(){
-    // Create `wpcom` and `site` global instances
+  // Global instances
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
-
-  // global var to store testing post
   var testing_post;
   var new_post_ID;
   var site_ID;
@@ -312,7 +310,7 @@ describe('wpcom.site', function(){
     });
   });
 
-  describe('wpcom.site.post.add', function(){
+  describe('wpcom.site.addPost', function(){
     it('should create a new blog post', function(done){
       site.addPost(fixture.post, function(err, data){
         if (err) throw err;
@@ -328,7 +326,7 @@ describe('wpcom.site', function(){
     });
   });
 
-  describe('wpcom.site.post.delete', function(){
+  describe('wpcom.site.deletePost', function(){
     it('should delete post added', function(done){
       site.deletePost(new_post_ID, function(err, data){
         if (err) throw err;

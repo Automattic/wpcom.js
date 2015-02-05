@@ -14,11 +14,9 @@ var assert = require('assert');
 var fixture = require('./fixture');
 
 describe('wpcom.site.category', function() {
-  // Create `wpcom` and `site` global instances
+  // Global instances
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
-
-  // global var to store new category
   var new_category;
 
   // Create a testing_category before to start tests

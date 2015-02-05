@@ -14,11 +14,9 @@ var assert = require('assert');
 var fixture = require('./fixture');
 
 describe('wpcom.site.tag', function(){
-  // Create `wpcom` and `site` global instances
+  // Global instances
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
-
-  // global var to store new tag
   var new_tag;
 
   // Create a testing_tag before to start tests

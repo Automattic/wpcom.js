@@ -17,6 +17,7 @@ var fixture = require('./fixture');
  */
 
 describe('wpcom.me', function(){
+  // Global instances
   var wpcom = WPCOM(fixture.site.token);
   var me = wpcom.me();
 

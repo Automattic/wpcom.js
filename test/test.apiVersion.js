@@ -17,7 +17,7 @@ var fixture = require('./fixture');
  */
 
 describe('apiVersion', function() {
-  // Create `wpcom` and `site` global instances
+  // Global instances
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
 
