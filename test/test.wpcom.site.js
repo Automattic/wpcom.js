@@ -178,6 +178,21 @@ describe('wpcom.site', function () {
       });
     });
 
+    describe('wpcom.site.embedsList', function () {
+      it('should request embeds list', function (done) {
+        site.embedsList(function (err, list) {
+          if (err) throw err;
+
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('object', typeof list.embeds);
+          assert.ok(list.embeds instanceof Array);
+
+          done();
+        });
+      });
+    });
+
     describe('wpcom.site.tagsList', function () {
       it('should request tags list', function (done) {
         site.tagsList(function (err, list) {
