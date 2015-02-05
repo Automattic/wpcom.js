@@ -45,344 +45,323 @@ describe('wpcom.site', function(){
     });
   });
 
-  describe('wpcom.site.get()', function(){
-    it('should require site data', function(done){
-      site.get(function(err, data){
-        if (err) throw err;
+  describe('lists', function(){
 
-        assert.equal('number', typeof data.ID);
-        assert.equal('string', typeof data.name);
+    describe('wpcom.site.postsList()', function() {
+      it('should request posts list', function(done) {
+        site.postsList(function(err, list){
+          if (err) throw err;
 
-        done();
-      });
-    });
-  });
+          // list object data testing
+          assert.equal('object', typeof list);
 
-  describe('site.postsList()', function(){
+          // `posts list` object data testing
+          assert.equal('number', typeof list.found);
 
-    it('should request posts list', function(done){
-      var site = util.public_site();
+          assert.equal('object', typeof list.posts);
+          assert.ok(list.posts instanceof Array);
 
-      site.postsList(function(err, list){
-        if (err) throw err;
-
-        // list object data testing
-        assert.equal('object', typeof list);
-
-        // `posts list` object data testing
-        assert.equal('number', typeof list.found);
-
-        assert.equal('object', typeof list.posts);
-        assert.ok(list.posts instanceof Array);
-
-        done();
-      });
-    });
-
-    it('should request only one post', function(done){
-
-      var site = util.public_site();
-
-      site.postsList({ number: 1 }, function(err, list){
-        if (err) throw err;
-
-        // list object data testing
-        assert.equal('object', typeof list);
-        assert.equal('number', typeof list.found);
-        assert.equal('object', typeof list.posts);
-        assert.ok(list.posts instanceof Array);
-        assert.ok(list.posts.length <= 1);
-
-        done();
+          done();
+        });
       });
 
+      it('should request only one post', function(done) {
+        site.postsList({ number: 1 }, function(err, list) {
+          if (err) throw err;
+
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('number', typeof list.found);
+          assert.equal('object', typeof list.posts);
+          assert.ok(list.posts instanceof Array);
+          assert.ok(list.posts.length <= 1);
+
+          done();
+        });
+      });
     });
 
-  });
+    describe('site.mediaList()', function(){
 
-  describe('site.mediaList()', function(){
+      it('should request media library list', function(done){
+        var site = util.private_site();
 
-    it('should request media library list', function(done){
-      var site = util.private_site();
+        site.mediaList(function(err, list){
+          if (err) throw err;
 
-      site.mediaList(function(err, list){
-        if (err) throw err;
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('number', typeof list.found);
+          assert.equal('object', typeof list.media);
+          assert.ok(list.media instanceof Array);
 
-        // list object data testing
-        assert.equal('object', typeof list);
-        assert.equal('number', typeof list.found);
-        assert.equal('object', typeof list.media);
-        assert.ok(list.media instanceof Array);
+          done();
 
-        done();
+        });
 
       });
 
     });
 
-  });
+    describe('site.usersList()', function(){
 
-  describe('site.usersList()', function(){
+      it('should request users list', function(done){
+        var site = util.private_site();
 
-    it('should request users list', function(done){
-      var site = util.private_site();
+        site.usersList(function(err, list){
+          if (err) throw err;
 
-      site.usersList(function(err, list){
-        if (err) throw err;
-
-        assert.equal('number', typeof list.found);
-        assert.ok(list.users instanceof Array);
-        done();
-      });
-
-    });
-
-  });
-
-  describe('site.commentsList()', function(){
-
-    it('should request comments list', function(done){
-      var site = util.private_site();
-
-      site.commentsList(function(err, list){
-        if (err) throw err;
-
-        // list object data testing
-        assert.equal('object', typeof list);
-        assert.equal('number', typeof list.found);
-        assert.equal('object', typeof list.comments);
-        assert.ok(list.comments instanceof Array);
-
-        done();
+          assert.equal('number', typeof list.found);
+          assert.ok(list.users instanceof Array);
+          done();
+        });
 
       });
 
     });
 
-  });
+    describe('site.commentsList()', function(){
 
-  describe('site.followsList()', function(){
+      it('should request comments list', function(done){
+        var site = util.private_site();
 
-    it('should request follows list', function(done){
-      var site = util.private_site();
+        site.commentsList(function(err, list){
+          if (err) throw err;
 
-      site.followsList(function(err, list){
-        if (err) throw err;
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('number', typeof list.found);
+          assert.equal('object', typeof list.comments);
+          assert.ok(list.comments instanceof Array);
 
-        // list object data testing
-        assert.equal('object', typeof list);
-        assert.equal('number', typeof list.found);
-        assert.equal('object', typeof list.users);
-        assert.ok(list.users instanceof Array);
+          done();
 
-        done();
-
-      });
-
-    });
-
-  });
-
-  describe('site.categoriesList()', function(){
-
-    it('should request categories list', function(done){
-      var site = util.private_site();
-
-      site.categoriesList(function(err, list){
-        if (err) throw err;
-
-        // list object data testing
-        assert.equal('object', typeof list);
-        assert.equal('string', typeof list.found);
-        assert.equal('object', typeof list.categories);
-        assert.ok(list.categories instanceof Array);
-
-        done();
+        });
 
       });
 
     });
 
-  });
+    describe('site.followsList()', function(){
 
-  describe('site.tagsList()', function(){
+      it('should request follows list', function(done){
+        var site = util.private_site();
 
-    it('should request tags list', function(done){
-      var site = util.private_site();
+        site.followsList(function(err, list){
+          if (err) throw err;
 
-      site.tagsList(function(err, list){
-        if (err) throw err;
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('number', typeof list.found);
+          assert.equal('object', typeof list.users);
+          assert.ok(list.users instanceof Array);
 
-        // list object data testing
-        assert.equal('object', typeof list);
-        assert.equal('string', typeof list.found);
-        assert.equal('object', typeof list.tags);
-        assert.ok(list.tags instanceof Array);
+          done();
 
-        done();
-
-      });
-
-    });
-
-  });
-
-  describe('site.stats()', function(){
-
-    it('should request stats data', function(done){
-      var site = util.private_site();
-
-      site.stats(function(err, data){
-        if (err) throw err;
-
-        assert.equal('string', typeof Date(data.day));
-        assert.equal('object', typeof data.stats);
-        assert.ok(data.stats instanceof Object);
-
-        assert.equal('object', typeof data.visits);
-        assert.ok(data.visits instanceof Object);
-
-        done();
+        });
 
       });
 
     });
 
-  });
+    describe('site.categoriesList()', function(){
 
-  describe('site.statsVisits()', function(){
+      it('should request categories list', function(done){
+        var site = util.private_site();
 
-    it('should request visits stats', function(done){
-      var site = util.private_site();
+        site.categoriesList(function(err, list){
+          if (err) throw err;
 
-      site.statsVisits(function(err, data){
-        if (err) throw err;
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('string', typeof list.found);
+          assert.equal('object', typeof list.categories);
+          assert.ok(list.categories instanceof Array);
 
-        assert.equal('string', typeof Date(data.unit));
+          done();
 
-        assert.equal('object', typeof data.data);
-        assert.ok(data.data instanceof Array);
-
-        assert.equal('object', typeof data.fields);
-        assert.ok(data.fields instanceof Array);
-
-        done();
+        });
 
       });
 
     });
 
-  });
+    describe('site.tagsList()', function(){
 
-  describe('site.statsReferrers()', function(){
+      it('should request tags list', function(done){
+        var site = util.private_site();
 
-    it('should request referrers stats', function(done){
-      var site = util.private_site();
+        site.tagsList(function(err, list){
+          if (err) throw err;
 
-      site.statsReferrers(function(err, data){
-        if (err) throw err;
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('string', typeof list.found);
+          assert.equal('object', typeof list.tags);
+          assert.ok(list.tags instanceof Array);
 
-        assert.equal('string', typeof Date(data.date));
+          done();
 
-        assert.equal('number', typeof data.days);
-        assert.equal('number', typeof data.total);
-
-        assert.equal('object', typeof data.referrers);
-        assert.ok(data.referrers instanceof Array);
-
-        done();
+        });
 
       });
 
     });
 
-  });
+    describe('site.stats()', function(){
 
-  describe('site.statsTopPosts()', function(){
+      it('should request stats data', function(done){
+        var site = util.private_site();
 
-    it('should request top posts stats', function(done){
-      var site = util.private_site();
+        site.stats(function(err, data){
+          if (err) throw err;
 
-      site.statsTopPosts(function(err, data){
-        if (err) throw err;
+          assert.equal('string', typeof Date(data.day));
+          assert.equal('object', typeof data.stats);
+          assert.ok(data.stats instanceof Object);
 
-        assert.equal('string', typeof Date(data.date));
-        assert.equal('object', typeof data['top-posts']);
-        assert.ok(data['top-posts'] instanceof Array);
+          assert.equal('object', typeof data.visits);
+          assert.ok(data.visits instanceof Object);
 
-        done();
+          done();
 
-      });
-
-    });
-
-  });
-
-  describe('site.statsCountryViews()', function(){
-
-    it('should request country views stats', function(done){
-      var site = util.private_site();
-
-      site.statsCountryViews(function(err, data){
-        if (err) throw err;
-
-        assert.equal('string', typeof Date(data.date));
-        assert.equal('object', typeof data['country-views']);
-        assert.ok(data['country-views'] instanceof Array);
-
-        done();
+        });
 
       });
 
     });
 
-  });
+    describe('site.statsVisits()', function(){
 
-  describe('site.statsClicks()', function(){
+      it('should request visits stats', function(done){
+        var site = util.private_site();
 
-    it('should request clicks stats', function(done){
-      var site = util.private_site();
+        site.statsVisits(function(err, data){
+          if (err) throw err;
 
-      site.statsClicks(function(err, data){
-        if (err) throw err;
+          assert.equal('string', typeof Date(data.unit));
 
-        assert.equal('string', typeof Date(data.date));
+          assert.equal('object', typeof data.data);
+          assert.ok(data.data instanceof Array);
 
-        assert.equal('number', typeof data.days);
-        assert.equal('number', typeof data.total);
+          assert.equal('object', typeof data.fields);
+          assert.ok(data.fields instanceof Array);
 
-        assert.equal('object', typeof data.clicks);
-        assert.ok(data.clicks instanceof Array);
+          done();
 
-        done();
-
-      });
-
-    });
-
-  });
-
-  describe('site.statsSearchTerms()', function(){
-
-    it('should request search terms stats', function(done){
-      var site = util.private_site();
-
-      site.statsSearchTerms(function(err, data){
-        if (err) throw err;
-
-        assert.equal('string', typeof Date(data.date));
-
-        assert.equal('number', typeof data.days);
-
-        assert.equal('object', typeof data['search-terms']);
-        assert.ok(data['search-terms'] instanceof Array);
-
-        done();
+        });
 
       });
 
     });
 
+    describe('site.statsReferrers()', function(){
+
+      it('should request referrers stats', function(done){
+        var site = util.private_site();
+
+        site.statsReferrers(function(err, data){
+          if (err) throw err;
+
+          assert.equal('string', typeof Date(data.date));
+
+          assert.equal('number', typeof data.days);
+          assert.equal('number', typeof data.total);
+
+          assert.equal('object', typeof data.referrers);
+          assert.ok(data.referrers instanceof Array);
+
+          done();
+
+        });
+
+      });
+
+    });
+
+    describe('site.statsTopPosts()', function(){
+
+      it('should request top posts stats', function(done){
+        var site = util.private_site();
+
+        site.statsTopPosts(function(err, data){
+          if (err) throw err;
+
+          assert.equal('string', typeof Date(data.date));
+          assert.equal('object', typeof data['top-posts']);
+          assert.ok(data['top-posts'] instanceof Array);
+
+          done();
+
+        });
+
+      });
+
+    });
+
+    describe('site.statsCountryViews()', function(){
+
+      it('should request country views stats', function(done){
+        var site = util.private_site();
+
+        site.statsCountryViews(function(err, data){
+          if (err) throw err;
+
+          assert.equal('string', typeof Date(data.date));
+          assert.equal('object', typeof data['country-views']);
+          assert.ok(data['country-views'] instanceof Array);
+
+          done();
+
+        });
+
+      });
+
+    });
+
+    describe('site.statsClicks()', function(){
+
+      it('should request clicks stats', function(done){
+        var site = util.private_site();
+
+        site.statsClicks(function(err, data){
+          if (err) throw err;
+
+          assert.equal('string', typeof Date(data.date));
+
+          assert.equal('number', typeof data.days);
+          assert.equal('number', typeof data.total);
+
+          assert.equal('object', typeof data.clicks);
+          assert.ok(data.clicks instanceof Array);
+
+          done();
+
+        });
+
+      });
+
+    });
+
+    describe('site.statsSearchTerms()', function(){
+
+      it('should request search terms stats', function(done){
+        var site = util.private_site();
+
+        site.statsSearchTerms(function(err, data){
+          if (err) throw err;
+
+          assert.equal('string', typeof Date(data.date));
+
+          assert.equal('number', typeof data.days);
+
+          assert.equal('object', typeof data['search-terms']);
+          assert.ok(data['search-terms'] instanceof Array);
+
+          done();
+        });
+      });
+    });
   });
 
 /*
@@ -424,6 +403,19 @@ describe('wpcom.site', function(){
     });
   });
   */
+ 
+  describe('wpcom.site.get()', function(){
+    it('should require site data', function(done){
+      site.get(function(err, data){
+        if (err) throw err;
+
+        assert.equal('number', typeof data.ID);
+        assert.equal('string', typeof data.name);
+
+        done();
+      });
+    });
+  });
 
   describe('site.addPost()', function(){
 
