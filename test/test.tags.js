@@ -13,7 +13,7 @@ var assert = require('assert');
 
 var fixture = require('./fixture');
 
-describe('site.tag', function(){
+describe('wpcom.site.tag', function(){
   // Create `wpcom` and `site` global instances
   var wpcom = WPCOM(fixture.site.private.token);
   var site = wpcom.site(fixture.site.private.url);
@@ -41,7 +41,7 @@ describe('site.tag', function(){
     });
   });
 
-  describe('site.tag.get()', function(){
+  describe('wpcom.site.tag.get()', function(){
 
     it('should get added tag', function(done){
       var cat = site.tag(new_tag.slug);
@@ -58,7 +58,7 @@ describe('site.tag', function(){
     });
   });
 
-  describe('site.tag.add()', function(){
+  describe('wpcom.site.tag.add()', function(){
 
     it('should add a new tag', function(done){
       var tag = site.tag();
@@ -79,7 +79,7 @@ describe('site.tag', function(){
     });
   });
 
-  describe('site.tag.update()', function(){
+  describe('wpcom.site.tag.update()', function(){
 
     it('should edit the new added tag', function(done){
       var tag = site.tag(testing_tag.slug);
@@ -99,7 +99,7 @@ describe('site.tag', function(){
     });
   });
 
-  describe('site.tag.delete()', function() {
+  describe('wpcom.site.tag.delete()', function() {
 
     it('should delete the new added tag', function(done) {
       var cat = site.tag(testing_tag.slug);
