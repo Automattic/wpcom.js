@@ -82,7 +82,7 @@ describe('wpcom.site.category', function() {
   describe('wpcom.site.category.update', function(){
     it('should edit the new added category', function(done){
       var category = site.category(new_category.slug);
-      var edited_name = fixture.category.name + '-edited';
+      var edited_name = fixture.category.name + '-updated';
 
       category.update({ name: edited_name }, function(err, data){
         if (err) throw err;
