@@ -18,7 +18,7 @@ describe('wpcom.site.category', function() {
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
 
-  // global var to store category added
+  // global var to store testing category
   var testing_category;
 
   // Create a new_category before to start tests
