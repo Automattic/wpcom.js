@@ -35,6 +35,7 @@ describe('wpcom.site', function(){
         if (err) return done(err);
 
         site_ID = data_site.ID;
+
         done();
       })
     });
@@ -108,6 +109,7 @@ describe('wpcom.site', function(){
 
           assert.equal('number', typeof list.found);
           assert.ok(list.users instanceof Array);
+
           done();
         });
       });
@@ -141,7 +143,6 @@ describe('wpcom.site', function(){
           assert.ok(list.users instanceof Array);
 
           done();
-
         });
       });
     });
@@ -191,7 +192,6 @@ describe('wpcom.site', function(){
           assert.ok(data.visits instanceof Object);
 
           done();
-
         });
       });
     });
@@ -274,7 +274,6 @@ describe('wpcom.site', function(){
           assert.ok(data.clicks instanceof Array);
 
           done();
-
         });
       });
     });
@@ -335,7 +334,6 @@ describe('wpcom.site', function(){
         assert.equal(new_post_ID, data.ID);
 
         done();
-
       });
     });
   });
@@ -350,9 +348,7 @@ describe('wpcom.site', function(){
         assert.equal(fixture.media.files.length, data.media.length);
         done();
       });
-
     });
-
   });
 
   describe('wpcom.site.addMediaUrls', function(){
