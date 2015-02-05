@@ -22,22 +22,21 @@ describe('wpcom.site.post.like', function(){
   // Create `wpcom` and `site` global instances
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
-  var post;
+  var testing_post;
 
   // Create a testing_post before to start the tests
-  var testing_post;
   before(function(done){
     site.addPost(fixture.post, function (err, data) {
       if (err) throw err;
 
-      post = site.post(data.ID)
+      testing_post = site.post(data.ID)
       done();
     });
   });
 
   after(function(done){
     // delete testing_post post
-    post.delete(function(err, post) {
+    testing_post.delete(function(err, post) {
       if (err) throw err;
 
       done();
@@ -46,7 +45,7 @@ describe('wpcom.site.post.like', function(){
 
   describe('wpcom.site.post.like.add', function(){
     it('should add a post like', function(done){
-      post
+      testing_post
       .like()
       .add(function(err, data){
         if (err) throw err;
@@ -63,7 +62,7 @@ describe('wpcom.site.post.like', function(){
 
   describe('wpcom.site.post.like.mine', function(){
     it('should get the post like status of mine', function(done){
-      post
+      testing_post
       .like()
       .mine(function(err, data){
         if (err) throw err;
@@ -80,7 +79,7 @@ describe('wpcom.site.post.like', function(){
 
   describe('wpcom.site.post.like.delete', function(){
     it('should remove your like from the post', function(done){
-      post
+      testing_post
       .like()
       .del(function(err, data){
         if (err) throw err;
