@@ -17,7 +17,7 @@ var fixture = require('./fixture');
  * WPCOM instance
  */
 
-describe('site.media', function(){
+describe('wpcom.site.media', function(){
     // Create `wpcom` and `site` global instances
   var wpcom = WPCOM(fixture.site.private.token);
   var site = wpcom.site(fixture.site.private.url);
@@ -62,7 +62,7 @@ describe('site.media', function(){
 
   });
 
-  describe('media.get()', function(){
+  describe('wpcom.site.media.get()', function(){
 
     it('should get added media', function(done){
       var media = site.media(testing_media.ID);
@@ -76,7 +76,7 @@ describe('site.media', function(){
 
   });
 
-  describe('media.update()', function(){
+  describe('wpcom.site.media.update()', function(){
 
     it('should edit the media title', function(done){
       var edited_title = "This is the new title";
@@ -95,7 +95,7 @@ describe('site.media', function(){
 
   });
 
-  describe('media.addFiles(files)', function(){
+  describe('wpcom.site.media.addFiles(files)', function(){
 
     it('should create a new media from a file', function(done){
       site
@@ -113,7 +113,7 @@ describe('site.media', function(){
 
   });
 
-  describe('media.addUrls(object)', function(){
+  describe('wpcom.site.media.addUrls(object)', function(){
 
     it('should create a new media from an object', function(done){
       var media_object = fixture.media.urls[1];
@@ -131,7 +131,7 @@ describe('site.media', function(){
 
   });
 
-  describe('media.addUrls(array)', function(){
+  describe('wpcom.site.media.addUrls(array)', function(){
 
     it('should create a new media', function(done){
       site
@@ -152,7 +152,7 @@ describe('site.media', function(){
 
   });
 
-  describe('media.delete()', function(){
+  describe('wpcom.site.media.delete()', function(){
 
     it('should delete a media', function(done){
 
