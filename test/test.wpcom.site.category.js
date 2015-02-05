@@ -33,7 +33,7 @@ describe('wpcom.site.category', function() {
     });
   });
 
-  // Remove testing category
+  // Delete testing category
   after(function(done){
     site.category(testing_category.slug)
     .delete(function(err, category) {
@@ -44,8 +44,7 @@ describe('wpcom.site.category', function() {
   });
 
   
-  describe('wpcom.site.category.get()', function(){
-
+  describe('wpcom.site.category.get', function(){
     it('should get added category', function(done){
       site.category(testing_category.slug)
       .get(function(err, data){
@@ -60,8 +59,7 @@ describe('wpcom.site.category', function() {
     });
   });
 
-  describe('wpcom.site.category.add()', function(){
-
+  describe('wpcom.site.category.add', function(){
     it('should add a new category', function(done){
       var category = site.category();
 
@@ -81,8 +79,7 @@ describe('wpcom.site.category', function() {
     });
   });
 
-  describe('wpcom.site.category.update()', function(){
-
+  describe('wpcom.site.category.update', function(){
     it('should edit the new added category', function(done){
       var category = site.category(new_category.slug);
       var edited_name = fixture.category.name + '-edited';
@@ -101,8 +98,7 @@ describe('wpcom.site.category', function() {
     });
   });
 
-  describe('wpcom.site.category.delete()', function(){
-
+  describe('wpcom.site.category.delete', function(){
     it('should delete the new added category', function(done){
       site.category(new_category.slug)
       .delete(function(err, data){

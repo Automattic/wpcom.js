@@ -43,8 +43,7 @@ describe('wpcom.site.tag', function(){
     });
   });
 
-  describe('wpcom.site.tag.get()', function(){
-
+  describe('wpcom.site.tag.get', function(){
     it('should get added tag', function(done){
       var cat = site.tag(testing_tag.slug);
 
@@ -60,8 +59,7 @@ describe('wpcom.site.tag', function(){
     });
   });
 
-  describe('wpcom.site.tag.add()', function(){
-
+  describe('wpcom.site.tag.add', function(){
     it('should add a new tag', function(done){
       var tag = site.tag();
       fixture.tag.name += '-added';
@@ -81,8 +79,7 @@ describe('wpcom.site.tag', function(){
     });
   });
 
-  describe('wpcom.site.tag.update()', function(){
-
+  describe('wpcom.site.tag.update', function(){
     it('should edit the new added tag', function(done){
       var tag = site.tag(new_tag.slug);
       var edited_name = fixture.tag.name + '-edited';
@@ -101,8 +98,7 @@ describe('wpcom.site.tag', function(){
     });
   });
 
-  describe('wpcom.site.tag.delete()', function() {
-
+  describe('wpcom.site.tag.delete', function() {
     it('should delete the new added tag', function(done) {
       var cat = site.tag(new_tag.slug);
 

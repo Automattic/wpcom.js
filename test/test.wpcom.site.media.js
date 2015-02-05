@@ -53,17 +53,12 @@ describe('wpcom.site.media', function(){
 
             done();
           });
-
         });
-
       });
-
     });
-
   });
 
-  describe('wpcom.site.media.get()', function(){
-
+  describe('wpcom.site.media.get', function(){
     it('should get added media', function(done){
       var media = site.media(testing_media.ID);
       media.get(function(err, data){
@@ -73,11 +68,9 @@ describe('wpcom.site.media', function(){
         done();
       });
     });
-
   });
 
-  describe('wpcom.site.media.update()', function(){
-
+  describe('wpcom.site.media.update', function(){
     it('should edit the media title', function(done){
       var edited_title = "This is the new title";
 
@@ -92,11 +85,9 @@ describe('wpcom.site.media', function(){
         done();
       });
     });
-
   });
 
-  describe('wpcom.site.media.addFiles(files)', function(){
-
+  describe('wpcom.site.media.addFiles', function(){
     it('should create a new media from a file', function(done){
       site
       .media()
@@ -108,13 +99,10 @@ describe('wpcom.site.media', function(){
         assert.equal(fixture.media.files.length, data.media.length);
         done();
       });
-
     });
-
   });
 
-  describe('wpcom.site.media.addUrls(object)', function(){
-
+  describe('wpcom.site.media.addUrls', function(){
     it('should create a new media from an object', function(done){
       var media_object = fixture.media.urls[1];
 
@@ -128,11 +116,9 @@ describe('wpcom.site.media', function(){
         done();
       });
     });
-
   });
 
-  describe('wpcom.site.media.addUrls(array)', function(){
-
+  describe('wpcom.site.media.addUrls', function(){
     it('should create a new media', function(done){
       site
       .media()
@@ -147,15 +133,11 @@ describe('wpcom.site.media', function(){
 
         done();
       });
-
     });
-
   });
 
-  describe('wpcom.site.media.delete()', function(){
-
+  describe('wpcom.site.media.delete', function(){
     it('should delete a media', function(done){
-
       site
       .media(testing_media.ID)
       .del(function(err, data){
@@ -164,9 +146,7 @@ describe('wpcom.site.media', function(){
         assert.equal(testing_media.ID, data.ID);
         done();
       });
-
     });
-
   });
 
 });

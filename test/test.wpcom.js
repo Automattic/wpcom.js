@@ -12,7 +12,7 @@ var assert = require('assert');
 
 describe('wpcom', function(){
 
-  describe('wpcom.freshlyPressed()', function(){
+  describe('wpcom.freshlyPressed', function(){
     it('should require freshly pressed', function(done){
       var wpcom = WPCOM();
 

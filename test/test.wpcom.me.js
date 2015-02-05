@@ -20,7 +20,7 @@ describe('wpcom.me', function(){
   var wpcom = WPCOM(fixture.site.token);
   var me = wpcom.me();
 
-  describe('wpcom.me.get()', function(){
+  describe('wpcom.me.get', function(){
     it('should require user information object', function(done){
       me.get(function(err, me){
         if (err) throw err;
@@ -52,7 +52,7 @@ describe('wpcom.me', function(){
     });
   });
 
-  describe('wpcom.me.sites()', function(){
+  describe('wpcom.me.sites', function(){
     it('should require user sites object', function(done){
       me.sites(function(err, sites){
         if (err) throw err;
@@ -61,7 +61,7 @@ describe('wpcom.me', function(){
     });
   });
 
-  describe('wpcom.me.likes()', function(){
+  describe('wpcom.me.likes', function(){
     it('should require user likes', function(done){
       me.likes(function(err, data){
         if (err) throw err;
@@ -75,7 +75,7 @@ describe('wpcom.me', function(){
     });
   });
 
-  describe('me.groups()', function(){
+  describe('me.groups', function(){
     it('should require groups', function(done){
       me.groups(function(err, data){
         if (err) throw err;
@@ -88,7 +88,7 @@ describe('wpcom.me', function(){
     });
   });
 
-  describe('wpcom.me.connections()', function(){
+  describe('wpcom.me.connections', function(){
     it('should require third-party connections', function(done){
       me.connections(function(err, data){
         if (err) throw err;

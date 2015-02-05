@@ -16,13 +16,13 @@ var fixture = require('./fixture');
  * Create a `Site` instance
  */
 
-describe('wpcom.site.batch()', function(){
+describe('wpcom.site.batch', function(){
 
   it('should require site data', function(done){
 
     var wpcom = WPCOM();
     var batch = wpcom.batch();
-    var site = wpcom.site(fixture.site.public.url);
+    var site = wpcom.site(fixture.site.url);
 
     var url_site = '/sites/' + site._id;
     var url_posts = '/sites/' + site._id + '/posts';
