@@ -19,16 +19,14 @@ var fixture = require('./fixture');
  */
 
 describe('wpcom.site.post', function(){
-  // Create `wpcom` and `site` global instances
+  // Global instances
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
-
-  // var to store post in `add()` test
   var new_post;
   var site_ID;
+  var testing_post;
 
   // Create a testing_post before to start the tests
-  var testing_post;
   before(function(done){
     site.addPost(fixture.post, function (err, data_post) {
       if (err) throw err;
@@ -55,8 +53,9 @@ describe('wpcom.site.post', function(){
 
   describe('wpcom.site.post.get', function(){
     it('should get added post (by id)', function(done){
-      var post = site.post(testing_post.ID);
-      post.get(function(err, data){
+      site
+      .post(testing_post.ID)
+      .get(function(err, data){
         if (err) throw err;
 
         assert.equal(testing_post.ID, data.ID);
@@ -66,8 +65,9 @@ describe('wpcom.site.post', function(){
     });
 
     it('should get passing a query object', function(done){
-      var post = site.post(testing_post.ID);
-      post.get({ content: 'edit' }, function(err, post){
+      site
+      .post(testing_post.ID)
+      .get({ content: 'edit' }, function(err, post){
         if (err) throw err;
 
         assert.equal(testing_post.ID, post.ID);
@@ -77,8 +77,9 @@ describe('wpcom.site.post', function(){
     });
 
     it('should get added post (by slug)', function(done){
-      var post = site.post({ slug: testing_post.slug });
-      post.get(function(err, post){
+      site
+      .post({ slug: testing_post.slug })
+      .get(function(err, post){
         if (err) throw err;
 
         assert.equal(testing_post.ID, post.ID);
@@ -90,10 +91,11 @@ describe('wpcom.site.post', function(){
 
   describe('wpcom.site.post.add', function(){
     it('should add a new post', function(done){
-      var post = site.post();
       fixture.post.title += '-added';
 
-      post.add(fixture.post, function(err, data){
+      site
+      .post()
+      .add(fixture.post, function(err, data){
         if (err) throw err;
 
         // checking some data date
@@ -110,10 +112,10 @@ describe('wpcom.site.post', function(){
 
   describe('wpcom.site.post.update', function(){
     it('should edit the new added post', function(done){
-      var post = site.post(testing_post.ID);
       var new_title = fixture.post.title + '-updated';
-
-      post.update({ title: new_title }, function(err, data){
+      site
+      .post(testing_post.ID)
+      .update({ title: new_title }, function(err, data){
         if (err) throw err;
 
         assert.ok(data);
@@ -126,9 +128,9 @@ describe('wpcom.site.post', function(){
 
   describe('wpcom.site.post.likesList', function(){
     it('should get post likes list', function(done){
-      var post = site.post(testing_post.ID);
-
-      post.likesList(function(err, data){
+      site
+      .post(testing_post.ID)
+      .likesList(function(err, data){
         if (err) throw err;
 
         assert.ok(data);
@@ -165,13 +167,11 @@ describe('wpcom.site.post', function(){
   });
 */
 
-  describe('post.delete()', function(){
-
+  describe('wpcom.site.post.delete', function(){
     it('should delete the new added post', function(done){
-      var site = util.private_site();
-      var post = site.post(testing_post.ID);
-
-      post.delete(function(err, data){
+      site
+      .post(testing_post.ID)
+      .delete(function(err, data){
         if (err) throw err;
 
         assert.ok(data);
@@ -180,57 +180,38 @@ describe('wpcom.site.post', function(){
         done();
       });
     });
-
   });
 
-  describe('post.comments()', function(){
-
-    it('should get the post like status of mine', function(done){
-      util.private_site()
-      .post(testing_post.ID)
-      .comments(function(err, data){
-        if (err) throw err;
-
-        assert.equal('number', typeof data.found);
-        assert.equal('object', typeof data.comments);
-        assert.ok(data.comments instanceof Array);
-
-        done();
-      });
-    });
-
-  });
-
-  describe('post.restore()', function(){
-
+  describe('wpcom.site.post.restore', function(){
     it('should restore a post from trash', function(done){
-      var site = util.private_site();
       var post = site.post();
-
-      post.add(fixture.post, function(err, data){
+      post.add(fixture.post, function(err, data1){
         if (err) throw err;
 
-        post = site.post(data.ID);
+        assert.equal(post._id, data1.ID);
 
-        post.delete(function(err, data){
+        post.delete(function(err, data2){
           if (err) throw err;
 
-          post.restore(function(err, data){
+          assert.equal(post._id, data2.ID);
+
+          post.restore(function(err, data3){
             if (err) throw err;
 
-            assert.ok(data);
-            assert.equal(testing_post.status, data.status);
+            assert.ok(data3);
+            assert.equal(post._id, data3.ID);
+            assert.equal(testing_post.status, data3.status);
 
-            post.delete(function(err, data){
+            post.delete(function(err, data4){
               if (err) throw err;
 
+              assert.equal(post._id, data4.ID);
               done();
             });
           });
         });
       });
     });
-
   });
 
 });
