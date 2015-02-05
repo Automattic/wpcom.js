@@ -13,549 +13,520 @@ var assert = require('assert');
  * Testing data
  */
 
-var test = require('./fixture');
+var fixture = require('./fixture');
 
 /**
  * WPCOM instance
  */
 
-describe('WPCOM#Site#Post', function(){
-  // var to store post in `add()` test
-  var post_added;
-  var comment_added;
+describe('wpcom.site.post', function(){
+  // Create `wpcom` and `site` global instances
+  var wpcom = WPCOM(fixture.site.token);
+  var site = wpcom.site(fixture.site.url);
 
-  // Create a new_post before to start the tests
+  // var to store post in `add()` test
   var new_post;
+  var new_comment;
+
+  // Create a testing_post before to start the tests
+  var testing_post;
   before(function(done){
-    util.addPost(function(err, post, comment) {
+    site.addPost(fixture.post, function (err, data_post) {
       if (err) throw err;
 
-      new_post = post;
-      comment_added = comment;
-      done();
+      testing_post = data_post;
+      
+      // Add comment to post
+      site
+      .post(testing_post.ID)
+      .comment()
+      .add(fixture.post_comment, function (err, data_comment) {
+        if (err) throw err;
+
+        new_comment = data_comment;
+        done();
+      })
     });
   });
 
   after(function(done){
-    var blog = WPCOM(test.site.private.token).site(test.site.private.id);
-
-    // clean new_post post
-    blog.deletePost(new_post.ID, function(err, post) {
+    // delete testing_post post
+    site.deletePost(testing_post.ID, function(err, post) {
       if (err) throw err;
 
-      // clean post_added post
-      blog.deletePost(post_added.ID, function(err, post) {
+      done();
+    });
+  });
+
+  describe('wpcom.site.post.get', function(){
+    it('should get added post (by id)', function(done){
+      var post = site.post(testing_post.ID);
+      post.get(function(err, data){
         if (err) throw err;
+
+        assert.equal(testing_post.ID, data.ID);
+        assert.equal(testing_post.site_ID, data.site_ID);
+        done();
+      });
+    });
+
+    it('should get passing a query object', function(done){
+      var post = site.post(testing_post.ID);
+      post.get({ content: 'edit' }, function(err, post){
+        if (err) throw err;
+
+        assert.equal(testing_post.ID, post.ID);
+        assert.equal(testing_post.site_ID, post.site_ID);
+        done();
+      });
+    });
+
+    it('should get added post (by slug)', function(done){
+      var post = site.post({ slug: testing_post.slug });
+      post.get(function(err, post){
+        if (err) throw err;
+
+        assert.equal(testing_post.ID, post.ID);
+        assert.equal(testing_post.site_ID, post.site_ID);
         done();
       });
     });
   });
 
-  describe('sync', function(){
+  describe('post.add()', function(){
 
-    it('should create an `Post` instance from `Site`', function(){
-      var post = WPCOM().site().post();
+    it('should add a new post', function(done){
+      var site = util.private_site();
+      var post = site.post();
 
-      assert.ok(post instanceof Post, 'post is not instance of Post');
-    });
+      post.add(test.testing_post_data, function(err, data){
+        if (err) throw err;
 
-    it('should set post `id`', function(){
-      var post = WPCOM().site().post();
-      post.id(new_post.ID);
+        // checking some data date
+        assert.ok(data);
+        assert.ok(data instanceof Object, 'data is not an object');
+        assert.equal(test.site.private.id, data.site_ID);
 
-      assert.equal(new_post.ID, post._id);
-    });
+        new_post = data;
 
-    it('should set post `slug`', function(){
-      var post = WPCOM().site().post();
-      post.slug(new_post.slug);
-
-      assert.equal(new_post.slug, post._slug);
+        done();
+      });
     });
 
   });
 
-  describe('async', function(){
+  describe('post.update()', function(){
 
-    describe('post.get()', function(){
+    it('should edit the new added post', function(done){
+      var site = util.private_site();
+      var post = site.post(testing_post.ID);
 
-      it('should get added post (by id)', function(done){
-        var site = util.private_site();
-        var post = site.post(new_post.ID);
+      var edited_title = testing_post.title + ' has been changed';
 
-        post.get(function(err, post){
-          if (err) throw err;
+      post.update({ title: edited_title }, function(err, data){
+        if (err) throw err;
 
-          assert.equal(new_post.ID, post.ID);
-          assert.equal(new_post.site_ID, post.site_ID);
-          done();
-        });
+        assert.ok(data);
+        assert.equal(edited_title, data.title);
+
+        done();
       });
+    });
 
-      it('should get passing a query object', function(done){
-        var site = util.private_site();
-        var post = site.post(new_post.ID);
+  });
 
-        post.get({ content: 'edit' }, function(err, post){
-          if (err) throw err;
+  describe('post.likesList()', function(){
 
-          assert.equal(new_post.ID, post.ID);
-          assert.equal(new_post.site_ID, post.site_ID);
-          done();
-        });
-      });
+    it('should get post likes list', function(done){
+      var site = util.private_site();
+      var post = site.post(testing_post.ID);
 
-      it('should get added post (by slug)', function(done){
-        var site = util.private_site();
-        var post = site.post({ slug: new_post.slug });
+      post.likesList(function(err, data){
+        if (err) throw err;
 
-        post.get(function(err, post){
-          if (err) throw err;
+        assert.ok(data);
 
-          assert.equal(new_post.ID, post.ID);
-          assert.equal(new_post.site_ID, post.site_ID);
-          done();
-        });
+        assert.equal('number', typeof data.found);
+        assert.equal('boolean', typeof data.i_like);
+        assert.equal('object', typeof data.likes);
+        assert.ok(data.likes instanceof Array);
+
+        done();
       });
 
     });
 
-    describe('post.add()', function(){
-
-      it('should add a new post', function(done){
-        var site = util.private_site();
-        var post = site.post();
-
-        post.add(test.new_post_data, function(err, data){
-          if (err) throw err;
-
-          // checking some data date
-          assert.ok(data);
-          assert.ok(data instanceof Object, 'data is not an object');
-          assert.equal(test.site.private.id, data.site_ID);
-
-          post_added = data;
-
-          done();
-        });
-      });
-
-    });
-
-    describe('post.update()', function(){
-
-      it('should edit the new added post', function(done){
-        var site = util.private_site();
-        var post = site.post(new_post.ID);
-
-        var edited_title = new_post.title + ' has been changed';
-
-        post.update({ title: edited_title }, function(err, data){
-          if (err) throw err;
-
-          assert.ok(data);
-          assert.equal(edited_title, data.title);
-
-          done();
-        });
-      });
-
-    });
-
-    describe('post.likesList()', function(){
-
-      it('should get post likes list', function(done){
-        var site = util.private_site();
-        var post = site.post(new_post.ID);
-
-        post.likesList(function(err, data){
-          if (err) throw err;
-
-          assert.ok(data);
-
-          assert.equal('number', typeof data.found);
-          assert.equal('boolean', typeof data.i_like);
-          assert.equal('object', typeof data.likes);
-          assert.ok(data.likes instanceof Array);
-
-          done();
-        });
-
-      });
-
-    });
+  });
 /*
-    describe('post.related()', function(){
+  describe('post.related()', function(){
 
-      it('should get related posts', function(done){
-        var site = util.private_site();
-        var post = site.post(new_post.ID);
+    it('should get related posts', function(done){
+      var site = util.private_site();
+      var post = site.post(testing_post.ID);
 
-        post.related({ size: 5 }, function(err, data){
-          if (err) throw err;
+      post.related({ size: 5 }, function(err, data){
+        if (err) throw err;
 
-          assert.ok(data);
-          assert.equal('number', typeof data.total);
-          assert.ok(data.hits instanceof Array);
+        assert.ok(data);
+        assert.equal('number', typeof data.total);
+        assert.ok(data.hits instanceof Array);
 
-          done();
-        });
-
+        done();
       });
 
     });
+
+  });
 */
 
-    describe('post.like.add()', function(){
+  describe('post.like.add()', function(){
 
-      it('should add a post like', function(done){
-        util
-        .private_site()
-        .post(new_post.ID)
-        .like()
-        .add(function(err, data){
-          if (err) throw err;
+    it('should add a post like', function(done){
+      util
+      .private_site()
+      .post(testing_post.ID)
+      .like()
+      .add(function(err, data){
+        if (err) throw err;
 
-          assert.ok(data);
-          assert.ok(data.success);
-          assert.ok(data.i_like);
-          assert.equal(1, data.like_count);
+        assert.ok(data);
+        assert.ok(data.success);
+        assert.ok(data.i_like);
+        assert.equal(1, data.like_count);
 
-          done();
-        });
-
+        done();
       });
 
     });
 
-    describe('post.comment.add()', function(){
+  });
 
-      it('should add a post comment', function(done){
-        util
-        .private_site()
-        .post(new_post.ID)
-        .comment()
-        .add({ content: 'Nice post Buddy !!!' }, function(err, data){
-          if (err) throw err;
+  describe('post.comment.add()', function(){
 
-          assert.equal('number', typeof data.ID);
-          assert.equal('object', typeof data.post);
-          assert.ok(data.post instanceof Object);
+    it('should add a post comment', function(done){
+      util
+      .private_site()
+      .post(testing_post.ID)
+      .comment()
+      .add({ content: 'Nice post Buddy !!!' }, function(err, data){
+        if (err) throw err;
 
-          done();
-        });
+        assert.equal('number', typeof data.ID);
+        assert.equal('object', typeof data.post);
+        assert.ok(data.post instanceof Object);
 
+        done();
       });
 
     });
 
-    describe('post.comment.update()', function(){
+  });
 
-      it('should update a post comment', function(done){
-        util
-        .private_site()
-        .post(new_post.ID)
-        .comment(comment_added.ID)
-        .update('Awful post Buddy !!!', function(err, data){
-          if (err) throw err;
+  describe('post.comment.update()', function(){
 
-          assert.equal('number', typeof data.ID);
-          assert.equal('object', typeof data.post);
-          assert.ok(data.post instanceof Object);
-          assert.equal(comment_added.ID, data.ID);
+    it('should update a post comment', function(done){
+      util
+      .private_site()
+      .post(testing_post.ID)
+      .comment(new_comment.ID)
+      .update('Awful post Buddy !!!', function(err, data){
+        if (err) throw err;
 
-          done();
-        });
+        assert.equal('number', typeof data.ID);
+        assert.equal('object', typeof data.post);
+        assert.ok(data.post instanceof Object);
+        assert.equal(new_comment.ID, data.ID);
 
+        done();
       });
 
     });
 
-    describe('post.comment.reply()', function(){
+  });
 
-      it('should add a reply to a post comment', function(done){
-        util
-        .private_site()
-        .post(new_post.ID)
-        .comment(comment_added.ID)
-        .reply('it sucks !!!', function(err, data){
-          if (err) throw err;
+  describe('post.comment.reply()', function(){
 
-          assert.equal('number', typeof data.ID);
-          assert.equal('object', typeof data.post);
-          assert.ok(data.post instanceof Object);
-          assert.equal(comment_added.ID, data.parent.ID);
+    it('should add a reply to a post comment', function(done){
+      util
+      .private_site()
+      .post(testing_post.ID)
+      .comment(new_comment.ID)
+      .reply('it sucks !!!', function(err, data){
+        if (err) throw err;
 
-          done();
-        });
+        assert.equal('number', typeof data.ID);
+        assert.equal('object', typeof data.post);
+        assert.ok(data.post instanceof Object);
+        assert.equal(new_comment.ID, data.parent.ID);
 
+        done();
       });
 
     });
 
-    describe('post.comment.delete()', function(){
+  });
 
-      it('should delete a comment', function(done){
-        util
-        .private_site()
-        .post(new_post.ID)
-        .comment(comment_added.ID)
-        .del(function(err, data){
-          if (err) throw err;
+  describe('post.comment.delete()', function(){
 
-          assert.equal('number', typeof data.ID);
-          assert.equal('object', typeof data.post);
-          assert.ok(data.post instanceof Object);
-          assert.equal(comment_added.ID, data.ID);
+    it('should delete a comment', function(done){
+      util
+      .private_site()
+      .post(testing_post.ID)
+      .comment(new_comment.ID)
+      .del(function(err, data){
+        if (err) throw err;
 
-          done();
-        });
+        assert.equal('number', typeof data.ID);
+        assert.equal('object', typeof data.post);
+        assert.ok(data.post instanceof Object);
+        assert.equal(new_comment.ID, data.ID);
 
+        done();
       });
 
     });
 
-    describe('post.comment.like()', function(){
+  });
 
-      it('should add a comment like', function(done){
-        util
-        .private_site()
-        .post(new_post.ID)
-        .comment(comment_added.ID)
-        .like()
-        .add(function(err, data){
-          if (err) throw err;
+  describe('post.comment.like()', function(){
 
-          assert.ok(data);
-          assert.equal(1, data.like_count);
-          assert.ok(data.i_like);
+    it('should add a comment like', function(done){
+      util
+      .private_site()
+      .post(testing_post.ID)
+      .comment(new_comment.ID)
+      .like()
+      .add(function(err, data){
+        if (err) throw err;
 
-          done();
-        });
+        assert.ok(data);
+        assert.equal(1, data.like_count);
+        assert.ok(data.i_like);
 
+        done();
       });
 
     });
 
-    describe('post.comment.like.mine()', function(){
+  });
 
-      it('should get the comment like status of mine', function(done){
-        util.private_site()
-        .post(new_post.ID)
-        .comment(comment_added.ID)
-        .like()
-        .mine(function(err, data){
-          if (err) throw err;
+  describe('post.comment.like.mine()', function(){
 
-          assert.ok(data);
-          assert.equal(1, data.like_count);
-          assert.ok(data.i_like);
+    it('should get the comment like status of mine', function(done){
+      util.private_site()
+      .post(testing_post.ID)
+      .comment(new_comment.ID)
+      .like()
+      .mine(function(err, data){
+        if (err) throw err;
 
-          done();
-        });
+        assert.ok(data);
+        assert.equal(1, data.like_count);
+        assert.ok(data.i_like);
+
+        done();
+      });
+    });
+
+  });
+
+  describe('post.comment.likesList()', function(){
+
+    it('should get comment likes list', function(done){
+      util.private_site()
+      .post(testing_post.ID)
+      .comment(new_comment.ID)
+      .likesList(function(err, data){
+        if (err) throw err;
+
+        assert.ok(data);
+        assert.equal('number', typeof data.found);
+        assert.equal('boolean', typeof data.i_like);
+        assert.equal('object', typeof data.likes);
+        assert.ok(data.likes instanceof Array);
+
+        done();
       });
 
     });
 
-    describe('post.comment.likesList()', function(){
+  });
 
-      it('should get comment likes list', function(done){
-        util.private_site()
-        .post(new_post.ID)
-        .comment(comment_added.ID)
-        .likesList(function(err, data){
-          if (err) throw err;
+  describe('post.comment.like.delete()', function(){
 
-          assert.ok(data);
-          assert.equal('number', typeof data.found);
-          assert.equal('boolean', typeof data.i_like);
-          assert.equal('object', typeof data.likes);
-          assert.ok(data.likes instanceof Array);
+    it('should remove your like from the comment', function(done){
+      util.private_site()
+      .post(testing_post.ID)
+      .comment(new_comment.ID)
+      .like()
+      .del(function(err, data){
+        if (err) throw err;
 
-          done();
-        });
+        assert.ok(data);
+        assert.ok(data.success);
+        assert.equal(0, data.like_count);
+        assert.ok(!(data.i_like));
 
+        done();
       });
-
     });
 
-    describe('post.comment.like.delete()', function(){
+  });
 
-      it('should remove your like from the comment', function(done){
-        util.private_site()
-        .post(new_post.ID)
-        .comment(comment_added.ID)
-        .like()
-        .del(function(err, data){
-          if (err) throw err;
+  describe('post.like.mine()', function(){
 
-          assert.ok(data);
-          assert.ok(data.success);
-          assert.equal(0, data.like_count);
-          assert.ok(!(data.i_like));
+    it('should get the post like status of mine', function(done){
+      util.private_site()
+      .post(testing_post.ID)
+      .like()
+      .mine(function(err, data){
+        if (err) throw err;
 
-          done();
-        });
+        assert.ok(data);
+        assert.equal(1, data.like_count);
+        assert.ok(data.i_like);
+
+        done();
       });
-
     });
 
-    describe('post.like.mine()', function(){
+  });
 
-      it('should get the post like status of mine', function(done){
-        util.private_site()
-        .post(new_post.ID)
-        .like()
-        .mine(function(err, data){
-          if (err) throw err;
+  describe('post.reblog.add()', function(){
 
-          assert.ok(data);
-          assert.equal(1, data.like_count);
-          assert.ok(data.i_like);
+    it('should get reblog the added post', function(done){
+      util.private_site()
+      .post(testing_post.ID)
+      .reblog()
+      .add(test.site.reblog, function(err, data){
+        if (err) throw err;
 
-          done();
-        });
+        assert.ok(data);
+        assert.ok(data.can_reblog);
+        done();
       });
-
     });
 
-    describe('post.reblog.add()', function(){
+  });
 
-      it('should get reblog the added post', function(done){
-        util.private_site()
-        .post(new_post.ID)
-        .reblog()
-        .add(test.site.reblog, function(err, data){
-          if (err) throw err;
+  describe('post.reblog.to()', function(){
 
-          assert.ok(data);
-          assert.ok(data.can_reblog);
-          done();
-        });
+    it('should get reblog the added post', function(done){
+      util.private_site()
+      .post(testing_post.ID)
+      .reblog()
+      .to(test.site.reblog.destination_site_id, 'great !!!', function(err, data){
+        if (err) throw err;
+
+        assert.ok(data);
+        assert.ok(data.can_reblog);
+        done();
       });
-
     });
 
-    describe('post.reblog.to()', function(){
+  });
 
-      it('should get reblog the added post', function(done){
-        util.private_site()
-        .post(new_post.ID)
-        .reblog()
-        .to(test.site.reblog.destination_site_id, 'great !!!', function(err, data){
-          if (err) throw err;
+  describe('post.reblog.mine()', function(){
 
-          assert.ok(data);
-          assert.ok(data.can_reblog);
-          done();
-        });
+    it('should get the post reblog status of mine', function(done){
+      util.private_site()
+      .post(testing_post.ID)
+      .reblog()
+      .mine(function(err, data){
+        if (err) throw err;
+
+        assert.ok(data);
+        assert.ok(data.can_reblog);
+        done();
       });
-
     });
 
-    describe('post.reblog.mine()', function(){
+  });
 
-      it('should get the post reblog status of mine', function(done){
-        util.private_site()
-        .post(new_post.ID)
-        .reblog()
-        .mine(function(err, data){
-          if (err) throw err;
+  describe('post.like.delete()', function(){
 
-          assert.ok(data);
-          assert.ok(data.can_reblog);
-          done();
-        });
+    it('should remove your like from the post', function(done){
+      util.private_site()
+      .post(testing_post.ID)
+      .like()
+      .del(function(err, data){
+        if (err) throw err;
+
+        assert.ok(data);
+        assert.ok(data.success);
+        assert.equal(0, data.like_count);
+        assert.ok(!(data.i_like));
+
+        done();
       });
-
     });
 
-    describe('post.like.delete()', function(){
+  });
 
-      it('should remove your like from the post', function(done){
-        util.private_site()
-        .post(new_post.ID)
-        .like()
-        .del(function(err, data){
-          if (err) throw err;
+  describe('post.delete()', function(){
 
-          assert.ok(data);
-          assert.ok(data.success);
-          assert.equal(0, data.like_count);
-          assert.ok(!(data.i_like));
+    it('should delete the new added post', function(done){
+      var site = util.private_site();
+      var post = site.post(testing_post.ID);
 
-          done();
-        });
+      post.delete(function(err, data){
+        if (err) throw err;
+
+        assert.ok(data);
+        assert.equal(testing_post.ID, data.ID);
+
+        done();
       });
-
     });
 
-    describe('post.delete()', function(){
+  });
 
-      it('should delete the new added post', function(done){
-        var site = util.private_site();
-        var post = site.post(new_post.ID);
+  describe('post.comments()', function(){
+
+    it('should get the post like status of mine', function(done){
+      util.private_site()
+      .post(testing_post.ID)
+      .comments(function(err, data){
+        if (err) throw err;
+
+        assert.equal('number', typeof data.found);
+        assert.equal('object', typeof data.comments);
+        assert.ok(data.comments instanceof Array);
+
+        done();
+      });
+    });
+
+  });
+
+  describe('post.restore()', function(){
+
+    it('should restore a post from trash', function(done){
+      var site = util.private_site();
+      var post = site.post();
+
+      post.add(test.testing_post_data, function(err, data){
+        if (err) throw err;
+
+        post = site.post(data.ID);
 
         post.delete(function(err, data){
           if (err) throw err;
 
-          assert.ok(data);
-          assert.equal(new_post.ID, data.ID);
-
-          done();
-        });
-      });
-
-    });
-
-    describe('post.comments()', function(){
-
-      it('should get the post like status of mine', function(done){
-        util.private_site()
-        .post(new_post.ID)
-        .comments(function(err, data){
-          if (err) throw err;
-
-          assert.equal('number', typeof data.found);
-          assert.equal('object', typeof data.comments);
-          assert.ok(data.comments instanceof Array);
-
-          done();
-        });
-      });
-
-    });
-
-    describe('post.restore()', function(){
-
-      it('should restore a post from trash', function(done){
-        var site = util.private_site();
-        var post = site.post();
-
-        post.add(test.new_post_data, function(err, data){
-          if (err) throw err;
-
-          post = site.post(data.ID);
-
-          post.delete(function(err, data){
+          post.restore(function(err, data){
             if (err) throw err;
 
-            post.restore(function(err, data){
+            assert.ok(data);
+            assert.equal(testing_post.status, data.status);
+
+            post.delete(function(err, data){
               if (err) throw err;
 
-              assert.ok(data);
-              assert.equal(new_post.status, data.status);
-
-              post.delete(function(err, data){
-                if (err) throw err;
-
-                done();
-              });
+              done();
             });
           });
         });
       });
-
     });
 
   });
