@@ -45,7 +45,7 @@ describe('wpcom.site', function(){
     });
   });
 
-  describe('lists', function(){
+  describe('wpcom.site.lists', function(){
 
     describe('wpcom.site.postsList()', function() {
       it('should request posts list', function(done) {
@@ -82,10 +82,7 @@ describe('wpcom.site', function(){
     });
 
     describe('site.mediaList()', function(){
-
       it('should request media library list', function(done){
-        var site = util.private_site();
-
         site.mediaList(function(err, list){
           if (err) throw err;
 
@@ -96,18 +93,12 @@ describe('wpcom.site', function(){
           assert.ok(list.media instanceof Array);
 
           done();
-
         });
-
       });
-
     });
 
     describe('site.usersList()', function(){
-
       it('should request users list', function(done){
-        var site = util.private_site();
-
         site.usersList(function(err, list){
           if (err) throw err;
 
@@ -115,16 +106,11 @@ describe('wpcom.site', function(){
           assert.ok(list.users instanceof Array);
           done();
         });
-
       });
-
     });
 
     describe('site.commentsList()', function(){
-
       it('should request comments list', function(done){
-        var site = util.private_site();
-
         site.commentsList(function(err, list){
           if (err) throw err;
 
@@ -135,18 +121,12 @@ describe('wpcom.site', function(){
           assert.ok(list.comments instanceof Array);
 
           done();
-
         });
-
       });
-
     });
 
     describe('site.followsList()', function(){
-
       it('should request follows list', function(done){
-        var site = util.private_site();
-
         site.followsList(function(err, list){
           if (err) throw err;
 
@@ -159,16 +139,11 @@ describe('wpcom.site', function(){
           done();
 
         });
-
       });
-
     });
 
     describe('site.categoriesList()', function(){
-
       it('should request categories list', function(done){
-        var site = util.private_site();
-
         site.categoriesList(function(err, list){
           if (err) throw err;
 
@@ -179,18 +154,12 @@ describe('wpcom.site', function(){
           assert.ok(list.categories instanceof Array);
 
           done();
-
         });
-
       });
-
     });
 
     describe('site.tagsList()', function(){
-
       it('should request tags list', function(done){
-        var site = util.private_site();
-
         site.tagsList(function(err, list){
           if (err) throw err;
 
@@ -201,18 +170,12 @@ describe('wpcom.site', function(){
           assert.ok(list.tags instanceof Array);
 
           done();
-
         });
-
       });
-
     });
 
     describe('site.stats()', function(){
-
       it('should request stats data', function(done){
-        var site = util.private_site();
-
         site.stats(function(err, data){
           if (err) throw err;
 
@@ -226,16 +189,11 @@ describe('wpcom.site', function(){
           done();
 
         });
-
       });
-
     });
 
     describe('site.statsVisits()', function(){
-
       it('should request visits stats', function(done){
-        var site = util.private_site();
-
         site.statsVisits(function(err, data){
           if (err) throw err;
 
@@ -248,18 +206,12 @@ describe('wpcom.site', function(){
           assert.ok(data.fields instanceof Array);
 
           done();
-
         });
-
       });
-
     });
 
     describe('site.statsReferrers()', function(){
-
       it('should request referrers stats', function(done){
-        var site = util.private_site();
-
         site.statsReferrers(function(err, data){
           if (err) throw err;
 
@@ -272,18 +224,12 @@ describe('wpcom.site', function(){
           assert.ok(data.referrers instanceof Array);
 
           done();
-
         });
-
       });
-
     });
 
     describe('site.statsTopPosts()', function(){
-
       it('should request top posts stats', function(done){
-        var site = util.private_site();
-
         site.statsTopPosts(function(err, data){
           if (err) throw err;
 
@@ -292,18 +238,12 @@ describe('wpcom.site', function(){
           assert.ok(data['top-posts'] instanceof Array);
 
           done();
-
         });
-
       });
-
     });
 
     describe('site.statsCountryViews()', function(){
-
       it('should request country views stats', function(done){
-        var site = util.private_site();
-
         site.statsCountryViews(function(err, data){
           if (err) throw err;
 
@@ -312,18 +252,12 @@ describe('wpcom.site', function(){
           assert.ok(data['country-views'] instanceof Array);
 
           done();
-
         });
-
       });
-
     });
 
     describe('site.statsClicks()', function(){
-
       it('should request clicks stats', function(done){
-        var site = util.private_site();
-
         site.statsClicks(function(err, data){
           if (err) throw err;
 
@@ -338,16 +272,11 @@ describe('wpcom.site', function(){
           done();
 
         });
-
       });
-
     });
 
     describe('site.statsSearchTerms()', function(){
-
       it('should request search terms stats', function(done){
-        var site = util.private_site();
-
         site.statsSearchTerms(function(err, data){
           if (err) throw err;
 
