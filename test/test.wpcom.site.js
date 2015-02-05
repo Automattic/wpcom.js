@@ -25,14 +25,21 @@ describe('wpcom.site', function(){
 
   // global var to store testing post
   var testing_post;
+  var site_ID;
 
   // Create a testing_post before to start tests
   before(function(done){
-    site.addPost(fixture.post, function(err, data) {
+    site.addPost(fixture.post, function(err, data_post) {
       if (err) return done(err);
 
-      testing_post = data;
-      done();
+      testing_post = data_post;
+
+      site.get(function(err, data_site){
+        if (err) return done(err);
+
+        site_ID = data_site.ID;
+        done();
+      })
     });
   });
 
@@ -346,16 +353,13 @@ describe('wpcom.site', function(){
     });
   });
 
-  describe('site.addPost()', function(){
-
+  describe('wpcom.site.addPost()', function(){
     it('should create a new blog post', function(done){
-      var site = util.private_site();
-
-      var post = site.addPost(fixture.testing_post_data, function(err, data){
+      site.addPost(fixture.post, function(err, data){
         if (err) throw err;
-
+        
         assert.equal('object', typeof data);
-        assert.equal(fixture.site.id, data.site_ID);
+        assert.equal(site_ID, data.site_ID);
 
         done();
       });
