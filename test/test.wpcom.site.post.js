@@ -5,7 +5,6 @@
 
 var WPCOM = require('../');
 var Site = require('../lib/site');
-var Post = require('../lib/post');
 var util = require('./util');
 var assert = require('assert');
 
@@ -165,57 +164,6 @@ describe('wpcom.site.post', function(){
 
   });
 */
-
-  describe('post.reblog.add()', function(){
-
-    it('should get reblog the added post', function(done){
-      util.private_site()
-      .post(testing_post.ID)
-      .reblog()
-      .add(fixture.site.reblog, function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.ok(data.can_reblog);
-        done();
-      });
-    });
-
-  });
-
-  describe('post.reblog.to()', function(){
-
-    it('should get reblog the added post', function(done){
-      util.private_site()
-      .post(testing_post.ID)
-      .reblog()
-      .to(fixture.site.reblog.destination_site_id, 'great !!!', function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.ok(data.can_reblog);
-        done();
-      });
-    });
-
-  });
-
-  describe('post.reblog.mine()', function(){
-
-    it('should get the post reblog status of mine', function(done){
-      util.private_site()
-      .post(testing_post.ID)
-      .reblog()
-      .mine(function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.ok(data.can_reblog);
-        done();
-      });
-    });
-
-  });
 
   describe('post.delete()', function(){
 
