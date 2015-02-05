@@ -5,7 +5,6 @@
 
 var WPCOM = require('../');
 var Site = require('../lib/site');
-var Media = require('../lib/media');
 var assert = require('assert');
 
 /**
@@ -59,15 +58,6 @@ describe('site.media', function(){
 
       });
 
-    });
-
-  });
-
-  describe('media constructor', function(){
-
-    it('should create an `Media` instance from `Site`', function(){
-      var media = site.media();
-      assert.ok(media instanceof Media);
     });
 
   });
