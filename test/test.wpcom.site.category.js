@@ -5,7 +5,6 @@
 
 var WPCOM = require('../');
 var Site = require('../lib/site');
-var Category = require('../lib/category');
 var assert = require('assert');
 
 /**
@@ -13,7 +12,6 @@ var assert = require('assert');
  */
 
 var fixture = require('./fixture');
-
 
 describe('wpcom.site.category', function() {
   // Create `wpcom` and `site` global instances
