@@ -6,39 +6,39 @@
 var WPCOM = require('../');
 var Site = require('../lib/site');
 var Media = require('../lib/media');
-var util = require('./util');
-var fs = require('fs');
 var assert = require('assert');
 
 /**
  * Testing data
  */
 
-var test = require('./data');
+var fixture = require('./fixture');
 
 /**
  * WPCOM instance
  */
 
-describe('WPCOM#Site#Media', function(){
+describe('site.media', function(){
+    // Create `wpcom` and `site` global instances
+  var wpcom = WPCOM(fixture.site.private.token);
+  var site = wpcom.site(fixture.site.private.url);
+
   var add_urls_array;
   var add_urls_object;
 
-  // Create a new_media before to start the tests
+  // Create a testing_media before to start tests
 
-  var new_media;
+  var testing_media;
   before(function(done){
-    util.addMedia(function(err, media) {
+    site.addMediaFiles(fixture.media.files[0], function(err, data) {
       if (err) throw err;
 
-      new_media = media;
+      testing_media = data ? data.media[0] : {};
       done();
     });
   });
 
   after(function(done){
-    var site = util.private_site();
-
     // clean media added through of array by urls
     site.deleteMedia(add_urls_array.media[0].ID, function(err, data) {
       if (err) throw err;
@@ -63,129 +63,116 @@ describe('WPCOM#Site#Media', function(){
 
   });
 
-  describe('sync', function(){
+  describe('media constructor', function(){
 
     it('should create an `Media` instance from `Site`', function(){
-      var media = WPCOM().site().media();
+      var media = site.media();
       assert.ok(media instanceof Media);
     });
 
   });
 
-  describe('async', function(){
+  describe('media.get()', function(){
 
-    describe('media.get()', function(){
+    it('should get added media', function(done){
+      var media = site.media(testing_media.ID);
+      media.get(function(err, data){
+        if (err) throw err;
 
-      it('should get added media', function(done){
-        var site = util.private_site();
-        var media = site.media(test.media_id);
+        assert.equal(testing_media.ID, data.ID);
+        done();
+      });
+    });
 
-        media.get(function(err, info){
-          if (err) throw err;
+  });
 
-          assert.equal(3, info.ID);
-          done();
-        });
+  describe('media.update()', function(){
+
+    it('should edit the media title', function(done){
+      var edited_title = "This is the new title";
+
+      site
+      .media(testing_media.ID)
+      .update({ apiVersion: '1.1' }, { title: edited_title }, function(err, data){
+        if (err) throw err;
+
+        assert.ok(data);
+        assert.equal(edited_title, data.title);
+
+        done();
+      });
+    });
+
+  });
+
+  describe('media.addFiles(files)', function(){
+
+    it('should create a new media from a file', function(done){
+      site
+      .media()
+      .addFiles(fixture.media.files, function(err, data){
+        if (err) throw err;
+
+        assert.ok(data);
+        assert.ok(data.media instanceof Array);
+        assert.equal(fixture.media.files.length, data.media.length);
+        done();
       });
 
     });
 
-    describe('media.update()', function(){
+  });
 
-      it('should edit the media title', function(done){
-        var site = util.private_site();
-        var edited_title = "This is the new title";
+  describe('media.addUrls(object)', function(){
 
-        site
-        .media(new_media.media[0].ID)
-        .update({ apiVersion: '1.1' }, { title: edited_title }, function(err, data){
-          if (err) throw err;
+    it('should create a new media from an object', function(done){
+      var media_object = fixture.media.urls[1];
 
-          assert.ok(data);
-          assert.equal(edited_title, data.title);
+      site
+      .media()
+      .addUrls(media_object, function(err, data){
+        if (err) throw err;
 
-          done();
-        });
+        assert.ok(data);
+        add_urls_object = data;
+        done();
+      });
+    });
+
+  });
+
+  describe('media.addUrls(array)', function(){
+
+    it('should create a new media', function(done){
+      site
+      .media()
+      .addUrls(fixture.media.urls, function(err, data){
+        if (err) throw err;
+
+        assert.ok(data);
+        assert.ok(data.media instanceof Array);
+        assert.equal(fixture.media.urls.length, data.media.length);
+
+        add_urls_array = data;
+
+        done();
       });
 
     });
 
-    describe('media.addFiles([fs])', function(){
+  });
 
-      it('should create a new media from a file', function(done){
-        var site = util.private_site();
+  describe('media.delete()', function(){
 
-        site
-        .media()
-        .addFiles(test.new_media_data.files, function(err, data){
-          if (err) throw err;
+    it('should delete a media', function(done){
 
-          assert.ok(data);
-          assert.ok(data.media instanceof Array);
-          assert.equal(test.new_media_data.files.length, data.media.length);
-          done();
-        });
+      site
+      .media(testing_media.ID)
+      .del(function(err, data){
+        if (err) throw err;
 
-      });
-
-    });
-
-    describe('media.addUrls(object)', function(){
-
-      it('should create a new media from an object', function(done){
-        var site = util.private_site();
-        var media_object = test.new_media_data.media_urls[1];
-
-        site
-        .media()
-        .addUrls(media_object, function(err, data){
-          if (err) throw err;
-
-          assert.ok(data);
-          add_urls_object = data;
-          done();
-        });
-      });
-
-    });
-
-    describe('media.addUrls(["url1", {object}, "url2"])', function(){
-
-      it('should create a new media', function(done){
-        var site = util.private_site();
-
-        site
-        .media()
-        .addUrls(test.new_media_data.media_urls, function(err, data){
-          if (err) throw err;
-
-          assert.ok(data);
-          assert.ok(data.media instanceof Array);
-          assert.equal(test.new_media_data.media_urls.length, data.media.length);
-
-          add_urls_array = data;
-
-          done();
-        });
-
-      });
-
-    });
-
-    describe('media.delete()', function(){
-
-      it('should delete a media', function(done){
-        var site = util.private_site();
-
-        site
-        .media(new_media.media[0].ID)
-        .del(function(err, data){
-          if (err) throw err;
-
-          assert.equal(new_media.media[0].ID, data.ID);
-          done();
-        });
-
+        assert.equal(testing_media.ID, data.ID);
+        done();
       });
 
     });
