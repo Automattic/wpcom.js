@@ -300,44 +300,6 @@ describe('wpcom.site', function(){
       });
     });
   });
-
-  /*
-  describe('site.comment.get()', function(){
-
-    it('should request for a site comment', function(done){
-      var site = util.private_site();
-
-      site
-      .comment(41)
-      .get(function(err, data){
-        if (err) throw err;
-
-        assert.equal('number', typeof data.ID);
-        assert.equal('object', typeof data.post);
-        assert.ok(data.post instanceof Object);
-
-        done();
-
-      });
-    });
-  });
-
-  describe('site.follower.follow()', function() {
-    it('should follow the current site', function(done) {
-      var site = util.private_site();
-
-      site
-      .follower
-      .follow(function(error, data) {
-        if (error) throw error;
-
-        assert.equal(1, 1);
-
-        done();
-      });
-    });
-  });
-  */
  
   describe('wpcom.site.get', function(){
     it('should require site data', function(done){
@@ -365,16 +327,12 @@ describe('wpcom.site', function(){
 
         done();
       });
-
     });
-
   });
 
   describe('wpcom.site.post.delete', function(){
     it('should delete post added', function(done){
-
       site.deletePost(new_post_ID, function(err, data){
-
         if (err) throw err;
 
         assert.equal('object', typeof data);
@@ -383,22 +341,17 @@ describe('wpcom.site', function(){
         done();
 
       });
-
     });
-
   });
 
-  describe('wpcom.site.addMediaFiles([fs])', function(){
-
+  describe('wpcom.site.addMediaFiles', function(){
     it('should create a new media from a file', function(done){
-      var site = util.private_site();
-
-      var media = site.addMediaFiles(fixture.new_media_data.files, function(err, data){
+      site.addMediaFiles(fixture.media.files, function(err, data){
         if (err) throw err;
 
         assert.ok(data);
         assert.ok(data.media instanceof Array);
-        assert.equal(fixture.new_media_data.files.length, data.media.length);
+        assert.equal(fixture.media.files.length, data.media.length);
         done();
       });
 
@@ -406,22 +359,17 @@ describe('wpcom.site', function(){
 
   });
 
-  describe('site.addMediaUrls([\'url1\', \'url2\'])', function(){
-
+  describe('wpcom.site.addMediaUrls', function(){
     it('should create a new site media', function(done){
-      var site = util.private_site();
-
-      var media = site.addMediaUrls(fixture.new_media_data.media_urls, function(err, data){
+      media = site.addMediaUrls(fixture.media.urls, function(err, data){
         if (err) throw err;
 
         assert.ok(data);
         assert.ok(data.media instanceof Array);
-        assert.equal(fixture.new_media_data.media_urls.length, data.media.length);
+        assert.equal(fixture.media.urls.length, data.media.length);
         done();
       });
-
     });
-
   });
 
 });
