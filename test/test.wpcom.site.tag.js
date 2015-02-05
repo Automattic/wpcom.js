@@ -82,7 +82,7 @@ describe('wpcom.site.tag', function(){
   describe('wpcom.site.tag.update', function(){
     it('should edit the new added tag', function(done){
       var tag = site.tag(new_tag.slug);
-      var edited_name = fixture.tag.name + '-edited';
+      var edited_name = fixture.tag.name + '-updated';
 
       tag.update({ name: edited_name }, function(err, data){
         if (err) throw err;
