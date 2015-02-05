@@ -102,7 +102,7 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.usersList()', function(){
+    describe('wpcom.site.usersList', function(){
       it('should request users list', function(done){
         site.usersList(function(err, list){
           if (err) throw err;
@@ -157,6 +157,21 @@ describe('wpcom.site', function(){
           assert.equal('string', typeof list.found);
           assert.equal('object', typeof list.categories);
           assert.ok(list.categories instanceof Array);
+
+          done();
+        });
+      });
+    });
+
+    describe('wpcom.site.shortcodesList', function(){
+      it('should request shortcodes list', function(done){
+        site.shortcodesList(function(err, list){
+          if (err) throw err;
+
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('object', typeof list.shortcodes);
+          assert.ok(list.shortcodes instanceof Array);
 
           done();
         });
