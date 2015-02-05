@@ -119,24 +119,20 @@ describe('wpcom.site.post', function(){
 
   });
 
-  describe('post.update()', function(){
-
+  describe('wpcom.site.post.update', function(){
     it('should edit the new added post', function(done){
-      var site = util.private_site();
       var post = site.post(testing_post.ID);
+      var new_title = fixture.post.title + '-updated';
 
-      var edited_title = testing_post.title + ' has been changed';
-
-      post.update({ title: edited_title }, function(err, data){
+      post.update({ title: new_title }, function(err, data){
         if (err) throw err;
 
         assert.ok(data);
-        assert.equal(edited_title, data.title);
+        assert.equal(new_title, data.title);
 
         done();
       });
     });
-
   });
 
   describe('post.likesList()', function(){
