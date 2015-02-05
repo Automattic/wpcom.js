@@ -16,11 +16,11 @@ var fixture = require('./fixture');
  * me
  */
 
-describe('me', function(){
+describe('wpcom.me', function(){
   var wpcom = WPCOM(fixture.site.private.token);
   var me = wpcom.me();
 
-  describe('me.get()', function(){
+  describe('wpcom.me.get()', function(){
     it('should require user information object', function(done){
       me.get(function(err, me){
         if (err) throw err;
@@ -52,7 +52,7 @@ describe('me', function(){
     });
   });
 
-  describe('me.sites()', function(){
+  describe('wpcom.me.sites()', function(){
     it('should require user sites object', function(done){
       me.sites(function(err, sites){
         if (err) throw err;
@@ -61,7 +61,7 @@ describe('me', function(){
     });
   });
 
-  describe('me.likes()', function(){
+  describe('wpcom.me.likes()', function(){
     it('should require user likes', function(done){
       me.likes(function(err, data){
         if (err) throw err;
@@ -88,7 +88,7 @@ describe('me', function(){
     });
   });
 
-  describe('me.connections()', function(){
+  describe('wpcom.me.connections()', function(){
     it('should require third-party connections', function(done){
       me.connections(function(err, data){
         if (err) throw err;
