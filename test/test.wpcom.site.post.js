@@ -27,6 +27,7 @@ describe('wpcom.site.post', function(){
   // var to store post in `add()` test
   var new_post;
   var new_comment;
+  var site_ID;
 
   // Create a testing_post before to start the tests
   var testing_post;
@@ -44,7 +45,12 @@ describe('wpcom.site.post', function(){
         if (err) throw err;
 
         new_comment = data_comment;
-        done();
+        site.get(function(err, data_site){
+          if (err) return done(err);
+
+          site_ID = data_site.ID;
+          done();
+        });
       })
     });
   });
@@ -93,20 +99,18 @@ describe('wpcom.site.post', function(){
     });
   });
 
-  describe('post.add()', function(){
-
+  describe('wpcom.site.post.add', function(){
     it('should add a new post', function(done){
-      var site = util.private_site();
       var post = site.post();
+      fixture.post.title += '-added';
 
-      post.add(test.testing_post_data, function(err, data){
+      post.add(fixture.post, function(err, data){
         if (err) throw err;
 
         // checking some data date
         assert.ok(data);
         assert.ok(data instanceof Object, 'data is not an object');
-        assert.equal(test.site.private.id, data.site_ID);
-
+        assert.equal(site_ID, data.site_ID);
         new_post = data;
 
         done();
@@ -398,7 +402,7 @@ describe('wpcom.site.post', function(){
       util.private_site()
       .post(testing_post.ID)
       .reblog()
-      .add(test.site.reblog, function(err, data){
+      .add(fixture.site.reblog, function(err, data){
         if (err) throw err;
 
         assert.ok(data);
@@ -415,7 +419,7 @@ describe('wpcom.site.post', function(){
       util.private_site()
       .post(testing_post.ID)
       .reblog()
-      .to(test.site.reblog.destination_site_id, 'great !!!', function(err, data){
+      .to(fixture.site.reblog.destination_site_id, 'great !!!', function(err, data){
         if (err) throw err;
 
         assert.ok(data);
@@ -505,7 +509,7 @@ describe('wpcom.site.post', function(){
       var site = util.private_site();
       var post = site.post();
 
-      post.add(test.testing_post_data, function(err, data){
+      post.add(fixture.post, function(err, data){
         if (err) throw err;
 
         post = site.post(data.ID);
