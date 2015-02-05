@@ -5,26 +5,26 @@
 
 var WPCOM = require('../');
 var Site = require('../lib/site');
-var Tag = require('../lib/tag');
-var util = require('./util');
 var assert = require('assert');
 
 /**
  * Testing data
  */
 
-var test = require('./data');
+var fixture = require('./fixture');
 
-describe('WPCOM#Site#Tag', function(){
-  var tag_added;
+describe('site.tag', function(){
+  // Create `wpcom` and `site` global instances
+  var wpcom = WPCOM(fixture.site.private.token);
+  var site = wpcom.site(fixture.site.private.url);
+
+  var testing_tag;
 
   // Create a new_tag before to start tests
   var new_tag;
   before(function(done){
-    var site = WPCOM(test.site.private.token).site(test.site.private.id);
-    var cat = site.tag();
-
-    cat.add(test.new_tag_data, function(err, tag) {
+    site.tag()
+    .add(fixture.tag, function(err, tag) {
       if (err) throw err;
 
       new_tag = tag;
@@ -33,102 +33,87 @@ describe('WPCOM#Site#Tag', function(){
   });
 
   after(function(done){
-    var site = WPCOM(test.site.private.token).site(test.site.private.id);
-    var cat = site.tag(new_tag.slug);
-
-    // clean new_tag tag
-    cat.delete(function(err, tag) {
+    site.tag(new_tag.slug)
+    .delete(function(err, tag) {
       if (err) throw err;
 
       done();
     });
   });
 
-  describe('async', function(){
+  describe('site.tag.get()', function(){
 
-    describe('tag.get()', function(){
+    it('should get added tag', function(done){
+      var cat = site.tag(new_tag.slug);
 
-      it('should get added tag', function(done){
-        var site = util.private_site();
-        var cat = site.tag(new_tag.slug);
+      cat.get(function(err, data){
+        if (err) throw err;
 
-        cat.get(function(err, data){
-          if (err) throw err;
-
-          assert.ok(data);
-          assert.ok(data instanceof Object, 'data is not an object');
-          assert.equal(new_tag.slug, data.slug);
-          assert.equal(new_tag.name, data.name);
-          done();
-        });
+        assert.ok(data);
+        assert.ok(data instanceof Object, 'data is not an object');
+        assert.equal(new_tag.slug, data.slug);
+        assert.equal(new_tag.name, data.name);
+        done();
       });
-
     });
+  });
 
-    describe('tag.add()', function(){
+  describe('site.tag.add()', function(){
 
-      it('should add a new tag', function(done){
-        var site = util.private_site();
-        var tag = site.tag();
-        test.new_tag_data.name += '- Added';
-        tag.add(test.new_tag_data, function(err, data){
-          if (err) throw err;
+    it('should add a new tag', function(done){
+      var tag = site.tag();
+      fixture.tag.name += '-added';
 
-          // checking some data date
-          assert.ok(data);
-          assert.ok(data instanceof Object, 'data is not an object');
+      tag.add(fixture.tag, function(err, data){
+        if (err) throw err;
 
-          // store added catogory
-          tag_added = data;
+        // checking some data date
+        assert.ok(data);
+        assert.ok(data instanceof Object, 'data is not an object');
 
-          done();
-        });
+        // store added catogory
+        testing_tag = data;
+
+        done();
       });
-
     });
+  });
 
-    describe('tag.update()', function(){
+  describe('site.tag.update()', function(){
 
-      it('should edit the new added tag', function(done){
-        var site = util.private_site();
-        var tag = site.tag(tag_added.slug);
+    it('should edit the new added tag', function(done){
+      var tag = site.tag(testing_tag.slug);
+      var edited_name = fixture.tag.name + '-edited';
 
-        var new_name = 'new tag name';
+      tag.update({ name: edited_name }, function(err, data){
+        if (err) throw err;
 
-        tag.update({ name: new_name }, function(err, data){
-          if (err) throw err;
+        assert.ok(data);
+        assert.equal(edited_name, data.name);
 
-          assert.ok(data);
-          assert.equal(new_name, data.name);
+        // update added tag
+        testing_tag = data;
 
-          // update added tag
-          tag_added = data;
-
-          done();
-        });
+        done();
       });
-
     });
+  });
 
-    describe('tag.delete()', function(){
+  describe('site.tag.delete()', function(){
 
-      it('should delete the new added tag', function(done){
-        var site = util.private_site();
-        var cat = site.tag(tag_added.slug);
+    it('should delete the new added tag', function(done){
+      var cat = site.tag(testing_tag.slug);
 
-        cat.delete(function(err, data){
-          if (err) throw err;
+      cat.delete(function(err, data){
+        if (err) throw err;
 
-          assert.ok(data);
-          assert.equal('true', data.success);
-          assert.equal(tag_added.slug, data.slug);
+        assert.ok(data);
+        assert.equal('true', data.success);
+        assert.equal(testing_tag.slug, data.slug);
 
-          done();
-        });
+        done();
       });
-
     });
-
   });
 
 });
