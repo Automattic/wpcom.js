@@ -16,7 +16,7 @@ var fixture = require('./fixture');
  * Create a `Site` instance
  */
 
-describe('wpcom.site', function(){
+describe('wpcom.site', function () {
   // Global instances
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
@@ -25,13 +25,13 @@ describe('wpcom.site', function(){
   var site_ID;
 
   // Create a testing_post before to start tests
-  before(function(done){
-    site.addPost(fixture.post, function(err, data_post) {
+  before(function (done) {
+    site.addPost(fixture.post, function (err, data_post) {
       if (err) return done(err);
 
       testing_post = data_post;
 
-      site.get(function(err, data_site){
+      site.get(function (err, data_site) {
         if (err) return done(err);
 
         site_ID = data_site.ID;
@@ -42,19 +42,19 @@ describe('wpcom.site', function(){
   });
 
   // Delete testing post
-  after(function(done){
-    site.deletePost(testing_post.ID, function(err, data) {
+  after(function (done) {
+    site.deletePost(testing_post.ID, function (err, data) {
       if (err) throw err;
       
       done();
     });
   });
 
-  describe('wpcom.site.lists', function(){
+  describe('wpcom.site.lists', function () {
 
-    describe('wpcom.site.postsList', function() {
-      it('should request posts list', function(done) {
-        site.postsList(function(err, list){
+    describe('wpcom.site.postsList', function () {
+      it('should request posts list', function (done) {
+        site.postsList(function (err, list) {
           if (err) throw err;
 
           // list object data testing
@@ -70,8 +70,8 @@ describe('wpcom.site', function(){
         });
       });
 
-      it('should request only one post', function(done) {
-        site.postsList({ number: 1 }, function(err, list) {
+      it('should request only one post', function (done) {
+        site.postsList({ number: 1 }, function (err, list) {
           if (err) throw err;
 
           // list object data testing
@@ -86,9 +86,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.mediaList', function(){
-      it('should request media library list', function(done){
-        site.mediaList(function(err, list){
+    describe('wpcom.site.mediaList', function () {
+      it('should request media library list', function (done) {
+        site.mediaList(function (err, list) {
           if (err) throw err;
 
           // list object data testing
@@ -102,9 +102,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.usersList', function(){
-      it('should request users list', function(done){
-        site.usersList(function(err, list){
+    describe('wpcom.site.usersList', function () {
+      it('should request users list', function (done) {
+        site.usersList(function (err, list) {
           if (err) throw err;
 
           assert.equal('number', typeof list.found);
@@ -115,9 +115,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.commentsList', function(){
-      it('should request comments list', function(done){
-        site.commentsList(function(err, list){
+    describe('wpcom.site.commentsList', function () {
+      it('should request comments list', function (done) {
+        site.commentsList(function (err, list){
           if (err) throw err;
 
           // list object data testing
@@ -131,9 +131,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.followsList', function(){
-      it('should request follows list', function(done){
-        site.followsList(function(err, list){
+    describe('wpcom.site.followsList', function () {
+      it('should request follows list', function (done) {
+        site.followsList(function (err, list) {
           if (err) throw err;
 
           // list object data testing
@@ -147,9 +147,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.categoriesList', function(){
-      it('should request categories list', function(done){
-        site.categoriesList(function(err, list){
+    describe('wpcom.site.categoriesList', function () {
+      it('should request categories list', function (done) {
+        site.categoriesList(function (err, list) {
           if (err) throw err;
 
           // list object data testing
@@ -163,9 +163,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.shortcodesList', function(){
-      it('should request shortcodes list', function(done){
-        site.shortcodesList(function(err, list){
+    describe('wpcom.site.shortcodesList', function () {
+      it('should request shortcodes list', function (done) {
+        site.shortcodesList(function (err, list) {
           if (err) throw err;
 
           // list object data testing
@@ -178,9 +178,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.tagsList', function(){
-      it('should request tags list', function(done){
-        site.tagsList(function(err, list){
+    describe('wpcom.site.tagsList', function () {
+      it('should request tags list', function (done) {
+        site.tagsList(function (err, list) {
           if (err) throw err;
 
           // list object data testing
@@ -194,9 +194,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.stats', function(){
-      it('should request stats data', function(done){
-        site.stats(function(err, data){
+    describe('wpcom.site.stats', function () {
+      it('should request stats data', function (done) {
+        site.stats(function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.day));
@@ -211,9 +211,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.statsVisits', function(){
-      it('should request visits stats', function(done){
-        site.statsVisits(function(err, data){
+    describe('wpcom.site.statsVisits', function () {
+      it('should request visits stats', function (done) {
+        site.statsVisits(function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.unit));
@@ -229,9 +229,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.statsReferrers', function(){
-      it('should request referrers stats', function(done){
-        site.statsReferrers(function(err, data){
+    describe('wpcom.site.statsReferrers', function () {
+      it('should request referrers stats', function (done) {
+        site.statsReferrers(function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.date));
@@ -247,9 +247,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.statsTopPosts', function(){
-      it('should request top posts stats', function(done){
-        site.statsTopPosts(function(err, data){
+    describe('wpcom.site.statsTopPosts', function () {
+      it('should request top posts stats', function (done) {
+        site.statsTopPosts(function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.date));
@@ -261,9 +261,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.statsCountryViews', function(){
-      it('should request country views stats', function(done){
-        site.statsCountryViews(function(err, data){
+    describe('wpcom.site.statsCountryViews', function () {
+      it('should request country views stats', function (done) {
+        site.statsCountryViews(function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.date));
@@ -275,9 +275,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.statsClicks', function(){
-      it('should request clicks stats', function(done){
-        site.statsClicks(function(err, data){
+    describe('wpcom.site.statsClicks', function () {
+      it('should request clicks stats', function (done) {
+        site.statsClicks(function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.date));
@@ -293,9 +293,9 @@ describe('wpcom.site', function(){
       });
     });
 
-    describe('wpcom.site.statsSearchTerms', function(){
-      it('should request search terms stats', function(done){
-        site.statsSearchTerms(function(err, data){
+    describe('wpcom.site.statsSearchTerms', function () {
+      it('should request search terms stats', function (done) {
+        site.statsSearchTerms(function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.date));
@@ -311,9 +311,9 @@ describe('wpcom.site', function(){
     });
   });
  
-  describe('wpcom.site.get', function(){
-    it('should require site data', function(done){
-      site.get(function(err, data){
+  describe('wpcom.site.get', function () {
+    it('should require site data', function (done) {
+      site.get(function (err, data) {
         if (err) throw err;
 
         assert.equal('number', typeof data.ID);
@@ -324,9 +324,9 @@ describe('wpcom.site', function(){
     });
   });
 
-  describe('wpcom.site.addPost', function(){
-    it('should create a new blog post', function(done){
-      site.addPost(fixture.post, function(err, data){
+  describe('wpcom.site.addPost', function () {
+    it('should create a new blog post', function (done) {
+      site.addPost(fixture.post, function (err, data) {
         if (err) throw err;
         
         // store in post ID global var
@@ -340,9 +340,9 @@ describe('wpcom.site', function(){
     });
   });
 
-  describe('wpcom.site.deletePost', function(){
-    it('should delete post added', function(done){
-      site.deletePost(new_post_ID, function(err, data){
+  describe('wpcom.site.deletePost', function () {
+    it('should delete post added', function (done) {
+      site.deletePost(new_post_ID, function (err, data) {
         if (err) throw err;
 
         assert.equal('object', typeof data);
@@ -353,9 +353,9 @@ describe('wpcom.site', function(){
     });
   });
 
-  describe('wpcom.site.addMediaFiles', function(){
-    it('should create a new media from a file', function(done){
-      site.addMediaFiles(fixture.media.files, function(err, data){
+  describe('wpcom.site.addMediaFiles', function () {
+    it('should create a new media from a file', function (done) {
+      site.addMediaFiles(fixture.media.files, function (err, data) {
         if (err) throw err;
 
         assert.ok(data);
@@ -366,9 +366,9 @@ describe('wpcom.site', function(){
     });
   });
 
-  describe('wpcom.site.addMediaUrls', function(){
-    it('should create a new site media', function(done){
-      media = site.addMediaUrls(fixture.media.urls, function(err, data){
+  describe('wpcom.site.addMediaUrls', function () {
+    it('should create a new site media', function (done) {
+      media = site.addMediaUrls(fixture.media.urls, function (err, data) {
         if (err) throw err;
 
         assert.ok(data);
