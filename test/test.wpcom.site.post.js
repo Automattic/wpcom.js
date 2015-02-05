@@ -179,28 +179,6 @@ describe('wpcom.site.post', function(){
   });
 */
 
-  describe('post.like.add()', function(){
-
-    it('should add a post like', function(done){
-      util
-      .private_site()
-      .post(testing_post.ID)
-      .like()
-      .add(function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.ok(data.success);
-        assert.ok(data.i_like);
-        assert.equal(1, data.like_count);
-
-        done();
-      });
-
-    });
-
-  });
-
   describe('post.comment.add()', function(){
 
     it('should add a post comment', function(done){
@@ -373,25 +351,6 @@ describe('wpcom.site.post', function(){
 
   });
 
-  describe('post.like.mine()', function(){
-
-    it('should get the post like status of mine', function(done){
-      util.private_site()
-      .post(testing_post.ID)
-      .like()
-      .mine(function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.equal(1, data.like_count);
-        assert.ok(data.i_like);
-
-        done();
-      });
-    });
-
-  });
-
   describe('post.reblog.add()', function(){
 
     it('should get reblog the added post', function(done){
@@ -437,26 +396,6 @@ describe('wpcom.site.post', function(){
 
         assert.ok(data);
         assert.ok(data.can_reblog);
-        done();
-      });
-    });
-
-  });
-
-  describe('post.like.delete()', function(){
-
-    it('should remove your like from the post', function(done){
-      util.private_site()
-      .post(testing_post.ID)
-      .like()
-      .del(function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.ok(data.success);
-        assert.equal(0, data.like_count);
-        assert.ok(!(data.i_like));
-
         done();
       });
     });
