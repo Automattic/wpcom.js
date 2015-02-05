@@ -76,7 +76,7 @@ describe('wpcom.me', function(){
     });
   });
 
-  describe('me.groups', function(){
+  describe('wpcom.me.groups', function(){
     it('should require groups', function(done){
       me.groups(function(err, data){
         if (err) throw err;
