@@ -99,16 +99,16 @@ describe('site.tag', function(){
     });
   });
 
-  describe('site.tag.delete()', function(){
+  describe('site.tag.delete()', function() {
 
-    it('should delete the new added tag', function(done){
+    it('should delete the new added tag', function(done) {
       var cat = site.tag(testing_tag.slug);
 
-      cat.delete(function(err, data){
+      cat.delete(function(err, data) {
         if (err) throw err;
 
         assert.ok(data);
-        assert.equal('true', data.success);
+        assert.equal("true", data.success);
         assert.equal(testing_tag.slug, data.slug);
 
         done();
