@@ -42,11 +42,8 @@ describe('apiVersion', function() {
           assert.ok(data);
           done();
         });
-
       });
-
     });
-
   });
 
 });
