@@ -16,13 +16,12 @@ var fixture = require('./fixture');
 
 
 describe('site.category', function() {
-
   // Create `wpcom` and `site` global instances
   var wpcom = WPCOM(fixture.site.private.token);
   var site = wpcom.site(fixture.site.private.url);
 
   // global var to store category added
-  var category_added;
+  var testing_category;
 
   // Create a new_category before to start tests
   var new_category;
@@ -76,7 +75,7 @@ describe('site.category', function() {
         assert.ok(data instanceof Object, 'data is not an object');
 
         // store added catogory
-        category_added = data;
+        testing_category = data;
 
         done();
       });
@@ -86,7 +85,7 @@ describe('site.category', function() {
   describe('site.category.update()', function(){
 
     it('should edit the new added category', function(done){
-      var category = site.category(category_added.slug);
+      var category = site.category(testing_category.slug);
       var new_name = 'new category name';
 
       category.update({ name: new_name }, function(err, data){
@@ -96,7 +95,7 @@ describe('site.category', function() {
         assert.equal(new_name, data.name);
 
         // update added category
-        category_added = data;
+        testing_category = data;
 
         done();
       });
@@ -106,13 +105,13 @@ describe('site.category', function() {
   describe('site.category.delete()', function(){
 
     it('should delete the new added category', function(done){
-      site.category(category_added.slug)
+      site.category(testing_category.slug)
       .delete(function(err, data){
         if (err) throw err;
 
         assert.ok(data);
         assert.equal('true', data.success);
-        assert.equal(category_added.slug, data.slug);
+        assert.equal(testing_category.slug, data.slug);
 
         done();
       });
