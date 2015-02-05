@@ -126,47 +126,6 @@ describe('wpcom.site.post', function(){
     });
   });
 
-  describe('wpcom.site.post.likesList', function(){
-    it('should get post likes list', function(done){
-      site
-      .post(testing_post.ID)
-      .likesList(function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-
-        assert.equal('number', typeof data.found);
-        assert.equal('boolean', typeof data.i_like);
-        assert.equal('object', typeof data.likes);
-        assert.ok(data.likes instanceof Array);
-
-        done();
-      });
-    });
-  });
-
-/*
-  describe('post.related()', function(){
-
-    it('should get related posts', function(done){
-      var site = util.private_site();
-      var post = site.post(testing_post.ID);
-
-      post.related({ size: 5 }, function(err, data){
-        if (err) throw err;
-
-        assert.ok(data);
-        assert.equal('number', typeof data.total);
-        assert.ok(data.hits instanceof Array);
-
-        done();
-      });
-
-    });
-
-  });
-*/
-
   describe('wpcom.site.post.delete', function(){
     it('should delete the new added post', function(done){
       site
