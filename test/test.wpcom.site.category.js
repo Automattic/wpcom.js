@@ -18,23 +18,24 @@ describe('wpcom.site.category', function() {
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
 
-  // global var to store testing category
-  var testing_category;
-
-  // Create a new_category before to start tests
+  // global var to store new category
   var new_category;
+
+  // Create a testing_category before to start tests
+  var testing_category;
   before(function(done){
     site.category()
     .add(fixture.category, function(err, category) {
       if (err) throw err;
 
-      new_category = category;
+      testing_category = category;
       done();
     });
   });
 
+  // Remove testing category
   after(function(done){
-    site.category(new_category.slug)
+    site.category(testing_category.slug)
     .delete(function(err, category) {
       if (err) throw err;
 
@@ -46,14 +47,14 @@ describe('wpcom.site.category', function() {
   describe('wpcom.site.category.get()', function(){
 
     it('should get added category', function(done){
-      site.category(new_category.slug)
+      site.category(testing_category.slug)
       .get(function(err, data){
         if (err) throw err;
 
         assert.ok(data);
         assert.ok(data instanceof Object, 'data is not an object');
-        assert.equal(new_category.slug, data.slug);
-        assert.equal(new_category.name, data.name);
+        assert.equal(testing_category.slug, data.slug);
+        assert.equal(testing_category.name, data.name);
         done();
       });
     });
@@ -73,7 +74,7 @@ describe('wpcom.site.category', function() {
         assert.ok(data instanceof Object, 'data is not an object');
 
         // store added catogory
-        testing_category = data;
+        new_category = data;
 
         done();
       });
@@ -83,7 +84,7 @@ describe('wpcom.site.category', function() {
   describe('wpcom.site.category.update()', function(){
 
     it('should edit the new added category', function(done){
-      var category = site.category(testing_category.slug);
+      var category = site.category(new_category.slug);
       var edited_name = fixture.category.name + '-edited';
 
       category.update({ name: edited_name }, function(err, data){
@@ -93,7 +94,7 @@ describe('wpcom.site.category', function() {
         assert.equal(edited_name, data.name);
 
         // update added category
-        testing_category = data;
+        new_category = data;
 
         done();
       });
@@ -103,13 +104,13 @@ describe('wpcom.site.category', function() {
   describe('wpcom.site.category.delete()', function(){
 
     it('should delete the new added category', function(done){
-      site.category(testing_category.slug)
+      site.category(new_category.slug)
       .delete(function(err, data){
         if (err) throw err;
 
         assert.ok(data);
         assert.equal('true', data.success);
-        assert.equal(testing_category.slug, data.slug);
+        assert.equal(new_category.slug, data.slug);
 
         done();
       });
