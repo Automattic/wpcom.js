@@ -19,25 +19,39 @@ var fixture = require('./fixture');
  */
 
 describe('wpcom.site', function(){
+    // Create `wpcom` and `site` global instances
+  var wpcom = WPCOM(fixture.site.token);
+  var site = wpcom.site(fixture.site.url);
 
-  // Create a new_post before to start the tests
-  var new_post;
+  // global var to store testing post
+  var testing_post;
+
+  // Create a testing_post before to start tests
   before(function(done){
-    util.addPost(function(err, post) {
+    site.addPost(fixture.post, function(err, data) {
       if (err) return done(err);
 
-      new_post = post;
+      testing_post = data;
       done();
     });
   });
 
-  describe('site.get()', function(){
+  // Delete testing post
+  after(function(done){
+    site.deletePost(testing_post.ID, function(err, data) {
+      if (err) throw err;
+      
+      done();
+    });
+  });
+
+  describe('wpcom.site.get()', function(){
     it('should require site data', function(done){
-      site.get(function(err, info){
+      site.get(function(err, data){
         if (err) throw err;
 
-        assert.equal('number', typeof info.ID);
-        assert.equal('string', typeof info.name);
+        assert.equal('number', typeof data.ID);
+        assert.equal('string', typeof data.name);
 
         done();
       });
@@ -416,11 +430,11 @@ describe('wpcom.site', function(){
     it('should create a new blog post', function(done){
       var site = util.private_site();
 
-      var post = site.addPost(fixture.new_post_data, function(err, data){
+      var post = site.addPost(fixture.testing_post_data, function(err, data){
         if (err) throw err;
 
         assert.equal('object', typeof data);
-        assert.equal(fixture.site.private.id, data.site_ID);
+        assert.equal(fixture.site.id, data.site_ID);
 
         done();
       });
@@ -435,13 +449,13 @@ describe('wpcom.site', function(){
 
       var site = util.private_site();
 
-      var post = site.deletePost(new_post.ID, function(err, data){
+      var post = site.deletePost(testing_post.ID, function(err, data){
 
         if (err) throw err;
 
         assert.equal('object', typeof data);
-        assert.equal(fixture.site.private.id, data.site_ID);
-        assert.equal(new_post.ID, data.ID);
+        assert.equal(fixture.site.id, data.site_ID);
+        assert.equal(testing_post.ID, data.ID);
 
         done();
 
