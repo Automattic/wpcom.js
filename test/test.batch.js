@@ -16,7 +16,7 @@ var fixture = require('./fixture');
  * Create a `Site` instance
  */
 
-describe('site.batch()', function(){
+describe('wpcom.site.batch()', function(){
 
   it('should require site data', function(done){
 
