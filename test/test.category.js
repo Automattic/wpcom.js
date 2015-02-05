@@ -15,7 +15,7 @@ var assert = require('assert');
 var fixture = require('./fixture');
 
 
-describe('site.category', function() {
+describe('wpcom.site.category', function() {
   // Create `wpcom` and `site` global instances
   var wpcom = WPCOM(fixture.site.private.token);
   var site = wpcom.site(fixture.site.private.url);
@@ -45,7 +45,7 @@ describe('site.category', function() {
   });
 
   
-  describe('site.category.get()', function(){
+  describe('wpcom.site.category.get()', function(){
 
     it('should get added category', function(done){
       site.category(new_category.slug)
@@ -61,12 +61,12 @@ describe('site.category', function() {
     });
   });
 
-  describe('site.category.add()', function(){
+  describe('wpcom.site.category.add()', function(){
 
     it('should add a new category', function(done){
       var category = site.category();
 
-      fixture.category.name += '- Added';
+      fixture.category.name += '-added';
       category.add(fixture.category, function(err, data){
         if (err) throw err;
 
@@ -82,17 +82,17 @@ describe('site.category', function() {
     });
   });
 
-  describe('site.category.update()', function(){
+  describe('wpcom.site.category.update()', function(){
 
     it('should edit the new added category', function(done){
       var category = site.category(testing_category.slug);
-      var new_name = 'new category name';
+      var edited_name = fixture.category.name + '-edited';
 
-      category.update({ name: new_name }, function(err, data){
+      category.update({ name: edited_name }, function(err, data){
         if (err) throw err;
 
         assert.ok(data);
-        assert.equal(new_name, data.name);
+        assert.equal(edited_name, data.name);
 
         // update added category
         testing_category = data;
@@ -102,7 +102,7 @@ describe('site.category', function() {
     });
   });
 
-  describe('site.category.delete()', function(){
+  describe('wpcom.site.category.delete()', function(){
 
     it('should delete the new added category', function(done){
       site.category(testing_category.slug)
