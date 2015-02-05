@@ -13,7 +13,7 @@ var assert = require('assert');
  * Testing data
  */
 
-var test = require('./data');
+var test = require('./fixture');
 
 /**
  * WPCOM instance

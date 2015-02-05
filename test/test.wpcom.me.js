@@ -17,7 +17,7 @@ var fixture = require('./fixture');
  */
 
 describe('wpcom.me', function(){
-  var wpcom = WPCOM(fixture.site.private.token);
+  var wpcom = WPCOM(fixture.site.token);
   var me = wpcom.me();
 
   describe('wpcom.me.get()', function(){

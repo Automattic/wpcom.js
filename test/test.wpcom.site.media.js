@@ -18,9 +18,9 @@ var fixture = require('./fixture');
  */
 
 describe('wpcom.site.media', function(){
-    // Create `wpcom` and `site` global instances
-  var wpcom = WPCOM(fixture.site.private.token);
-  var site = wpcom.site(fixture.site.private.url);
+  // Create `wpcom` and `site` global instances
+  var wpcom = WPCOM(fixture.site.token);
+  var site = wpcom.site(fixture.site.url);
 
   var add_urls_array;
   var add_urls_object;

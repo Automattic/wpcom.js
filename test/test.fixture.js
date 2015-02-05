@@ -20,14 +20,10 @@ var fixture = require('./fixture');
 describe('fixture', function() {
 
   describe('general', function() {
-    it('`public_site` should be defined', function(){
-      assert.equal('string', typeof fixture.site.public.url);
-    });
-
     it('`private_site` should be defined', function() {
-      assert.equal('string', typeof fixture.site.private.url);
-      assert.equal('number', typeof fixture.site.private.id);
-      assert.equal('string', typeof fixture.site.private.token);
+      assert.equal('string', typeof fixture.site.url);
+      assert.equal('number', typeof fixture.site.id);
+      assert.equal('string', typeof fixture.site.token);
     });
 
     it('`post` should be ok', function() {

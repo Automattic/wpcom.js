@@ -17,12 +17,11 @@ var fixture = require('./fixture');
  */
 
 describe('apiVersion', function() {
+  // Create `wpcom` and `site` global instances
+  var wpcom = WPCOM(fixture.site.token);
+  var site = wpcom.site(fixture.site.url);
 
   it('should request changing api version', function(done) {
-
-    var wpcom = WPCOM(fixture.site.private.token);
-    var site = wpcom.site(fixture.site.private.url);
-
     site
     .addMediaUrls({ apiVersion: '1.1' }, fixture.media.urls[1],
     function(err, data){

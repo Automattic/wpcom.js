@@ -15,8 +15,8 @@ var fixture = require('./fixture');
 
 describe('wpcom.site.tag', function(){
   // Create `wpcom` and `site` global instances
-  var wpcom = WPCOM(fixture.site.private.token);
-  var site = wpcom.site(fixture.site.private.url);
+  var wpcom = WPCOM(fixture.site.token);
+  var site = wpcom.site(fixture.site.url);
 
   var testing_tag;
 
