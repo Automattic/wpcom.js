@@ -25,9 +25,7 @@ describe('wpcom', function(){
         assert.ok(data.posts instanceof Array);
         done();
       });
-
     });
-
   });
 
 });
