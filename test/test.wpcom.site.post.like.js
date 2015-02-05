@@ -5,7 +5,6 @@
 
 var WPCOM = require('../');
 var Site = require('../lib/site');
-var Post = require('../lib/post');
 var assert = require('assert');
 
 /**
@@ -19,7 +18,7 @@ var fixture = require('./fixture');
  */
 
 describe('wpcom.site.post.like', function(){
-  // Create `wpcom` and `site` global instances
+  // Global instances
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
   var testing_post;
@@ -76,6 +75,23 @@ describe('wpcom.site.post.like', function(){
     });
   });
 
+  describe('wpcom.site.post.likesList', function(){
+    it('should get post likes list', function(done){
+      testing_post
+      .likesList(function(err, data){
+        if (err) throw err;
+
+        assert.ok(data);
+
+        assert.equal('number', typeof data.found);
+        assert.equal('boolean', typeof data.i_like);
+        assert.equal('object', typeof data.likes);
+        assert.ok(data.likes instanceof Array);
+
+        done();
+      });
+    });
+  });
 
   describe('wpcom.site.post.like.delete', function(){
     it('should remove your like from the post', function(done){
