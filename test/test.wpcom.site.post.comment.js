@@ -5,7 +5,6 @@
 
 var WPCOM = require('../');
 var Site = require('../lib/site');
-var Post = require('../lib/post');
 var assert = require('assert');
 
 /**
@@ -14,12 +13,8 @@ var assert = require('assert');
 
 var fixture = require('./fixture');
 
-/**
- * WPCOM instance
- */
-
 describe('wpcom.site.post.comment', function(){
-  // Create `wpcom` and `site` global instances
+  // Global instances
   var wpcom = WPCOM(fixture.site.token);
   var site = wpcom.site(fixture.site.url);
   var testing_post;
@@ -156,6 +151,21 @@ describe('wpcom.site.post.comment', function(){
         assert.ok(data.success);
         assert.equal(0, data.like_count);
         assert.ok(!(data.i_like));
+
+        done();
+      });
+    });
+  });
+
+  describe('wpcom.site.post.comments', function(){
+    it('should get the post comments list', function(done){
+      testing_post
+      .comments(function(err, data){
+        if (err) throw err;
+
+        assert.equal('number', typeof data.found);
+        assert.equal('object', typeof data.comments);
+        assert.ok(data.comments instanceof Array);
 
         done();
       });
