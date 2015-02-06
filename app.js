@@ -26,7 +26,7 @@ domready(function(){
     });
   });
 });
-},{"debug":3,"domready":6,"wpcom":7}],2:[function(require,module,exports){
+},{"debug":3,"domready":6,"wpcom":11}],2:[function(require,module,exports){
 
 },{}],3:[function(require,module,exports){
 
@@ -42,6 +42,17 @@ exports.formatArgs = formatArgs;
 exports.save = save;
 exports.load = load;
 exports.useColors = useColors;
+
+/**
+ * Use chrome.storage.local if we are in an app
+ */
+
+var storage;
+
+if (typeof chrome !== 'undefined' && typeof chrome.storage !== 'undefined')
+  storage = chrome.storage.local;
+else
+  storage = window.localStorage;
 
 /**
  * Colors.
@@ -132,10 +143,10 @@ function formatArgs() {
  */
 
 function log() {
-  // This hackery is required for IE8,
-  // where the `console.log` function doesn't have 'apply'
-  return 'object' == typeof console
-    && 'function' == typeof console.log
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
     && Function.prototype.apply.call(console.log, console, arguments);
 }
 
@@ -149,9 +160,9 @@ function log() {
 function save(namespaces) {
   try {
     if (null == namespaces) {
-      localStorage.removeItem('debug');
+      storage.removeItem('debug');
     } else {
-      localStorage.debug = namespaces;
+      storage.debug = namespaces;
     }
   } catch(e) {}
 }
@@ -166,7 +177,7 @@ function save(namespaces) {
 function load() {
   var r;
   try {
-    r = localStorage.debug;
+    r = storage.debug;
   } catch(e) {}
   return r;
 }
@@ -527,1839 +538,6 @@ function plural(ms, n, name) {
  * Module dependencies.
  */
 
-var request = require('wpcom-xhr-request');
-
-/**
- * Local module dependencies.
- */
-
-var Me = require('./lib/me');
-var Site = require('./lib/site');
-var Users = require('./lib/users');
-var Batch = require('./lib/batch');
-var debug = require('debug')('wpcom');
-
-/**
- * XMLHttpRequest (and CORS) API access method.
- *
- * API authentication is done via an (optional) access `token`,
- * which needs to be retrieved via OAuth.
- *
- * Request Handler is optional and XHR is defined as default.
- *
- * @param {String} [token] - OAuth API access token
- * @param {Function} [reqHandler] - function Request Handler
- * @public
- */
-
-function WPCOM(token, reqHandler) {
-  if (!(this instanceof WPCOM)) {
-    return new WPCOM(token, reqHandler);
-  }
-
-  // `token` is optional
-  if ('function' === typeof token) {
-    reqHandler = token;
-    token = null;
-  }
-
-  // Set default request handler
-  if (!reqHandler) {
-    debug('No request handler. Adding default XHR request handler');
-
-    this.request = function (params, fn) {
-      params = params || {};
-
-      // token is optional
-      if (token) {
-        params.authToken = token;
-      }
-
-      return request(params, fn);
-    };
-  } else {
-    this.request = reqHandler;
-  }
-}
-
-/**
- * Get `Me` object instance
- *
- * @api public
- */
-
-WPCOM.prototype.me = function () {
-  return new Me(this);
-};
-
-/**
- * Get `Site` object instance
- *
- * @param {String} id
- * @api public
- */
-
-WPCOM.prototype.site = function (id) {
-  return new Site(id, this);
-};
-
-/**
- * Get `Users` object instance
- *
- * @api public
- */
-
-WPCOM.prototype.users = function () {
-  return new Users(this);
-};
-
-
-WPCOM.prototype.batch = function () {
-  return new Batch(this);
-};
-
-/**
- * List Freshly Pressed Posts
- *
- * @param {Object} [query]
- * @param {Function} fn callback function
- * @api public
- */
-
-WPCOM.prototype.freshlyPressed = function (query, fn) {
-  return this.sendRequest('/freshly-pressed', query, null, fn);
-};
-
-/**
- * Request to WordPress REST API
- *
- * @param {String|Object} params
- * @param {Object} [query]
- * @param {Object} [body]
- * @param {Function} fn
- * @api private
- */
-
-WPCOM.prototype.sendRequest = function (params, query, body, fn) {
-  // `params` can be just the path (String)
-  if ('string' === typeof params) {
-    params = { path: params };
-  }
-
-  debug('sendRequest(%o)', params.path);
-
-  // set `method` request param
-  params.method = (params.method || 'get').toUpperCase();
-
-  // `query` is optional
-  if ('function' === typeof query) {
-    fn = query;
-    query = null;
-  }
-
-  // `body` is optional
-  if ('function' === typeof body) {
-    fn = body;
-    body = null;
-  }
-
-  // pass `query` and/or `body` to request params
-  if (query) {
-    params.query = query;
-
-    // Handle special query parameters
-    // - `apiVersion`
-    if (query.apiVersion) {
-      params.apiVersion = query.apiVersion;
-      delete query.apiVersion;
-    }
-  }
-
-  if (body) {
-    params.body = body;
-  }
-
-  // callback `fn` function is optional
-  if (!fn) {
-    fn = function (err) { if (err) { throw err; } };
-  }
-
-  // request method
-  return this.request(params, fn);
-};
-
-/**
- * Expose `WPCOM` module
- */
-
-module.exports = WPCOM;
-
-},{"./lib/batch":8,"./lib/me":14,"./lib/site":18,"./lib/users":20,"debug":3,"wpcom-xhr-request":22}],8:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var request = require('./util/request');
-var debug = require('debug')('wpcom:batch');
-
-/**
- * Create a `Batch` instance
- *
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Batch(wpcom) {
-  if (!(this instanceof Batch)) {
-    return new Batch(wpcom);
-  }
-
-  this.wpcom = wpcom;
-
-  this.urls = [];
-}
-
-/**
- * Add url to batch requests
- *
- * @param {String} url
- * @api public
- */
-
-Batch.prototype.add = function (url) {
-  this.urls.push(url);
-  return this;
-};
-
-/**
- * Run the batch request
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Batch.prototype.run = function (query, fn) {
-  // add urls to query object
-  if ('function' === typeof query) {
-    fn = query;
-    query = {};
-  }
-  query.urls = this.urls;
-
-  return request.get(this.wpcom, null, '/batch', query, fn);
-};
-
-/**
- * Expose `Batch` module
- */
-
-module.exports = Batch;
-},{"./util/request":21,"debug":3}],9:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var request = require('./util/request');
-var debug = require('debug')('wpcom:category');
-
-/**
- * Category methods
- *
- * @param {String} [slug]
- * @param {String} sid site id
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Category(slug, sid, wpcom) {
-  if (!sid) {
-    throw new Error('`side id` is not correctly defined');
-  }
-
-  if (!(this instanceof Category)) {
-    return new Category(slug, sid, wpcom);
-  }
-
-  this.wpcom = wpcom;
-  this._sid = sid;
-  this._slug = slug;
-}
-
-/**
- * Set category `slug`
- *
- * @param {String} slug
- * @api public
- */
-
-Category.prototype.slug = function (slug) {
-  this._slug = slug;
-};
-
-/**
- * Get category
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Category.prototype.get = function (query, fn) {
-  var path = '/sites/' + this._sid + '/categories/slug:' + this._slug;
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Add category
- *
- * @param {Object} [query]
- * @param {Object} body
- * @param {Function} fn
- * @api public
- */
-
-Category.prototype.add = function (query, body, fn) {
-  var path = '/sites/' + this._sid + '/categories/new';
-  return request.post(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Edit category
- *
- * @param {Object} [query]
- * @param {Object} body
- * @param {Function} fn
- * @api public
- */
-
-Category.prototype.update = function (query, body, fn) {
-  var path = '/sites/' + this._sid + '/categories/slug:' + this._slug;
-  return request.put(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Delete category
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Category.prototype['delete'] = Category.prototype.del = function (query, fn) {
-  var path = '/sites/' + this._sid + '/categories/slug:' + this._slug + '/delete';
-  return request.del(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Expose `Category` module
- */
-
-module.exports = Category;
-},{"./util/request":21,"debug":3}],10:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var request = require('./util/request');
-var CommentLike = require('./commentlike');
-var debug = require('debug')('wpcom:comment');
-
-/**
- * Comment methods
- *
- * @param {String} [cid] comment id
- * @param {String} [pid] post id
- * @param {String} sid site id
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Comment(cid, pid, sid, wpcom) {
-  if (!sid) {
-    throw new Error('`side id` is not correctly defined');
-  }
-
-  if (!(this instanceof Comment)) {
-    return new Comment(cid, pid, sid, wpcom);
-  }
-
-  this.wpcom = wpcom;
-  this._cid = cid;
-  this._pid = pid;
-  this._sid = sid;
-}
-
-/**
- * Return a single Comment
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Comment.prototype.get = function (query, fn) {
-  var path = '/sites/' + this._sid + '/comments/' + this._cid;
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Return recent comments for a post
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Comment.prototype.replies = function (query, fn) {
-  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/replies/';
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Create a comment on a post
- *
- * @param {Object} [query]
- * @param {String|Object} body
- * @param {Function} fn
- * @api public
- */
-
-Comment.prototype.add = function (query, body, fn) {
-  if ('function' === typeof body) {
-    fn = body;
-    body = query;
-    query = {};
-  }
-
-  body = 'string' === typeof body ? { content: body } : body;
-
-  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/replies/new';
-  return request.post(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Edit a comment
- *
- * @param {Object} [query]
- * @param {String|Object} body
- * @param {Function} fn
- * @api public
- */
-
-Comment.prototype.update = function (query, body, fn) {
-  if ('function' === typeof body) {
-    fn = body;
-    body = query;
-    query = {};
-  }
-
-  body = 'string' === typeof body ? { content: body } : body;
-
-  var path = '/sites/' + this._sid + '/comments/' + this._cid;
-  return request.put(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Create a Comment as a reply to another Comment
- *
- * @param {Object} [query]
- * @param {String|Object} body
- * @param {Function} fn
- * @api public
- */
-
-Comment.prototype.reply = function (query, body, fn) {
-  if ('function' === typeof body) {
-    fn = body;
-    body = query;
-    query = {};
-  }
-  
-  body = 'string' === typeof body ? { content: body } : body;
-
-  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/replies/new';
-  return request.post(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Delete a comment
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Comment.prototype['delete'] =
-Comment.prototype.del = function (query, fn) {
-  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/delete';
-  return request.del(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Create a `CommentLike` instance
- *
- * @api public
- */
-
-Comment.prototype.like = function() {
-  return CommentLike(this._cid, this._sid, this.wpcom);
-};
-
-/**
- * Get comment likes list
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Comment.prototype.likesList = function (query, fn) {
-  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes';
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Expose `Comment` module
- */
-
-module.exports = Comment;
-},{"./commentlike":11,"./util/request":21,"debug":3}],11:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var request = require('./util/request');
-var debug = require('debug')('wpcom:commentlike');
-
-/**
- * CommentLike methods
- *
- * @param {String} cid comment id
- * @param {String} sid site id
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function CommentLike(cid, sid, wpcom) {
-  if (!sid) {
-    throw new Error('`side id` is not correctly defined');
-  }
-
-  if (!cid) {
-    throw new Error('`comment id` is not correctly defined');
-  }
-
-  if (!(this instanceof CommentLike)) {
-    return new CommentLike(cid, sid, wpcom);
-  }
-
-  this.wpcom = wpcom;
-  this._cid = cid;
-  this._sid = sid;
-}
-
-/**
- * Get your Like status for a Comment
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-CommentLike.prototype.state =
-CommentLike.prototype.mine = function (query, fn) {
-  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes/mine';
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Like a comment
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-CommentLike.prototype.add = function (query, body, fn) {
-  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes/new';
-  return request.post(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Remove your Like from a Comment
- *
- * @param {Function} fn
- * @api public
- */
-
-CommentLike.prototype['delete'] =
-CommentLike.prototype.del = function (query, fn) {
-  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes/mine/delete';
-  return request.del(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Expose `CommentLike` module
- */
-
-module.exports = CommentLike;
-},{"./util/request":21,"debug":3}],12:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var request = require('./util/request');
-var debug = require('debug')('wpcom:follow');
-
-/**
- * Follow 
- *
- * @param {String} site_id - site id
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Follow(site_id, wpcom) {
-  if (!site_id) {
-    throw new Error('`site id` is not correctly defined');
-  }
-
-  if (!(this instanceof Follow)) {
-    return new Follow(site_id, wpcom);
-  }
-
-  this.wpcom = wpcom;
-  this._sid = site_id;
-}
-
-/**
- * Follow the site
- *
- * @param {Object} [query]
- * @param {Function} fn
- */
-
-Follow.prototype.follow =
-Follow.prototype.add = function (query, fn) {
-  var path = '/sites/' + this._sid + '/follows/new';
-  return request.put(this.wpcom, null, path, query, null, fn);
-};
-
-/**
- * Unfollow the site
- *
- * @param {Object} [query]
- * @param {Function} fn
- */
-
-Follow.prototype.unfollow =
-Follow.prototype.del = function (query, fn) {
-  var path = '/sites/' + this._sid + '/follows/mine/delete';
-  return request.put(this.wpcom, null, path, query, null, fn);
-};
-
-/**
- * Get the follow status for current 
- * user on current blog site
- *
- * @param {Object} [query]
- * @param {Function} fn
- */
-
-Follow.prototype.state =
-Follow.prototype.mine = function (query, fn) {
-  var path = '/sites/' + this._sid + '/follows/mine';
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Expose `Follow` module
- */
-
-module.exports = Follow;
-},{"./util/request":21,"debug":3}],13:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var request = require('./util/request');
-var debug = require('debug')('wpcom:like');
-
-/**
- * Like methods
- *
- * @param {String} pid post id
- * @param {String} sid site id
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Like(pid, sid, wpcom) {
-  if (!sid) {
-    throw new Error('`side id` is not correctly defined');
-  }
-
-  if (!pid) {
-    throw new Error('`post id` is not correctly defined');
-  }
-
-  if (!(this instanceof Like)) {
-    return new Like(pid, sid, wpcom);
-  }
-
-  this.wpcom = wpcom;
-  this._pid = pid;
-  this._sid = sid;
-}
-
-/**
- * Get your Like status for a Post
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Like.prototype.state =
-Like.prototype.mine = function (query, fn) {
-  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/likes/mine';
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Like a post
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Like.prototype.add = function (query, fn) {
-  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/likes/new';
-  return request.put(this.wpcom, null, path, query, null, fn);
-};
-
-/**
- * Remove your Like from a Post
- *
- * @param {Function} fn
- * @api public
- */
-
-Like.prototype['delete'] =
-Like.prototype.del = function (query, fn) {
-  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/likes/mine/delete';
-  return request.del(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Expose `Like` module
- */
-
-module.exports = Like;
-},{"./util/request":21,"debug":3}],14:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-var request = require('./util/request');
-var debug = require('debug')('wpcom:me');
-
-/**
- * Create a `Me` instance
- *
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Me(wpcom) {
-  if (!(this instanceof Me)) {
-    return new Me(wpcom);
-  }
-
-  this.wpcom = wpcom;
-}
-
-/**
- * Meta data about auth token's User
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Me.prototype.get = function (query, fn) {
-  return request.get(this.wpcom, null, '/me', query, fn);
-};
-
-/**
- * A list of the current user's sites
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api private
- */
-
-Me.prototype.sites = function (query, fn) {
-  return request.get(this.wpcom, null, '/me/sites', query, fn);
-};
-
-/**
- * List the currently authorized user's likes
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Me.prototype.likes = function (query, fn) {
-  return request.get(this.wpcom, null, '/me/likes', query, fn);
-};
-
-/**
- * A list of the current user's group
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Me.prototype.groups = function (query, fn) {
-  return request.get(this.wpcom, null, '/me/groups', query, fn);
-};
-
-/**
- * A list of the current user's connections to third-party services
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Me.prototype.connections = function (query, fn) {
-  return request.get(this.wpcom, null, '/me/connections', query, fn);
-};
-
-/**
- * Expose `Me` module
- */
-
-module.exports = Me;
-},{"./util/request":21,"debug":3}],15:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var fs = require('fs');
-var request = require('./util/request');
-var debug = require('debug')('wpcom:media');
-
-/**
- * Default
- */
-
-var def = {
-  "apiVersion": "1.1"
-};
-
-/**
- * Media methods
- *
- * @param {String} id
- * @param {String} sid site id
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Media(id, sid, wpcom) {
-  if (!(this instanceof Media)) {
-    return new Media(id, sid, wpcom);
-  }
-
-  this.wpcom = wpcom;
-  this._sid = sid;
-  this._id = id;
-
-  if (!this._id) {
-    debug('WARN: media `id` is not defined');
-  }
-}
-
-/**
- * Get media
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Media.prototype.get = function (query, fn) {
-  var path = '/sites/' + this._sid + '/media/' + this._id;
-  return request.get(this.wpcom, def, path, query, fn);
-};
-
-/**
- * Edit media
- *
- * @param {Object} [query]
- * @param {Object} body
- * @param {Function} fn
- * @api public
- */
-
-Media.prototype.update = function (query, body, fn) {
-  var path = '/sites/' + this._sid + '/media/' + this._id;
-  return request.put(this.wpcom, def, path, query, body, fn);
-};
-
-/**
- * Add media file
- *
- * @param {Object} [query]
- * @param {String|Object|Array} files
- * @param {Function} fn
- */
-
-Media.prototype.addFiles = function (query, files, fn) {
-  if ('function' === typeof files) {
-    fn = files;
-    files = query;
-    query = {};
-  }
-
-  var params = {
-    path: '/sites/' + this._sid + '/media/new',
-    formData: []
-  };
-
-  // process formData
-  files = Array.isArray(files) ? files : [files];
-
-  var i, f, isStream, isFile, k, param;
-  for (i = 0; i < files.length; i++) {
-    f = files[i];
-    f = 'string' === typeof f ? fs.createReadStream(f) : f;
-
-    isStream = !!f._readableState;
-    isFile = 'undefined' !== typeof File && f instanceof File;
-
-    debug('is stream: %s', isStream);
-    debug('is file: %s', isFile);
-
-    if (!isFile && !isStream) {
-      // process file attributes like as `title`, `description`, ...
-      for (k in f) {
-        debug('add %o => %o', k, f[k]);
-        if ('file' !== k) {
-          param = 'attrs[' + i + '][' + k + ']';
-          params.formData.push([param, f[k]]);
-        }
-      }
-      // set file path
-      f = f.file;
-      f = 'string' === typeof f ? fs.createReadStream(f) : f;
-    }
-
-    params.formData.push(['media[]', f]);
-  }
-
-  return request.post(this.wpcom, def, params, query, null, fn);
-};
-
-/**
- * Add media files from URL
- *
- * @param {Object} [query]
- * @param {String|Array|Object} files
- * @param {Function} fn
- */
-
-Media.prototype.addUrls = function (query, media, fn) {
-  if ('function' === typeof media) {
-    fn = media;
-    media = query;
-    query = {};
-  }
-
-  var path = '/sites/' + this._sid + '/media/new';
-  var body = { media_urls: [] };
-
-  // process formData
-  var i, m, url, k;
-
-  media = Array.isArray(media) ? media : [ media ];
-  for (i = 0; i < media.length; i++) {
-    m = media[i];
-
-    if ('string' === typeof m) {
-      url = m;
-    } else {
-      if (!body.attrs) {
-        body.attrs = [];
-      }
-
-      // add attributes
-      body.attrs[i] = {};
-      for (k in m) {
-        if ('url' !== k) {
-          body.attrs[i][k] = m[k];
-        }
-      }
-      url = m[k];
-    }
-
-    // push url into [media_url]
-    body.media_urls.push(url);
-  }
-
-  return request.post(this.wpcom, def, path, query, body, fn);
-};
-
-/**
- * Delete media
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Media.prototype['delete'] = Media.prototype.del = function (query, fn) {
-  var path = '/sites/' + this._sid + '/media/' + this._id + '/delete';
-  return request.del(this.wpcom, def, path, query, fn);
-};
-
-/**
- * Expose `Media` module
- */
-
-module.exports = Media;
-},{"./util/request":21,"debug":3,"fs":2}],16:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var Like = require('./like');
-var Reblog = require('./reblog');
-var Comment = require('./comment');
-var request = require('./util/request');
-var debug = require('debug')('wpcom:post');
-
-/**
- * Post methods
- *
- * @param {String} id
- * @param {String} sid site id
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Post(id, sid, wpcom) {
-  if (!(this instanceof Post)) {
-    return new Post(id, sid, wpcom);
-  }
-
-  this.wpcom = wpcom;
-  this._sid = sid;
-
-  // set `id` and/or `slug` properties
-  id = id || {};
-  if ('object' !== typeof id) {
-    this._id = id;
-  } else {
-    this._id = id.id;
-    this._slug = id.slug;
-  }
-}
-
-/**
- * Set post `id`
- *
- * @api public
- */
-
-Post.prototype.id = function (id) {
-  this._id = id;
-};
-
-/**
- * Set post `slug`
- *
- * @param {String} slug
- * @api public
- */
-
-Post.prototype.slug = function (slug) {
-  this._slug = slug;
-};
-
-/**
- * Get post
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Post.prototype.get = function (query, fn) {
-  if (!this._id && this._slug) {
-    return this.getBySlug(query, fn);
-  }
-
-  var path = '/sites/' + this._sid + '/posts/' + this._id;
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Get post by slug
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Post.prototype.getBySlug = function (query, fn) {
-  var path = '/sites/' + this._sid + '/posts/slug:' + this._slug;
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Add post
- *
- * @param {Object} [query]
- * @param {Object} body
- * @param {Function} fn
- * @api public
- */
-
-Post.prototype.add = function (query, body, fn) {
-  var path = '/sites/' + this._sid + '/posts/new';
-  return request.post(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Edit post
- *
- * @param {Object} [query]
- * @param {Object} body
- * @param {Function} fn
- * @api public
- */
-
-Post.prototype.update = function (query, body, fn) {
-  var path = '/sites/' + this._sid + '/posts/' + this._id;
-  return request.put(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Delete post
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Post.prototype['delete'] =
-Post.prototype.del = function (query, fn) {
-  var path = '/sites/' + this._sid + '/posts/' + this._id + '/delete';
-  return request.del(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Restore post
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Post.prototype.restore = function (query, fn) {
-  var path = '/sites/' + this._sid + '/posts/' + this._id + '/restore';
-  return request.put(this.wpcom, null, path, query, null, fn);
-};
-
-/**
- * Get post likes list
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Post.prototype.likesList = function (query, fn) {
-  var path = '/sites/' + this._sid + '/posts/' + this._id + '/likes';
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Search within a site for related posts
- *
- * @param {Object} [query]
- * @param {Object} body
- * @param {Function} fn
- * @api public
- */
-
-Post.prototype.related = function (body, fn) {
-  var path = '/sites/' + this._sid + '/posts/' + this._id + '/related';
-  return request.put(this.wpcom, null, path, query, null, fn);
-};
-
-/**
- * Create a `Like` instance
- *
- * @api public
- */
-
-Post.prototype.like = function () {
-  return new Like(this._id, this._sid, this.wpcom);
-};
-
-/**
- * Create a `Reblog` instance
- *
- * @api public
- */
-
-Post.prototype.reblog = function () {
-  return new Reblog(this._id, this._sid, this.wpcom);
-};
-
-/**
- * Create a `Comment` instance
- *
- * @param {String} [cid] comment id
- * @api public
- */
-
-Post.prototype.comment = function (cid) {
-  return new Comment(cid, this._id, this._sid, this.wpcom);
-};
-
-/**
- * Return recent comments
- *
- * @param {Objecy} [query]
- * @param {String} id
- * @api public
- */
-
-Post.prototype.comments = function (query, fn) {
-  var comment = new Comment(null, this._id, this._sid, this.wpcom);
-  comment.replies(query, fn);
-  return comment;
-};
-
-/**
- * Expose `Post` module
- */
-
-module.exports = Post;
-},{"./comment":10,"./like":13,"./reblog":17,"./util/request":21,"debug":3}],17:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var request = require('./util/request');
-var debug = require('debug')('wpcom:reblog');
-
-/**
- * Reblog methods
- *
- * @param {String} pid post id
- * @param {String} sid site id
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Reblog(pid, sid, wpcom) {
-  if (!sid) {
-    throw new Error('`side id` is not correctly defined');
-  }
-
-  if (!pid) {
-    throw new Error('`post id` is not correctly defined');
-  }
-
-  if (!(this instanceof Reblog)) {
-    return new Reblog(pid, sid, wpcom);
-  }
-
-  this.wpcom = wpcom;
-  this._pid = pid;
-  this._sid = sid;
-}
-
-/**
- * Get your reblog status for a Post
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Reblog.prototype.state =
-Reblog.prototype.mine = function (query, fn) {
-  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/reblogs/mine';
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Reblog a post
- *
- * @param {Object} [query]
- * @param {Object} body
- * @param {Function} fn
- * @api public
- */
-
-Reblog.prototype.add = function (query, body, fn) {
-  if ('function' === typeof body) {
-    fn = body;
-    body = query;
-    query = {};
-  }
-
-  if (body && !body.destination_site_id) {
-    return fn(new Error('destination_site_id is not defined'));
-  }
-
-  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/reblogs/new';
-  return request.post(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Reblog a post to
- * It's almost a alias of Reblogs#add()
- *
- * @param {Number} dest destination
- * @param {String} [note]
- * @param {Function} fn
- * @api public
- */
-
-Reblog.prototype.to = function (dest, note, fn) {
-  if ('function' === typeof note) {
-    fn = note;
-    note = null;
-  }
-
-  this.add({ note: note, destination_site_id: dest }, fn);
-};
-
-/**
- * Expose `Reblog` module
- */
-
-module.exports = Reblog;
-},{"./util/request":21,"debug":3}],18:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var Post = require('./post');
-var Category = require('./category');
-var Tag = require('./tag');
-var Media = require('./media');
-var Comment = require('./comment');
-var Follow = require('./follow');
-var request = require('./util/request');
-var debug = require('debug')('wpcom:site');
-
-/**
- * Resources array
- * A list of endpoints with the same structure
- */
-
-var resources = [
-  'categories',
-  'comments',
-  'follows',
-  'media',
-  'posts',
-  [ 'stats', 'stats' ],
-  [ 'statsVisits', 'stats/visits' ],
-  [ 'statsReferrers', 'stats/referrers' ],
-  [ 'statsTopPosts', 'stats/top-posts' ],
-  [ 'statsCountryViews', 'stats/country-views' ],
-  [ 'statsClicks', 'stats/clicks' ],
-  [ 'statsSearchTerms', 'stats/search-terms' ],
-  'tags',
-  'users'
-];
-
-/**
- * Create a Site instance
- *
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Site(id, wpcom) {
-  if (!(this instanceof Site)) {
-    return new Site(id, wpcom);
-  }
-
-  this.wpcom = wpcom;
-
-  debug('set %o site id', id);
-  this._id = encodeURIComponent(id);
-}
-
-/**
- * Require site information
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Site.prototype.get = function (query, fn) {
-  return request.get(this.wpcom, null, '/sites/' + this._id, query, fn);
-};
-
-/**
- * List method builder
- *
- * @param {String} subpath
- * @param {Function}
- * @api private
- */
-
-var list = function (subpath, apiVersion) {
-
-  /**
-   * Return the <names>List method
-   *
-   * @param {Object} [query]
-   * @param {Function} fn
-   * @api public
-   */
-
-  return function (query, fn) {
-    var path = '/sites/' + this._id + '/' + subpath;
-    return request.get(this.wpcom, { apiVersion: apiVersion }, path, query, fn);
-  };
-};
-
-// walk for each resource and create related method
-var i, res, isarr, name, subpath, apiVersion;
-for (i = 0; i < resources.length; i++) {
-  res = resources[i];
-  isarr = Array.isArray(res);
-
-  name =  isarr ? res[0] : res + 'List';
-  subpath = isarr ? res[1] : res;
-  apiVersion = isarr && 'string' === typeof res[2] ? res[2] : '1';
-
-  debug('adding %o method in %o sub-path (v%o)', 'site.' + name + '()', subpath, apiVersion);
-  Site.prototype[name] = list(subpath, apiVersion);
-}
-
-/**
- * :POST:
- * Create a `Post` instance
- *
- * @param {String} id
- * @api public
- */
-
-Site.prototype.post = function (id) {
-  return new Post(id, this._id, this.wpcom);
-};
-
-/**
- * :POST:
- * Add a new blog post
- *
- * @param {Object} body
- * @param {Function} fn
- * @return {Post} new Post instance
- */
-
-Site.prototype.addPost = function (body, fn) {
-  var post = new Post(null, this._id, this.wpcom);
-  return post.add(body, fn);
-};
-
-/**
- * :POST:
- * Delete a blog post
- *
- * @param {String} id
- * @param {Function} fn
- * @return {Post} remove Post instance
- */
-
-Site.prototype.deletePost = function (id, fn) {
-  var post = new Post(id, this._id, this.wpcom);
-  return post.delete(fn);
-};
-
-/**
- * Create a `Media` instance
- *
- * @param {String} id
- * @api public
- */
-
-Site.prototype.media = function (id) {
-  return new Media(id, this._id, this.wpcom);
-};
-
-/**
- * Add a media from a file
- *
- * @param {Object} [query]
- * @param {Array|String} files
- * @param {Function} fn
- * @return {Post} new Post instance
- */
-
-Site.prototype.addMediaFiles = function (query, files, fn) {
-  var media = new Media(null, this._id, this.wpcom);
-  return media.addFiles(query, files, fn);
-};
-
-/**
- * Add a new media from url
- *
- * @param {Object} [query]
- * @param {Array|String} files
- * @param {Function} fn
- * @return {Post} new Post instance
- */
-
-Site.prototype.addMediaUrls = function (query, files, fn) {
-  var media = new Media(null, this._id, this.wpcom);
-  return media.addUrls(query, files, fn);
-};
-
-/**
- * Delete a blog media
- *
- * @param {String} id
- * @param {Function} fn
- * @return {Post} removed Media instance
- */
-
-Site.prototype.deleteMedia = function (id, fn) {
-  var media = new Media(id, this._id, this.wpcom);
-  return media.del(fn);
-};
-
-/**
- * Create a `Comment` instance
- *
- * @param {String} id
- * @api public
- */
-
-Site.prototype.comment = function (id) {
-  return new Comment(id, null, this._id, this.wpcom);
-};
-
-/**
- * Create a `Follow` instance
- *
- * @api public
- */
-
-Site.prototype.follow = function () {
-  return new Follow(this._id, this.wpcom);
-};
-
-/**
- * Create a `Category` instance
- * Set `cat` alias
- *
- * @param {String} [slug]
- * @api public
- */
-
-Site.prototype.cat = Site.prototype.category = function (slug) {
-  return new Category(slug, this._id, this.wpcom);
-};
-
-/**
- * Create a `Tag` instance
- *
- * @param {String} [slug]
- * @api public
- */
-
-Site.prototype.tag = function (slug) {
-  return new Tag(slug, this._id, this.wpcom);
-};
-
-/**
- * Expose `Site` module
- */
-
-module.exports = Site;
-
-},{"./category":9,"./comment":10,"./follow":12,"./media":15,"./post":16,"./tag":19,"./util/request":21,"debug":3}],19:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var request = require('./util/request');
-var debug = require('debug')('wpcom:tag');
-
-/**
- * Tag methods
- *
- * @param {String} [slug]
- * @param {String} sid site id
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Tag(slug, sid, wpcom) {
-  if (!sid) {
-    throw new Error('`side id` is not correctly defined');
-  }
-
-  if (!(this instanceof Tag)) {
-    return new Tag(slug, sid, wpcom);
-  }
-
-  this.wpcom = wpcom;
-  this._sid = sid;
-  this._slug = slug;
-}
-
-/**
- * Set tag `slug`
- *
- * @param {String} slug
- * @api public
- */
-
-Tag.prototype.slug = function (slug) {
-  this._slug = slug;
-};
-
-/**
- * Get tag
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Tag.prototype.get = function (query, fn) {
-  var path = '/sites/' + this._sid + '/tags/slug:' + this._slug;
-  return request.get(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Add tag
- *
- * @param {Object} [query]
- * @param {Object} body
- * @param {Function} fn
- * @api public
- */
-
-Tag.prototype.add = function (query, body, fn) {
-  var path = '/sites/' + this._sid + '/tags/new';
-  return request.post(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Edit tag
- *
- * @param {Object} [query]
- * @param {Object} body
- * @param {Function} fn
- * @api public
- */
-
-Tag.prototype.update = function (query, body, fn) {
-  var path = '/sites/' + this._sid + '/tags/slug:' + this._slug;
-  return request.put(this.wpcom, null, path, query, body, fn);
-};
-
-/**
- * Delete tag
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Tag.prototype['delete'] = Tag.prototype.del = function (query, fn) {
-  var path = '/sites/' + this._sid + '/tags/slug:' + this._slug + '/delete';
-  return request.del(this.wpcom, null, path, query, fn);
-};
-
-/**
- * Expose `Tag` module
- */
-
-module.exports = Tag;
-},{"./util/request":21,"debug":3}],20:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var request = require('./util/request');
-var debug = require('debug')('wpcom:users');
-
-/**
- * Create a `Users` instance
- *
- * @param {WPCOM} wpcom
- * @api public
- */
-
-function Users(wpcom) {
-  if (!(this instanceof Users)) {
-    return new Users(wpcom);
-  }
-
-  this.wpcom = wpcom;
-}
-
-/**
- * A list of @mention suggestions for the current user
- *
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-Users.prototype.suggest = function (query, fn) {
-  return request.get(this.wpcom, null, '/users/suggest', query, fn);
-};
-
-/**
- * Expose `Users` module
- */
-
-module.exports = Users;
-},{"./util/request":21,"debug":3}],21:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var debug = require('debug')('wpcom:request');
-
-/**
- * Expose `Request` module
- */
-
-exports = module.exports = {};
-
-/**
- * Request methods
- *
- * @param {WPCOM} wpcom
- * @param {Object} def
- * @param {Object|String} params
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-exports.get = function (wpcom, def, params, query, fn) {
-  // `query` is optional
-  if ('function' == typeof query) {
-    fn = query;
-    query = {};
-  }
-  
-  defaultValues(def, query);
-
-  return wpcom.sendRequest(params, query, null, fn);
-};
-
-/**
- * Make `update` request
- *
- * @param {WPCOM} wpcom
- * @param {Object} def
- * @param {Object|String} params
- * @param {Object} [query]
- * @param {Object} body
- * @param {Function} fn
- * @api public
- */
-
-exports.put = 
-exports.post = function (wpcom, def, params, query, body, fn) {
-  if ('function' === typeof body) {
-    fn = body;
-    body = query;
-    query = {};
-  }
-
-  defaultValues(def, query);
-
-  // params can be s string
-  params = 'string' === typeof params ? { path : params } : params;
-
-  // request method
-  params.method = 'post';
-
-  return wpcom.sendRequest(params, query, body, fn);
-};
-
-/**
- * Make a `delete` request
- *
- * @param {WPCOM} wpcom
- * @param {Object} def
- * @param {Object|String} params
- * @param {Object} [query]
- * @param {Function} fn
- * @api public
- */
-
-exports.del = function (wpcom, def, params, query, fn) {  
-  if ('function' == typeof query) {
-    fn = query;
-    query = {};
-  }
-
-  return exports.post(wpcom, def, params, query, null, fn);
-};
-
-/**
- * Set query object using the given parameters
- *
- * @api private
- */
-
-function defaultValues (def, query) {
-  def = def || {};
-  query = query || {};
-
-  // `apiVersion`
-  if (def.apiVersion) {
-    query.apiVersion = query.apiVersion || def.apiVersion;
-  }
-};
-},{"debug":3}],22:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
 var superagent = require('superagent');
 var debug = require('debug')('wpcom-xhr-request');
 
@@ -2475,7 +653,7 @@ function toTitle (str) {
   });
 }
 
-},{"debug":3,"superagent":23}],23:[function(require,module,exports){
+},{"debug":3,"superagent":8}],8:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -3553,7 +1731,7 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":24,"reduce":25}],24:[function(require,module,exports){
+},{"emitter":9,"reduce":10}],9:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -3719,7 +1897,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],25:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 /**
  * Reduce `arr` with `fn`.
@@ -3744,4 +1922,1898 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
-},{}]},{},[1]);
+},{}],11:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var request = require('wpcom-xhr-request');
+
+/**
+ * Local module dependencies.
+ */
+
+var Me = require('./lib/me');
+var Site = require('./lib/site');
+var Users = require('./lib/users');
+var Batch = require('./lib/batch');
+var debug = require('debug')('wpcom');
+
+/**
+ * XMLHttpRequest (and CORS) API access method.
+ *
+ * API authentication is done via an (optional) access `token`,
+ * which needs to be retrieved via OAuth.
+ *
+ * Request Handler is optional and XHR is defined as default.
+ *
+ * @param {String} [token] - OAuth API access token
+ * @param {Function} [reqHandler] - function Request Handler
+ * @public
+ */
+
+function WPCOM(token, reqHandler) {
+  if (!(this instanceof WPCOM)) {
+    return new WPCOM(token, reqHandler);
+  }
+
+  // `token` is optional
+  if ('function' === typeof token) {
+    reqHandler = token;
+    token = null;
+  }
+
+  if (token) {
+    debug('Token defined: %s…', token.substring(0, 6));
+  }
+
+  // Set default request handler
+  if (!reqHandler) {
+    debug('No request handler. Adding default XHR request handler');
+
+    this.request = function (params, fn) {
+      params = params || {};
+
+      // token is optional
+      if (token) {
+        params.authToken = token;
+      }
+
+      return request(params, fn);
+    };
+  } else {
+    this.request = reqHandler;
+  }
+}
+
+/**
+ * Get `Me` object instance
+ *
+ * @api public
+ */
+
+WPCOM.prototype.me = function () {
+  return new Me(this);
+};
+
+/**
+ * Get `Site` object instance
+ *
+ * @param {String} id
+ * @api public
+ */
+
+WPCOM.prototype.site = function (id) {
+  return new Site(id, this);
+};
+
+/**
+ * Get `Users` object instance
+ *
+ * @api public
+ */
+
+WPCOM.prototype.users = function () {
+  return new Users(this);
+};
+
+
+WPCOM.prototype.batch = function () {
+  return new Batch(this);
+};
+
+/**
+ * List Freshly Pressed Posts
+ *
+ * @param {Object} [query]
+ * @param {Function} fn callback function
+ * @api public
+ */
+
+WPCOM.prototype.freshlyPressed = function (query, fn) {
+  return this.sendRequest('/freshly-pressed', query, null, fn);
+};
+
+/**
+ * Request to WordPress REST API
+ *
+ * @param {String|Object} params
+ * @param {Object} [query]
+ * @param {Object} [body]
+ * @param {Function} fn
+ * @api private
+ */
+
+WPCOM.prototype.sendRequest = function (params, query, body, fn) {
+  // `params` can be just the path (String)
+  if ('string' === typeof params) {
+    params = { path: params };
+  }
+
+  debug('sendRequest(%o)', params.path);
+
+  // set `method` request param
+  params.method = (params.method || 'get').toUpperCase();
+
+  // `query` is optional
+  if ('function' === typeof query) {
+    fn = query;
+    query = null;
+  }
+
+  // `body` is optional
+  if ('function' === typeof body) {
+    fn = body;
+    body = null;
+  }
+
+  // pass `query` and/or `body` to request params
+  if (query) {
+    params.query = query;
+
+    // Handle special query parameters
+    // - `apiVersion`
+    if (query.apiVersion) {
+      params.apiVersion = query.apiVersion;
+      delete query.apiVersion;
+    }
+  }
+
+  if (body) {
+    params.body = body;
+  }
+
+  // callback `fn` function is optional
+  if (!fn) {
+    fn = function (err) { if (err) { throw err; } };
+  }
+
+  // request method
+  return this.request(params, fn);
+};
+
+/**
+ * Expose `WPCOM` module
+ */
+
+module.exports = WPCOM;
+},{"./lib/batch":12,"./lib/me":18,"./lib/site":22,"./lib/users":24,"debug":3,"wpcom-xhr-request":7}],12:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var request = require('./util/request');
+var debug = require('debug')('wpcom:batch');
+
+/**
+ * Create a `Batch` instance
+ *
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Batch(wpcom) {
+  if (!(this instanceof Batch)) {
+    return new Batch(wpcom);
+  }
+
+  this.wpcom = wpcom;
+
+  this.urls = [];
+}
+
+/**
+ * Add url to batch requests
+ *
+ * @param {String} url
+ * @api public
+ */
+
+Batch.prototype.add = function (url) {
+  this.urls.push(url);
+  return this;
+};
+
+/**
+ * Run the batch request
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Batch.prototype.run = function (query, fn) {
+  // add urls to query object
+  if ('function' === typeof query) {
+    fn = query;
+    query = {};
+  }
+  query.urls = this.urls;
+
+  return request.get(this.wpcom, null, '/batch', query, fn);
+};
+
+/**
+ * Expose `Batch` module
+ */
+
+module.exports = Batch;
+},{"./util/request":25,"debug":3}],13:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var request = require('./util/request');
+var debug = require('debug')('wpcom:category');
+
+/**
+ * Category methods
+ *
+ * @param {String} [slug]
+ * @param {String} sid site id
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Category(slug, sid, wpcom) {
+  if (!sid) {
+    throw new Error('`side id` is not correctly defined');
+  }
+
+  if (!(this instanceof Category)) {
+    return new Category(slug, sid, wpcom);
+  }
+
+  this.wpcom = wpcom;
+  this._sid = sid;
+  this._slug = slug;
+}
+
+/**
+ * Set category `slug`
+ *
+ * @param {String} slug
+ * @api public
+ */
+
+Category.prototype.slug = function (slug) {
+  this._slug = slug;
+};
+
+/**
+ * Get category
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Category.prototype.get = function (query, fn) {
+  var path = '/sites/' + this._sid + '/categories/slug:' + this._slug;
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Add category
+ *
+ * @param {Object} [query]
+ * @param {Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Category.prototype.add = function (query, body, fn) {
+  var path = '/sites/' + this._sid + '/categories/new';
+  return request.post(this.wpcom, null, path, query, body, fn);
+};
+
+/**
+ * Edit category
+ *
+ * @param {Object} [query]
+ * @param {Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Category.prototype.update = function (query, body, fn) {
+  var path = '/sites/' + this._sid + '/categories/slug:' + this._slug;
+  return request.put(this.wpcom, null, path, query, body, fn);
+};
+
+/**
+ * Delete category
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Category.prototype['delete'] = Category.prototype.del = function (query, fn) {
+  var path = '/sites/' + this._sid + '/categories/slug:' + this._slug + '/delete';
+  return request.del(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Expose `Category` module
+ */
+
+module.exports = Category;
+},{"./util/request":25,"debug":3}],14:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var request = require('./util/request');
+var CommentLike = require('./commentlike');
+var debug = require('debug')('wpcom:comment');
+
+/**
+ * Comment methods
+ *
+ * @param {String} [cid] comment id
+ * @param {String} [pid] post id
+ * @param {String} sid site id
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Comment(cid, pid, sid, wpcom) {
+  if (!sid) {
+    throw new Error('`side id` is not correctly defined');
+  }
+
+  if (!(this instanceof Comment)) {
+    return new Comment(cid, pid, sid, wpcom);
+  }
+
+  this.wpcom = wpcom;
+  this._cid = cid;
+  this._pid = pid;
+  this._sid = sid;
+}
+
+/**
+ * Return a single Comment
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Comment.prototype.get = function (query, fn) {
+  var path = '/sites/' + this._sid + '/comments/' + this._cid;
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Return recent comments for a post
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Comment.prototype.replies = function (query, fn) {
+  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/replies/';
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Create a comment on a post
+ *
+ * @param {Object} [query]
+ * @param {String|Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Comment.prototype.add = function (query, body, fn) {
+  if ('function' === typeof body) {
+    fn = body;
+    body = query;
+    query = {};
+  }
+
+  body = 'string' === typeof body ? { content: body } : body;
+
+  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/replies/new';
+  return request.post(this.wpcom, null, path, query, body, fn);
+};
+
+/**
+ * Edit a comment
+ *
+ * @param {Object} [query]
+ * @param {String|Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Comment.prototype.update = function (query, body, fn) {
+  if ('function' === typeof body) {
+    fn = body;
+    body = query;
+    query = {};
+  }
+
+  body = 'string' === typeof body ? { content: body } : body;
+
+  var path = '/sites/' + this._sid + '/comments/' + this._cid;
+  return request.put(this.wpcom, null, path, query, body, fn);
+};
+
+/**
+ * Create a Comment as a reply to another Comment
+ *
+ * @param {Object} [query]
+ * @param {String|Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Comment.prototype.reply = function (query, body, fn) {
+  if ('function' === typeof body) {
+    fn = body;
+    body = query;
+    query = {};
+  }
+  
+  body = 'string' === typeof body ? { content: body } : body;
+
+  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/replies/new';
+  return request.post(this.wpcom, null, path, query, body, fn);
+};
+
+/**
+ * Delete a comment
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Comment.prototype['delete'] =
+Comment.prototype.del = function (query, fn) {
+  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/delete';
+  return request.del(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Create a `CommentLike` instance
+ *
+ * @api public
+ */
+
+Comment.prototype.like = function() {
+  return CommentLike(this._cid, this._sid, this.wpcom);
+};
+
+/**
+ * Get comment likes list
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Comment.prototype.likesList = function (query, fn) {
+  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes';
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Expose `Comment` module
+ */
+
+module.exports = Comment;
+},{"./commentlike":15,"./util/request":25,"debug":3}],15:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var request = require('./util/request');
+var debug = require('debug')('wpcom:commentlike');
+
+/**
+ * CommentLike methods
+ *
+ * @param {String} cid comment id
+ * @param {String} sid site id
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function CommentLike(cid, sid, wpcom) {
+  if (!sid) {
+    throw new Error('`side id` is not correctly defined');
+  }
+
+  if (!cid) {
+    throw new Error('`comment id` is not correctly defined');
+  }
+
+  if (!(this instanceof CommentLike)) {
+    return new CommentLike(cid, sid, wpcom);
+  }
+
+  this.wpcom = wpcom;
+  this._cid = cid;
+  this._sid = sid;
+}
+
+/**
+ * Get your Like status for a Comment
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+CommentLike.prototype.state =
+CommentLike.prototype.mine = function (query, fn) {
+  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes/mine';
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Like a comment
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+CommentLike.prototype.add = function (query, body, fn) {
+  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes/new';
+  return request.post(this.wpcom, null, path, query, body, fn);
+};
+
+/**
+ * Remove your Like from a Comment
+ *
+ * @param {Function} fn
+ * @api public
+ */
+
+CommentLike.prototype['delete'] =
+CommentLike.prototype.del = function (query, fn) {
+  var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes/mine/delete';
+  return request.del(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Expose `CommentLike` module
+ */
+
+module.exports = CommentLike;
+},{"./util/request":25,"debug":3}],16:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var request = require('./util/request');
+var debug = require('debug')('wpcom:follow');
+
+/**
+ * Follow 
+ *
+ * @param {String} site_id - site id
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Follow(site_id, wpcom) {
+  if (!site_id) {
+    throw new Error('`site id` is not correctly defined');
+  }
+
+  if (!(this instanceof Follow)) {
+    return new Follow(site_id, wpcom);
+  }
+
+  this.wpcom = wpcom;
+  this._sid = site_id;
+}
+
+/**
+ * Follow the site
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ */
+
+Follow.prototype.follow =
+Follow.prototype.add = function (query, fn) {
+  var path = '/sites/' + this._sid + '/follows/new';
+  return request.put(this.wpcom, null, path, query, null, fn);
+};
+
+/**
+ * Unfollow the site
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ */
+
+Follow.prototype.unfollow =
+Follow.prototype.del = function (query, fn) {
+  var path = '/sites/' + this._sid + '/follows/mine/delete';
+  return request.put(this.wpcom, null, path, query, null, fn);
+};
+
+/**
+ * Get the follow status for current 
+ * user on current blog site
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ */
+
+Follow.prototype.state =
+Follow.prototype.mine = function (query, fn) {
+  var path = '/sites/' + this._sid + '/follows/mine';
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Expose `Follow` module
+ */
+
+module.exports = Follow;
+},{"./util/request":25,"debug":3}],17:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var request = require('./util/request');
+var debug = require('debug')('wpcom:like');
+
+/**
+ * Like methods
+ *
+ * @param {String} pid post id
+ * @param {String} sid site id
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Like(pid, sid, wpcom) {
+  if (!sid) {
+    throw new Error('`side id` is not correctly defined');
+  }
+
+  if (!pid) {
+    throw new Error('`post id` is not correctly defined');
+  }
+
+  if (!(this instanceof Like)) {
+    return new Like(pid, sid, wpcom);
+  }
+
+  this.wpcom = wpcom;
+  this._pid = pid;
+  this._sid = sid;
+}
+
+/**
+ * Get your Like status for a Post
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Like.prototype.state =
+Like.prototype.mine = function (query, fn) {
+  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/likes/mine';
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Like a post
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Like.prototype.add = function (query, fn) {
+  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/likes/new';
+  return request.put(this.wpcom, null, path, query, null, fn);
+};
+
+/**
+ * Remove your Like from a Post
+ *
+ * @param {Function} fn
+ * @api public
+ */
+
+Like.prototype['delete'] =
+Like.prototype.del = function (query, fn) {
+  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/likes/mine/delete';
+  return request.del(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Expose `Like` module
+ */
+
+module.exports = Like;
+},{"./util/request":25,"debug":3}],18:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+var request = require('./util/request');
+var debug = require('debug')('wpcom:me');
+
+/**
+ * Create a `Me` instance
+ *
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Me(wpcom) {
+  if (!(this instanceof Me)) {
+    return new Me(wpcom);
+  }
+
+  this.wpcom = wpcom;
+}
+
+/**
+ * Meta data about auth token's User
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Me.prototype.get = function (query, fn) {
+  return request.get(this.wpcom, null, '/me', query, fn);
+};
+
+/**
+ * A list of the current user's sites
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api private
+ */
+
+Me.prototype.sites = function (query, fn) {
+  return request.get(this.wpcom, null, '/me/sites', query, fn);
+};
+
+/**
+ * List the currently authorized user's likes
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Me.prototype.likes = function (query, fn) {
+  return request.get(this.wpcom, null, '/me/likes', query, fn);
+};
+
+/**
+ * A list of the current user's group
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Me.prototype.groups = function (query, fn) {
+  return request.get(this.wpcom, null, '/me/groups', query, fn);
+};
+
+/**
+ * A list of the current user's connections to third-party services
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Me.prototype.connections = function (query, fn) {
+  return request.get(this.wpcom, null, '/me/connections', query, fn);
+};
+
+/**
+ * Expose `Me` module
+ */
+
+module.exports = Me;
+},{"./util/request":25,"debug":3}],19:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var fs = require('fs');
+var request = require('./util/request');
+var debug = require('debug')('wpcom:media');
+
+/**
+ * Default
+ */
+
+var def = {
+  "apiVersion": "1.1"
+};
+
+/**
+ * Media methods
+ *
+ * @param {String} id
+ * @param {String} sid site id
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Media(id, sid, wpcom) {
+  if (!(this instanceof Media)) {
+    return new Media(id, sid, wpcom);
+  }
+
+  this.wpcom = wpcom;
+  this._sid = sid;
+  this._id = id;
+
+  if (!this._id) {
+    debug('WARN: media `id` is not defined');
+  }
+}
+
+/**
+ * Get media
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Media.prototype.get = function (query, fn) {
+  var path = '/sites/' + this._sid + '/media/' + this._id;
+  return request.get(this.wpcom, def, path, query, fn);
+};
+
+/**
+ * Edit media
+ *
+ * @param {Object} [query]
+ * @param {Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Media.prototype.update = function (query, body, fn) {
+  var path = '/sites/' + this._sid + '/media/' + this._id;
+  return request.put(this.wpcom, def, path, query, body, fn);
+};
+
+/**
+ * Add media file
+ *
+ * @param {Object} [query]
+ * @param {String|Object|Array} files
+ * @param {Function} fn
+ */
+
+Media.prototype.addFiles = function (query, files, fn) {
+  if ('function' === typeof files) {
+    fn = files;
+    files = query;
+    query = {};
+  }
+
+  var params = {
+    path: '/sites/' + this._sid + '/media/new',
+    formData: []
+  };
+
+  // process formData
+  files = Array.isArray(files) ? files : [files];
+
+  var i, f, isStream, isFile, k, param;
+  for (i = 0; i < files.length; i++) {
+    f = files[i];
+    f = 'string' === typeof f ? fs.createReadStream(f) : f;
+
+    isStream = !!f._readableState;
+    isFile = 'undefined' !== typeof File && f instanceof File;
+
+    debug('is stream: %s', isStream);
+    debug('is file: %s', isFile);
+
+    if (!isFile && !isStream) {
+      // process file attributes like as `title`, `description`, ...
+      for (k in f) {
+        debug('add %o => %o', k, f[k]);
+        if ('file' !== k) {
+          param = 'attrs[' + i + '][' + k + ']';
+          params.formData.push([param, f[k]]);
+        }
+      }
+      // set file path
+      f = f.file;
+      f = 'string' === typeof f ? fs.createReadStream(f) : f;
+    }
+
+    params.formData.push(['media[]', f]);
+  }
+
+  return request.post(this.wpcom, def, params, query, null, fn);
+};
+
+/**
+ * Add media files from URL
+ *
+ * @param {Object} [query]
+ * @param {String|Array|Object} files
+ * @param {Function} fn
+ */
+
+Media.prototype.addUrls = function (query, media, fn) {
+  if ('function' === typeof media) {
+    fn = media;
+    media = query;
+    query = {};
+  }
+
+  var path = '/sites/' + this._sid + '/media/new';
+  var body = { media_urls: [] };
+
+  // process formData
+  var i, m, url, k;
+
+  media = Array.isArray(media) ? media : [ media ];
+  for (i = 0; i < media.length; i++) {
+    m = media[i];
+
+    if ('string' === typeof m) {
+      url = m;
+    } else {
+      if (!body.attrs) {
+        body.attrs = [];
+      }
+
+      // add attributes
+      body.attrs[i] = {};
+      for (k in m) {
+        if ('url' !== k) {
+          body.attrs[i][k] = m[k];
+        }
+      }
+      url = m[k];
+    }
+
+    // push url into [media_url]
+    body.media_urls.push(url);
+  }
+
+  return request.post(this.wpcom, def, path, query, body, fn);
+};
+
+/**
+ * Delete media
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Media.prototype['delete'] = Media.prototype.del = function (query, fn) {
+  var path = '/sites/' + this._sid + '/media/' + this._id + '/delete';
+  return request.del(this.wpcom, def, path, query, fn);
+};
+
+/**
+ * Expose `Media` module
+ */
+
+module.exports = Media;
+},{"./util/request":25,"debug":3,"fs":2}],20:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var Like = require('./like');
+var Reblog = require('./reblog');
+var Comment = require('./comment');
+var request = require('./util/request');
+var debug = require('debug')('wpcom:post');
+
+/**
+ * Post methods
+ *
+ * @param {String} id
+ * @param {String} sid site id
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Post(id, sid, wpcom) {
+  if (!(this instanceof Post)) {
+    return new Post(id, sid, wpcom);
+  }
+
+  this.wpcom = wpcom;
+  this._sid = sid;
+
+  // set `id` and/or `slug` properties
+  id = id || {};
+  if ('object' !== typeof id) {
+    this._id = id;
+  } else {
+    this._id = id.id;
+    this._slug = id.slug;
+  }
+}
+
+/**
+ * Set post `id`
+ *
+ * @api public
+ */
+
+Post.prototype.id = function (id) {
+  this._id = id;
+};
+
+/**
+ * Set post `slug`
+ *
+ * @param {String} slug
+ * @api public
+ */
+
+Post.prototype.slug = function (slug) {
+  this._slug = slug;
+};
+
+/**
+ * Get post
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Post.prototype.get = function (query, fn) {
+  if (!this._id && this._slug) {
+    return this.getBySlug(query, fn);
+  }
+
+  var path = '/sites/' + this._sid + '/posts/' + this._id;
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Get post by slug
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Post.prototype.getBySlug = function (query, fn) {
+  var path = '/sites/' + this._sid + '/posts/slug:' + this._slug;
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Add post
+ *
+ * @param {Object} [query]
+ * @param {Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Post.prototype.add = function (query, body, fn) {
+  if ('function' === typeof body) {
+    fn = body;
+    body = query;
+    query = {};
+  }
+
+  var path = '/sites/' + this._sid + '/posts/new';
+  return request.post(this.wpcom, null, path, query, body, function (err, data) {
+    if (err) {
+      return fn(err);
+    }
+
+    // update POST object
+    this._id = data.ID;
+    debug('Set post _id: %s', this._id);
+
+    this._slug = data.slug;
+    debug('Set post _slug: %s', this._slug);
+
+    fn(null, data)
+  }.bind(this));
+};
+
+/**
+ * Edit post
+ *
+ * @param {Object} [query]
+ * @param {Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Post.prototype.update = function (query, body, fn) {
+  var path = '/sites/' + this._sid + '/posts/' + this._id;
+  return request.put(this.wpcom, null, path, query, body, fn);
+};
+
+/**
+ * Delete post
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Post.prototype['delete'] =
+Post.prototype.del = function (query, fn) {
+  var path = '/sites/' + this._sid + '/posts/' + this._id + '/delete';
+  return request.del(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Restore post
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Post.prototype.restore = function (query, fn) {
+  var path = '/sites/' + this._sid + '/posts/' + this._id + '/restore';
+  return request.put(this.wpcom, null, path, query, null, fn);
+};
+
+/**
+ * Get post likes list
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Post.prototype.likesList = function (query, fn) {
+  var path = '/sites/' + this._sid + '/posts/' + this._id + '/likes';
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Search within a site for related posts
+ *
+ * @param {Object} [query]
+ * @param {Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Post.prototype.related = function (body, fn) {
+  var path = '/sites/' + this._sid + '/posts/' + this._id + '/related';
+  return request.put(this.wpcom, null, path, query, null, fn);
+};
+
+/**
+ * Create a `Like` instance
+ *
+ * @api public
+ */
+
+Post.prototype.like = function () {
+  return new Like(this._id, this._sid, this.wpcom);
+};
+
+/**
+ * Create a `Reblog` instance
+ *
+ * @api public
+ */
+
+Post.prototype.reblog = function () {
+  return new Reblog(this._id, this._sid, this.wpcom);
+};
+
+/**
+ * Create a `Comment` instance
+ *
+ * @param {String} [cid] comment id
+ * @api public
+ */
+
+Post.prototype.comment = function (cid) {
+  return new Comment(cid, this._id, this._sid, this.wpcom);
+};
+
+/**
+ * Return recent comments
+ *
+ * @param {Objecy} [query]
+ * @param {String} id
+ * @api public
+ */
+
+Post.prototype.comments = function (query, fn) {
+  var comment = new Comment(null, this._id, this._sid, this.wpcom);
+  comment.replies(query, fn);
+  return comment;
+};
+
+/**
+ * Expose `Post` module
+ */
+
+module.exports = Post;
+},{"./comment":14,"./like":17,"./reblog":21,"./util/request":25,"debug":3}],21:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var request = require('./util/request');
+var debug = require('debug')('wpcom:reblog');
+
+/**
+ * Reblog methods
+ *
+ * @param {String} pid post id
+ * @param {String} sid site id
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Reblog(pid, sid, wpcom) {
+  if (!sid) {
+    throw new Error('`side id` is not correctly defined');
+  }
+
+  if (!pid) {
+    throw new Error('`post id` is not correctly defined');
+  }
+
+  if (!(this instanceof Reblog)) {
+    return new Reblog(pid, sid, wpcom);
+  }
+
+  this.wpcom = wpcom;
+  this._pid = pid;
+  this._sid = sid;
+}
+
+/**
+ * Get your reblog status for a Post
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Reblog.prototype.state =
+Reblog.prototype.mine = function (query, fn) {
+  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/reblogs/mine';
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Reblog a post
+ *
+ * @param {Object} [query]
+ * @param {Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Reblog.prototype.add = function (query, body, fn) {
+  if ('function' === typeof body) {
+    fn = body;
+    body = query;
+    query = {};
+  }
+
+  if (body && !body.destination_site_id) {
+    return fn(new Error('destination_site_id is not defined'));
+  }
+
+  var path = '/sites/' + this._sid + '/posts/' + this._pid + '/reblogs/new';
+  return request.post(this.wpcom, null, path, query, body, fn);
+};
+
+/**
+ * Reblog a post to
+ * It's almost an alias of Reblogs#add
+ *
+ * @param {Number|String} dest site id destination
+ * @param {String} [note]
+ * @param {Function} fn
+ * @api public
+ */
+
+Reblog.prototype.to = function (dest, note, fn) {
+  if ('function' === typeof note) {
+    fn = note;
+    note = null;
+  }
+
+  this.add({ note: note, destination_site_id: dest }, fn);
+};
+
+/**
+ * Expose `Reblog` module
+ */
+
+module.exports = Reblog;
+},{"./util/request":25,"debug":3}],22:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var Post = require('./post');
+var Category = require('./category');
+var Tag = require('./tag');
+var Media = require('./media');
+var Comment = require('./comment');
+var Follow = require('./follow');
+var request = require('./util/request');
+var debug = require('debug')('wpcom:site');
+
+/**
+ * Resources array
+ * A list of endpoints with the same structure
+ */
+
+var resources = [
+  'categories',
+  'comments',
+  'follows',
+  'media',
+  'posts',
+  'shortcodes',
+  'embeds',
+  [ 'stats', 'stats' ],
+  [ 'statsVisits', 'stats/visits' ],
+  [ 'statsReferrers', 'stats/referrers' ],
+  [ 'statsTopPosts', 'stats/top-posts' ],
+  [ 'statsCountryViews', 'stats/country-views' ],
+  [ 'statsClicks', 'stats/clicks' ],
+  [ 'statsSearchTerms', 'stats/search-terms' ],
+  'tags',
+  'users'
+];
+
+/**
+ * Create a Site instance
+ *
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Site(id, wpcom) {
+  if (!(this instanceof Site)) {
+    return new Site(id, wpcom);
+  }
+
+  this.wpcom = wpcom;
+
+  debug('set %o site id', id);
+  this._id = encodeURIComponent(id);
+}
+
+/**
+ * Require site information
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Site.prototype.get = function (query, fn) {
+  return request.get(this.wpcom, null, '/sites/' + this._id, query, fn);
+};
+
+/**
+ * List method builder
+ *
+ * @param {String} subpath
+ * @param {Function}
+ * @api private
+ */
+
+function list(subpath, apiVersion) {
+
+  /**
+   * Return the <names>List method
+   *
+   * @param {Object} [query]
+   * @param {Function} fn
+   * @api public
+   */
+
+  return function (query, fn) {
+    var path = '/sites/' + this._id + '/' + subpath;
+    return request.get(this.wpcom, { apiVersion: apiVersion }, path, query, fn);
+  };
+}
+
+// walk for each resource and create related method
+var i, res, isarr, name, subpath, apiVersion;
+for (i = 0; i < resources.length; i++) {
+  res = resources[i];
+  isarr = Array.isArray(res);
+
+  name =  isarr ? res[0] : res + 'List';
+  subpath = isarr ? res[1] : res;
+  apiVersion = isarr && 'string' === typeof res[2] ? res[2] : '1';
+
+  debug('adding method: %o - sub-path: %o - version: %s', ('site.' + name + '()'), subpath, apiVersion);
+  Site.prototype[name] = list(subpath, apiVersion);
+}
+
+/**
+ * :POST:
+ * Create a `Post` instance
+ *
+ * @param {String} id
+ * @api public
+ */
+
+Site.prototype.post = function (id) {
+  return new Post(id, this._id, this.wpcom);
+};
+
+/**
+ * :POST:
+ * Add a new blog post
+ *
+ * @param {Object} body
+ * @param {Function} fn
+ * @return {Post} new Post instance
+ */
+
+Site.prototype.addPost = function (body, fn) {
+  var post = new Post(null, this._id, this.wpcom);
+  return post.add(body, fn);
+};
+
+/**
+ * :POST:
+ * Delete a blog post
+ *
+ * @param {String} id
+ * @param {Function} fn
+ * @return {Post} remove Post instance
+ */
+
+Site.prototype.deletePost = function (id, fn) {
+  var post = new Post(id, this._id, this.wpcom);
+  return post.delete(fn);
+};
+
+/**
+ * Create a `Media` instance
+ *
+ * @param {String} id
+ * @api public
+ */
+
+Site.prototype.media = function (id) {
+  return new Media(id, this._id, this.wpcom);
+};
+
+/**
+ * Add a media from a file
+ *
+ * @param {Object} [query]
+ * @param {Array|String} files
+ * @param {Function} fn
+ * @return {Post} new Post instance
+ */
+
+Site.prototype.addMediaFiles = function (query, files, fn) {
+  var media = new Media(null, this._id, this.wpcom);
+  return media.addFiles(query, files, fn);
+};
+
+/**
+ * Add a new media from url
+ *
+ * @param {Object} [query]
+ * @param {Array|String} files
+ * @param {Function} fn
+ * @return {Post} new Post instance
+ */
+
+Site.prototype.addMediaUrls = function (query, files, fn) {
+  var media = new Media(null, this._id, this.wpcom);
+  return media.addUrls(query, files, fn);
+};
+
+/**
+ * Delete a blog media
+ *
+ * @param {String} id
+ * @param {Function} fn
+ * @return {Post} removed Media instance
+ */
+
+Site.prototype.deleteMedia = function (id, fn) {
+  var media = new Media(id, this._id, this.wpcom);
+  return media.del(fn);
+};
+
+/**
+ * Create a `Comment` instance
+ *
+ * @param {String} id
+ * @api public
+ */
+
+Site.prototype.comment = function (id) {
+  return new Comment(id, null, this._id, this.wpcom);
+};
+
+/**
+ * Create a `Follow` instance
+ *
+ * @api public
+ */
+
+Site.prototype.follow = function () {
+  return new Follow(this._id, this.wpcom);
+};
+
+/**
+ * Create a `Category` instance
+ * Set `cat` alias
+ *
+ * @param {String} [slug]
+ * @api public
+ */
+
+Site.prototype.cat = Site.prototype.category = function (slug) {
+  return new Category(slug, this._id, this.wpcom);
+};
+
+/**
+ * Create a `Tag` instance
+ *
+ * @param {String} [slug]
+ * @api public
+ */
+
+Site.prototype.tag = function (slug) {
+  return new Tag(slug, this._id, this.wpcom);
+};
+
+/**
+ * Get a rendered shortcode for a site.
+ *
+ * Note: The current user must have publishing access.
+ *
+ * @param {String} shortcode
+ * @api public
+ */
+
+Site.prototype.renderShortcode = function (shortcode, query, fn) {
+  if ('string' !== typeof shortcode) {
+    throw new TypeError('expected a shortcode String');
+  }
+
+  var path = '/sites/' + this._id + '/shortcodes/render';
+  return request.get(this.wpcom, { shortcode: shortcode }, path, query, fn);
+};
+
+/**
+ * Get a rendered embed for a site.
+ *
+ * Note: The current user must have publishing access.
+ *
+ * @param {String} embed
+ * @api public
+ */
+
+Site.prototype.renderEmbed = function (embed, query, fn) {
+  if ('string' !== typeof embed) {
+    throw new TypeError('expected an embed String');
+  }
+
+  var path = '/sites/' + this._id + '/embeds/render';
+  return request.get(this.wpcom, { embed_url: embed }, path, query, fn);
+};
+
+/**
+ * Expose `Site` module
+ */
+
+module.exports = Site;
+
+},{"./category":13,"./comment":14,"./follow":16,"./media":19,"./post":20,"./tag":23,"./util/request":25,"debug":3}],23:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var request = require('./util/request');
+var debug = require('debug')('wpcom:tag');
+
+/**
+ * Tag methods
+ *
+ * @param {String} [slug]
+ * @param {String} sid site id
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Tag(slug, sid, wpcom) {
+  if (!sid) {
+    throw new Error('`side id` is not correctly defined');
+  }
+
+  if (!(this instanceof Tag)) {
+    return new Tag(slug, sid, wpcom);
+  }
+
+  this.wpcom = wpcom;
+  this._sid = sid;
+  this._slug = slug;
+}
+
+/**
+ * Set tag `slug`
+ *
+ * @param {String} slug
+ * @api public
+ */
+
+Tag.prototype.slug = function (slug) {
+  this._slug = slug;
+};
+
+/**
+ * Get tag
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Tag.prototype.get = function (query, fn) {
+  var path = '/sites/' + this._sid + '/tags/slug:' + this._slug;
+  return request.get(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Add tag
+ *
+ * @param {Object} [query]
+ * @param {Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Tag.prototype.add = function (query, body, fn) {
+  var path = '/sites/' + this._sid + '/tags/new';
+  return request.post(this.wpcom, null, path, query, body, fn);
+};
+
+/**
+ * Edit tag
+ *
+ * @param {Object} [query]
+ * @param {Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+Tag.prototype.update = function (query, body, fn) {
+  var path = '/sites/' + this._sid + '/tags/slug:' + this._slug;
+  return request.put(this.wpcom, null, path, query, body, fn);
+};
+
+/**
+ * Delete tag
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Tag.prototype['delete'] = Tag.prototype.del = function (query, fn) {
+  var path = '/sites/' + this._sid + '/tags/slug:' + this._slug + '/delete';
+  return request.del(this.wpcom, null, path, query, fn);
+};
+
+/**
+ * Expose `Tag` module
+ */
+
+module.exports = Tag;
+},{"./util/request":25,"debug":3}],24:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var request = require('./util/request');
+var debug = require('debug')('wpcom:users');
+
+/**
+ * Create a `Users` instance
+ *
+ * @param {WPCOM} wpcom
+ * @api public
+ */
+
+function Users(wpcom) {
+  if (!(this instanceof Users)) {
+    return new Users(wpcom);
+  }
+
+  this.wpcom = wpcom;
+}
+
+/**
+ * A list of @mention suggestions for the current user
+ *
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Users.prototype.suggest = function (query, fn) {
+  return request.get(this.wpcom, null, '/users/suggest', query, fn);
+};
+
+/**
+ * Expose `Users` module
+ */
+
+module.exports = Users;
+},{"./util/request":25,"debug":3}],25:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var debug = require('debug')('wpcom:request');
+
+/**
+ * Expose `Request` module
+ */
+
+exports = module.exports = {};
+
+/**
+ * Request methods
+ *
+ * @param {WPCOM} wpcom
+ * @param {Object} def
+ * @param {Object|String} params
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+exports.get = function (wpcom, def, params, query, fn) {
+  // `query` is optional
+  if ('function' == typeof query) {
+    fn = query;
+    query = {};
+  }
+
+  defaultValues(def, query);
+
+  return wpcom.sendRequest(params, query, null, fn);
+};
+
+/**
+ * Make `update` request
+ *
+ * @param {WPCOM} wpcom
+ * @param {Object} def
+ * @param {Object|String} params
+ * @param {Object} [query]
+ * @param {Object} body
+ * @param {Function} fn
+ * @api public
+ */
+
+exports.put =
+exports.post = function (wpcom, def, params, query, body, fn) {
+  if ('function' === typeof body) {
+    fn = body;
+    body = query;
+    query = {};
+  }
+
+  defaultValues(def, query);
+
+  // params can be a string
+  params = 'string' === typeof params ? { path : params } : params;
+
+  // request method
+  params.method = 'post';
+
+  return wpcom.sendRequest(params, query, body, fn);
+};
+
+/**
+ * Make a `delete` request
+ *
+ * @param {WPCOM} wpcom
+ * @param {Object} def
+ * @param {Object|String} params
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+exports.del = function (wpcom, def, params, query, fn) {
+  if ('function' == typeof query) {
+    fn = query;
+    query = {};
+  }
+
+  return exports.post(wpcom, def, params, query, null, fn);
+};
+
+/**
+ * Set query object using the given parameters
+ *
+ * @api private
+ */
+
+function defaultValues (def, query) {
+  def = def || {};
+  query = query || {};
+
+  // `apiVersion`
+  if (def.apiVersion) {
+    query.apiVersion = query.apiVersion || def.apiVersion;
+  }
+};
+
+},{"debug":3}]},{},[1]);
