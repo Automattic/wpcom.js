@@ -65,6 +65,7 @@ function WPCOM(token, reqHandler) {
     this.request_handler = reqHandler;
   }
 
+  // Add Req instance
   this.req = new Req(this);
 }
 
