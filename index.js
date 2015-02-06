@@ -13,9 +13,7 @@ var Me = require('./lib/me');
 var Site = require('./lib/site');
 var Users = require('./lib/users');
 var Batch = require('./lib/batch');
-
 var Req = require('./lib/util/request');
-
 var debug = require('debug')('wpcom');
 
 
@@ -67,6 +65,9 @@ function WPCOM(token, reqHandler) {
 
   // Add Req instance
   this.req = new Req(this);
+
+  // Default api version;
+  this.apiVersion = '1.1';
 }
 
 /**
@@ -114,7 +115,7 @@ WPCOM.prototype.batch = function () {
  */
 
 WPCOM.prototype.freshlyPressed = function (query, fn) {
-  return this.req.get(null, '/freshly-pressed', query, fn);
+  return this.req.get('/freshly-pressed', query, fn);
 };
 
 /**
