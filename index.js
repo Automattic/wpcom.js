@@ -49,7 +49,7 @@ function WPCOM(token, reqHandler) {
   if (!reqHandler) {
     debug('No request handler. Adding default XHR request handler');
 
-    this.request_handler = function (params, fn) {
+    this.request = function (params, fn) {
       params = params || {};
 
       // token is optional
@@ -60,7 +60,7 @@ function WPCOM(token, reqHandler) {
       return request_handler(params, fn);
     };
   } else {
-    this.request_handler = reqHandler;
+    this.request = reqHandler;
   }
 
   // Add Req instance
