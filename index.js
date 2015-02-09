@@ -14,6 +14,7 @@ var Site = require('./lib/site');
 var Users = require('./lib/users');
 var Batch = require('./lib/batch');
 var Req = require('./lib/util/request');
+var sendRequest = require('./lib/util/send-request');
 var debug = require('debug')('wpcom');
 
 
@@ -116,6 +117,22 @@ WPCOM.prototype.batch = function () {
 
 WPCOM.prototype.freshlyPressed = function (query, fn) {
   return this.req.get('/freshly-pressed', query, fn);
+};
+
+/**
+ * Expose send-request
+ * @TODO: use `this.req` instead of this method
+ */
+
+WPCOM.prototype.sendRequest = function (params, query, body, fn) {
+  var msg = 'WARN! Don use `sendRequest() anymore. Use `this.req` method.';
+  if (console && console.warn) {
+    console.warn(msg);  
+  } else {
+    console.log(msg);
+  }
+  
+  return sendRequest.call(this, params, query, body, fn)
 };
 
 /**
