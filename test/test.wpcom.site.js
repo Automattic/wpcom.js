@@ -200,7 +200,7 @@ describe('wpcom.site', function () {
 
           // list object data testing
           assert.equal('object', typeof list);
-          assert.equal('string', typeof list.found);
+          assert.equal('number', typeof list.found);
           assert.equal('object', typeof list.tags);
           assert.ok(list.tags instanceof Array);
 
