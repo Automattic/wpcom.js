@@ -24,8 +24,8 @@ describe('wpcom', function(){
   var testing_post;
 
   describe('wpcom.util.req.post', function(){
-    describe('create a post without body {}', function(){
 
+    describe('create a post without query {} and body {}', function(){
       it('should get 400 error code', function(done){
 
         var path = '/sites/' + site._id + '/posts/new';
@@ -36,8 +36,22 @@ describe('wpcom', function(){
         });
 
       });
-
     });
+
+    describe('create a post without query {}', function(){
+      it('should create a new post', function(done){
+
+        var path = '/sites/' + site._id + '/posts/new';
+        wpcom.req.post(path, null, fixture.post, function(err, data){
+          if (err) throw err;
+
+          assert.ok(data);
+          done();
+        });
+
+      });
+    });
+
   });
 
 });
