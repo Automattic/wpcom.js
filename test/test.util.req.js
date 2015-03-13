@@ -1,0 +1,43 @@
+
+/**
+ * Module dependecies
+ */
+
+var WPCOM = require('../');
+var Site = require('../lib/site');
+var assert = require('assert');
+
+/**
+ * Testing data
+ */
+
+var fixture = require('./fixture');
+
+/**
+ * WPCOM object
+ */
+
+describe('wpcom', function(){
+  // Global instances
+  var wpcom = WPCOM(fixture.site.token);
+  var site = wpcom.site(fixture.site.url);
+  var testing_post;
+
+  describe('wpcom.util.req.post', function(){
+    describe('create a post without body {}', function(){
+
+      it('should get 400 error code', function(done){
+
+        var path = '/sites/' + site._id + '/posts/new';
+        wpcom.req.post(path, function(err, data){
+          assert.ok(err);
+          assert.equal(400, err.statusCode);
+          done();
+        });
+
+      });
+
+    });
+  });
+
+});
