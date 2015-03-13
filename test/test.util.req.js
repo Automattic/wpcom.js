@@ -45,6 +45,7 @@ describe('wpcom', function(){
         wpcom.req.post(path, null, fixture.post, function(err, data){
           if (err) throw err;
 
+          testing_post = data;
           assert.ok(data);
           done();
         });
@@ -52,6 +53,19 @@ describe('wpcom', function(){
       });
     });
 
+  });
+
+  describe('wpcom.util.req.del', function(){
+    it('should delete added post', function(done){
+      var path = '/sites/' + site._id + '/posts/' + testing_post.ID + '/delete';
+      wpcom.req.post(path,  function(err, data){
+        if (err) throw err;
+
+        assert.ok(data.ID, testing_post.ID);
+        done();
+      });
+
+    });
   });
 
 });
