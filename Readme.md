@@ -45,8 +45,8 @@ Include `dist/wpcom.js` in a `<script>` tag:
 
 ## Test
 
-Create `data.json` file into `test/` folder to can run the tests. You can copy
-or rename the `test/data_example.json` file and then
+Create `fixture.json` file in the `test/` folder to can run the tests. You can copy
+or rename the `test/fixture_example.json` file and then
 
 ```bash
 $ make test-all
