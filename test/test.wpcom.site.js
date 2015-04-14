@@ -384,16 +384,12 @@ describe('wpcom.site', function () {
 
     describe('wpcom.site.statsReferrers', function () {
       it('should request referrers stats', function (done) {
-        site.statsReferrers({ apiVersion: '1' }, function (err, data) {
+        site.statsReferrers( function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.date));
-
-          assert.equal('number', typeof data.days);
-          assert.equal('number', typeof data.total);
-
-          assert.equal('object', typeof data.referrers);
-          assert.ok(data.referrers instanceof Array);
+          assert.equal('object', typeof data.days);
+          assert.equal('string', typeof data.period);
 
           done();
         });
@@ -402,12 +398,12 @@ describe('wpcom.site', function () {
 
     describe('wpcom.site.statsTopPosts', function () {
       it('should request top posts stats', function (done) {
-        site.statsTopPosts({ apiVersion: '1' }, function (err, data) {
+        site.statsTopPosts( function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.date));
-          assert.equal('object', typeof data['top-posts']);
-          assert.ok(data['top-posts'] instanceof Array);
+          assert.equal('object', typeof data.days);
+          assert.equal('string', typeof data.period);
 
           done();
         });
@@ -416,12 +412,12 @@ describe('wpcom.site', function () {
 
     describe('wpcom.site.statsCountryViews', function () {
       it('should request country views stats', function (done) {
-        site.statsCountryViews({ apiVersion: '1' }, function (err, data) {
+        site.statsCountryViews( function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.date));
-          assert.equal('object', typeof data['country-views']);
-          assert.ok(data['country-views'] instanceof Array);
+          assert.equal('object', typeof data.days);
+          assert.ok(data['country-info'] instanceof Array);
 
           done();
         });
@@ -430,16 +426,12 @@ describe('wpcom.site', function () {
 
     describe('wpcom.site.statsClicks', function () {
       it('should request clicks stats', function (done) {
-        site.statsClicks({ apiVersion: '1' }, function (err, data) {
+        site.statsClicks( function (err, data) {
           if (err) throw err;
-
+          
           assert.equal('string', typeof Date(data.date));
-
-          assert.equal('number', typeof data.days);
-          assert.equal('number', typeof data.total);
-
-          assert.equal('object', typeof data.clicks);
-          assert.ok(data.clicks instanceof Array);
+          assert.equal('object', typeof data.days);
+          assert.equal('string', typeof data.period);
 
           done();
         });
@@ -448,15 +440,12 @@ describe('wpcom.site', function () {
 
     describe('wpcom.site.statsSearchTerms', function () {
       it('should request search terms stats', function (done) {
-        site.statsSearchTerms({ apiVersion: '1' }, function (err, data) {
+        site.statsSearchTerms( function (err, data) {
           if (err) throw err;
 
           assert.equal('string', typeof Date(data.date));
-
-          assert.equal('number', typeof data.days);
-
-          assert.equal('object', typeof data['search-terms']);
-          assert.ok(data['search-terms'] instanceof Array);
+          assert.equal('object', typeof data.days);
+          assert.equal('string', typeof data.period);
 
           done();
         });
