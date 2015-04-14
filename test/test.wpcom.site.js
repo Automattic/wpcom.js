@@ -428,7 +428,7 @@ describe('wpcom.site', function () {
       it('should request clicks stats', function (done) {
         site.statsClicks( function (err, data) {
           if (err) throw err;
-          
+
           assert.equal('string', typeof Date(data.date));
           assert.equal('object', typeof data.days);
           assert.equal('string', typeof data.period);
@@ -516,6 +516,55 @@ describe('wpcom.site', function () {
         assert.ok(data);
         assert.ok(data.media instanceof Array);
         assert.equal(fixture.media.urls.length, data.media.length);
+        done();
+      });
+    });
+  });
+
+  describe('wpcom.site.statsReferrersSpamNew', function() {
+    var d = new Date();
+    var domain = ( d.getTime() / 1000 ) + 'wordpress.com';
+    it('should mark a domain as spam', function (done) {
+      site.statsReferrersSpamNew( domain, function(err, data) {
+        if (err) throw err;
+
+        assert.ok(data);
+        done();
+      });
+    });
+  });
+
+  describe('wpcom.site.statsReferrersSpamDelete', function() {
+    var d = new Date();
+    var domain = ( d.getTime() / 1000 ) + 'wordpress.com';
+    it('should remove a domain from spam refferer list', function (done) {
+      site.statsReferrersSpamDelete( domain, function(err, data) {
+        if (err) throw err;
+
+        assert.ok(data);
+        done();
+      });
+    });
+  });
+
+  describe('wpcom.site.statsPostViews', function() {
+    it('should request post stat details', function (done) {
+      site.statsPostViews( testing_post.ID, function(err, data) {
+        if (err) throw err;
+
+        assert.ok(data);
+        assert.equal('string', typeof Date(data.date));
+        assert.equal('number', typeof data.views);
+        assert.equal('number', typeof data.highest_month);
+        assert.equal('number', typeof data.highest_day_average);
+        assert.equal('number', typeof data.highest_week_average);
+        assert.ok(data.post instanceof Object);
+        assert.ok(data.years instanceof Object);
+        assert.ok(data.weeks instanceof Object);
+        assert.ok(data.fields instanceof Array);
+        assert.ok(data.data instanceof Array);
+        assert.ok(data.averages instanceof Object);
+
         done();
       });
     });
