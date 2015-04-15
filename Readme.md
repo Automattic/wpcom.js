@@ -78,8 +78,10 @@ More pre-made examples are in the [`examples/`](./examples/) directory.
 
 ## Test
 
-Create `data.json` file into `test/` folder to can run the tests. You can copy
-or rename the `test/data_example.json` file and then
+Create `fixture.json` file in the `test/` folder to can run the tests. You can copy
+or rename the `test/fixture_example.json`.  Be sure to update the <site-id> and <global-token> at the top of the file.
+
+To then run tests:
 
 ```bash
 $ make test-all
