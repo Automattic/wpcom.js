@@ -1,32 +1,40 @@
+## Members
+<dl>
+<dt><a href="#debug">debug</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Users">Users(wpcom)</a></dt>
+<dd><p>Create a <code>Users</code> instance</p>
+</dd>
+</dl>
+<a name="debug"></a>
+## debug
+Module dependencies.
 
-# Users
+**Kind**: global variable  
+<a name="Users"></a>
+## Users(wpcom)
+Create a `Users` instance
 
-`Users` handler class.
+**Kind**: global function  
+**Api**: public  
 
-### Create a `Users` instance from WPCOM
+| Param | Type |
+| --- | --- |
+| wpcom | <code>WPCOM</code> | 
 
-```js
-var wpcom = require('wpcom')('<your-token>');
-var suggestions = wpcom.users().suggest('<site-id>');
-});
-```
+<a name="Users#suggest"></a>
+### users.suggest([query], fn)
+A list of @mention suggestions for the current user
 
-## API
+**Kind**: instance method of <code>[Users](#Users)</code>  
+**Api**: public  
 
-### Users(id, WPCOM)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Create a new `Users` instance giving `WPCOM` instance.
-
-```js
-var users = Users(WPCOM);
-```
-
-### Users#suggest(query, fn)
-
-Get @mention suggestions for the given site
-
-```js
-users.suggest({ site: 'mytestsite.wordpress.com', image_size: 32 }, function(err, info){
-  // `info` data object
-});
-```

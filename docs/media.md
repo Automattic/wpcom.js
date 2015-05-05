@@ -1,104 +1,107 @@
+## Members
+<dl>
+<dt><a href="#fs">fs</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+<dt><a href="#def">def</a></dt>
+<dd><p>Default</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Media">Media(id, sid, wpcom)</a></dt>
+<dd><p>Media methods</p>
+</dd>
+</dl>
+<a name="fs"></a>
+## fs
+Module dependencies.
 
-# Media
+**Kind**: global variable  
+<a name="def"></a>
+## def
+Default
 
-`Media` handler class.
+**Kind**: global variable  
+<a name="Media"></a>
+## Media(id, sid, wpcom)
+Media methods
 
-### Create a `Media` instance from Site
+**Kind**: global function  
+**Api**: public  
 
-```js
-var wpcom = require('wpcom')('<your-token>');
-var media = wpcom.site('<site-id>').media('<media-id>');
-});
-```
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>String</code> |  |
+| sid | <code>String</code> | site id |
+| wpcom | <code>WPCOM</code> |  |
 
-## API
 
-### Media(id, site, WPCOM)
+* [Media(id, sid, wpcom)](#Media)
+  * [.'delete'](#Media#'delete')
+  * [.get([query], fn)](#Media#get)
+  * [.update([query], body, fn)](#Media#update)
+  * [.addFiles([query], files, fn)](#Media#addFiles)
+  * [.addUrls([query], files, fn)](#Media#addUrls)
 
-Create a new `Media` instance giving `id`, `site-id` and `WPCOM` instance.
+<a name="Media#'delete'"></a>
+### media.'delete'
+Delete media
 
-```js
-var media = Media('<id>', '<site-id>', WPCOM);
-```
+**Kind**: instance property of <code>[Media](#Media)</code>  
+**Api**: public  
 
-### Media.id(id)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Set media `id`
+<a name="Media#get"></a>
+### media.get([query], fn)
+Get media
 
-### Media#get([query, ]fn)
+**Kind**: instance method of <code>[Media](#Media)</code>  
+**Api**: public  
 
-Request a single media item
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-```js
-media.get(function(err, data){
-  // media data object
-});
-```
+<a name="Media#update"></a>
+### media.update([query], body, fn)
+Edit media
 
-### Media#addFiles([query, ]files, fn)
+**Kind**: instance method of <code>[Media](#Media)</code>  
+**Api**: public  
 
-```js
-var media = Media('<id>', '<site-id>', WPCOM);
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| body | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-// add a media file using a STRING
-media.add('/file/to/upload.png', function(err, file){
-  // file data object
-});
+<a name="Media#addFiles"></a>
+### media.addFiles([query], files, fn)
+Add media file
 
-// add a media file using an OBJECT
-media.add({
-    title: 'Nice picture',
-    description: 'A nice pictures uploaded from a FILE', 
-    file: '/file/to/upload.png'
-  }, function(err, file){
-    // file data object
-});
+**Kind**: instance method of <code>[Media](#Media)</code>  
 
-// add many media files using an Array
-media.add([
-    'file/01/to/upload.png',
-    {
-      title: 'Nice picture',
-      description: 'A nice pictures uploaded from a FILE', 
-      file: '/file/02/to/upload.png'
-    },
-    'file/03/to/upload.png'
-  ], function(err, file){
-    // file data object
-});
-```
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| files | <code>String</code> &#124; <code>Object</code> &#124; <code>Array</code> | 
+| fn | <code>function</code> | 
 
-### Media#addUrls([query, ]media, fn)
+<a name="Media#addUrls"></a>
+### media.addUrls([query], files, fn)
+Add media files from URL
 
-```js
-var media = Media('<id>', '<site-id>', WPCOM);
+**Kind**: instance method of <code>[Media](#Media)</code>  
 
-// add a media url using a String
-media.add('http://file/to/upload.png', function(err, file){
-  // file data object
-});
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| files | <code>String</code> &#124; <code>Array</code> &#124; <code>Object</code> | 
+| fn | <code>function</code> | 
 
-// add a media url using an OBJECT
-media.add({
-    title: 'Nice picture',
-    description: 'A nice pictures uploaded from an URL', 
-    url: 'http://file/to/upload.png'
-  }, function(err, file){
-    // file data object
-});
-
-// add many media url using an Array
-media.add([
-    'http://file/01/to/upload.png',
-    {
-      title: 'Nice picture',
-      description: 'A nice pictures uploaded from an URL', 
-      url: 'http://file/02/to/upload.png'
-    },
-    'http://file/03/to/upload.png'
-  ], function(err, file){
-    // file data object
-});
-```
-
-### Media#delete(fn) - Media#delete(fn)

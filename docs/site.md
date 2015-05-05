@@ -1,308 +1,305 @@
+## Members
+<dl>
+<dt><a href="#Post">Post</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+<dt><a href="#resources">resources</a></dt>
+<dd><p>Resources array
+A list of endpoints with the same structure</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Site">Site(wpcom)</a></dt>
+<dd><p>Create a Site instance</p>
+</dd>
+<dt><a href="#list">list(subpath)</a></dt>
+<dd><p>List method builder</p>
+</dd>
+</dl>
+<a name="Post"></a>
+## Post
+Module dependencies.
 
-# Site
+**Kind**: global variable  
+<a name="resources"></a>
+## resources
+Resources array
+A list of endpoints with the same structure
 
-`Site` handler class.
+**Kind**: global variable  
+<a name="Site"></a>
+## Site(wpcom)
+Create a Site instance
 
-### Create a `Site` instance from WPCOM
+**Kind**: global function  
+**Api**: public  
 
-```js
-var wpcom = require('wpcom')('<your-token>');
-var post = wpcom.site('<site-id>').post('<post-id>');
-});
-```
+| Param | Type |
+| --- | --- |
+| wpcom | <code>WPCOM</code> | 
 
-## API
 
-### Site(id, WPCOM)
+* [Site(wpcom)](#Site)
+  * [.cat](#Site#cat)
+  * [.get([query], fn)](#Site#get)
+  * [.post(id)](#Site#post)
+  * [.addPost(body, fn)](#Site#addPost) ⇒ <code>[Post](#Post)</code>
+  * [.deletePost(id, fn)](#Site#deletePost) ⇒ <code>[Post](#Post)</code>
+  * [.media(id)](#Site#media)
+  * [.addMediaFiles([query], files, fn)](#Site#addMediaFiles) ⇒ <code>[Post](#Post)</code>
+  * [.addMediaUrls([query], files, fn)](#Site#addMediaUrls) ⇒ <code>[Post](#Post)</code>
+  * [.deleteMedia(id, fn)](#Site#deleteMedia) ⇒ <code>[Post](#Post)</code>
+  * [.comment(id)](#Site#comment)
+  * [.follow()](#Site#follow)
+  * [.tag([slug])](#Site#tag)
+  * [.renderShortcode(url, [query], fn)](#Site#renderShortcode)
+  * [.renderEmbed(url, [query], fn)](#Site#renderEmbed)
+  * [.statsReferrersSpamNew(domain, fn)](#Site#statsReferrersSpamNew)
+  * [.statsReferrersSpamDelete(domain, fn)](#Site#statsReferrersSpamDelete)
+  * [.statsVideo(videoId, [query], fn)](#Site#statsVideo)
+  * [.statsPostViews(postId, [query], fn)](#Site#statsPostViews)
 
-Create a new `Site` instance giving `id` and `WPCOM` instance.
+<a name="Site#cat"></a>
+### site.cat
+Create a `Category` instance
+Set `cat` alias
 
-```js
-var site = Site('<id>', WPCOM);
-```
+**Kind**: instance property of <code>[Site](#Site)</code>  
+**Api**: public  
 
-### Site#get([query, ]fn)
+| Param | Type |
+| --- | --- |
+| [slug] | <code>String</code> | 
 
-Get site information
+<a name="Site#get"></a>
+### site.get([query], fn)
+Require site information
 
-```js
-site.get(function(err, info){
-  // `info` data object
-});
-```
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
 
-### Site#usersList([query, ]fn)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-List the users of a site
+<a name="Site#post"></a>
+### site.post(id)
+:POST:
+Create a `Post` instance
 
-```js
-site.usersList(function(err, list){
-  // `list` data object
-});
-```
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
 
-### Site#postsList([query, ]fn)
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
 
-Get site posts list
+<a name="Site#addPost"></a>
+### site.addPost(body, fn) ⇒ <code>[Post](#Post)</code>
+:POST:
+Add a new blog post
 
-```js
-site.postsList(function(err, list){
-  // `list` data object
-});
-```
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Returns**: <code>[Post](#Post)</code> - new Post instance  
 
-### Site#mediaList([query, ]fn)
+| Param | Type |
+| --- | --- |
+| body | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Get site media list
-
-```js
-site.mediaList(function(err, list){
-  // `list` data object
-});
-```
-
-## Site - Post
-
-### Site#post(id)
-
-Create a new `Post` instance.
-More info in [Site post page](./post.md).
-
-```js
-var post = site.post('<post-id>');
-```
-
-### Site#addPost(data, fn)
-
-Add a new post to site. Return a `Post` instance.
-
-```js
-var new_post = site.addPost({ title: 'It is my new post' }, function(err, post){
-});
-```
-
-### Site#deletePost(id, fn)
-
+<a name="Site#deletePost"></a>
+### site.deletePost(id, fn) ⇒ <code>[Post](#Post)</code>
+:POST:
 Delete a blog post
 
-```js
-var del_post = site.deletePost('<post-id>', function(err, post){
-});
-```
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Returns**: <code>[Post](#Post)</code> - remove Post instance  
+
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
+| fn | <code>function</code> | 
 
-## Site - Media
+<a name="Site#media"></a>
+### site.media(id)
+Create a `Media` instance
 
-### Site#media(id)
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
+
+<a name="Site#addMediaFiles"></a>
+### site.addMediaFiles([query], files, fn) ⇒ <code>[Post](#Post)</code>
+Add a media from a file
 
-Create a new `Media` instance.
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Returns**: <code>[Post](#Post)</code> - new Post instance  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| files | <code>Array</code> &#124; <code>String</code> | 
+| fn | <code>function</code> | 
 
-```js
-var media = site.media('<media-id>');
-```
+<a name="Site#addMediaUrls"></a>
+### site.addMediaUrls([query], files, fn) ⇒ <code>[Post](#Post)</code>
+Add a new media from url
 
-### Site#addMediaFile(data, fn)
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Returns**: <code>[Post](#Post)</code> - new Post instance  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| files | <code>Array</code> &#124; <code>String</code> | 
+| fn | <code>function</code> | 
 
-Add a new media to site. Return a `Media` instance.
+<a name="Site#deleteMedia"></a>
+### site.deleteMedia(id, fn) ⇒ <code>[Post](#Post)</code>
+Delete a blog media
 
-```js
-var new_media = site.addMedia({ urls: [] }, function(err, list){
-});
-```
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Returns**: <code>[Post](#Post)</code> - removed Media instance  
+
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
+| fn | <code>function</code> | 
 
-## Site - Stats
+<a name="Site#comment"></a>
+### site.comment(id)
+Create a `Comment` instance
 
-With a site instance, you can also access all of the [stats endpoints](https://developer.wordpress.com/docs/api/#stats)
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
+
+<a name="Site#follow"></a>
+### site.follow()
+Create a `Follow` instance
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+<a name="Site#tag"></a>
+### site.tag([slug])
+Create a `Tag` instance
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [slug] | <code>String</code> | 
 
-```js
-var site = Site('<id>', WPCOM);
-```
+<a name="Site#renderShortcode"></a>
+### site.renderShortcode(url, [query], fn)
+Get a rendered shortcode for a site.
+
+Note: The current user must have publishing access.
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| url | <code>String</code> | 
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Site#renderEmbed"></a>
+### site.renderEmbed(url, [query], fn)
+Get a rendered embed for a site.
+
+Note: The current user must have publishing access.
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| url | <code>String</code> | 
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Site#statsReferrersSpamNew"></a>
+### site.statsReferrersSpamNew(domain, fn)
+Mark a referrering domain as spam
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| domain | <code>String</code> | 
+| fn | <code>function</code> | 
+
+<a name="Site#statsReferrersSpamDelete"></a>
+### site.statsReferrersSpamDelete(domain, fn)
+Remove referrering domain from spam
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| domain | <code>String</code> | 
+| fn | <code>function</code> | 
+
+<a name="Site#statsVideo"></a>
+### site.statsVideo(videoId, [query], fn)
+Get detailed stats about a VideoPress video
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| videoId | <code>String</code> | 
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Site#statsPostViews"></a>
+### site.statsPostViews(postId, [query], fn)
+Get detailed stats about a particular post
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| postId | <code>String</code> | 
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="list"></a>
+## list(subpath)
+List method builder
+
+**Kind**: global function  
+**Api**: private  
+
+| Param | Type |
+| --- | --- |
+| subpath | <code>String</code> | 
+|  | <code>function</code> | 
+
+<a name="list..listMethod"></a>
+### list~listMethod([query], fn)
+Create and return the <names>List method
+
+**Kind**: inner method of <code>[list](#list)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-### Site#stats([query, ]fn)
-
-Returns basic site [stats](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/).
-
-```js
-site.stats( function(err, data){
-	// data is site stats response
-});
-```
-
-### Site#statsClicks([query, ]fn)
-
-Returns stats [clicks](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/clicks/) data.
-
-```js
-site.statsClicks( function(err, data){
-	// data clicks response
-});
-```
-
-### Site#statsComments([query, ]fn)
-
-Returns stats [comments](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/comments/) data.
-
-```js
-site.statsComments( function(err, data){
-	// data comments response
-});
-```
-
-### Site#statsCommentFollowers([query, ]fn)
-
-Returns stats [comment followers](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/comment-followers/) data.
-
-```js
-site.statsComments( function(err, data){
-	// data comment-follwers response
-});
-```
-
-### Site#statsCountryViews([query, ]fn)
-
-Returns stats [country views](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/country-views/) data.
-
-```js
-site.statsCountryViews( function(err, data){
-	// data country-views response
-});
-```
-
-### Site#statsFollowers([query, ]fn)
-
-Returns [followers](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/followers/) data.
-
-```js
-site.statsFollowers( function(err, data){
-	// data followers response
-});
-```
-
-### Site#statsPostViews(postId,[query, ]fn)
-
-Returns stats for a certain [post](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/post/%24post_id/).
-
-```js
-site.statsPostViews( <postId>, function(err, data){
-	// data post views response
-});
-```
-
-### Site#statsPublicize([query, ]fn)
-
-Returns [publicize](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/publicize/) data.
-
-```js
-site.statsPublicize( function(err, data){
-	// data publicize response
-});
-```
-
-### Site#statsReferrers([query, ]fn)
-
-Returns [referrers](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/referrers/) data.
-
-```js
-site.statsReferrers( function(err, data){
-	// data referrers response
-});
-```
-
-### Site#statsRefferersSpamNew(domain, fn)
-
-Marks a certain domain referrer as [spam](https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/stats/referrers/spam/new/).
-
-```js
-site.statsRefferersSpamNew( <domain>, function(err, response){
-	// response returned from procedure
-});
-```
-
-### Site#statsRefferersSpamDelete(domain, fn)
-
-Removes a domain from referrer [spam](https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/stats/referrers/spam/delete/) list.
-
-```js
-site.statsRefferersSpamDelete( <domain>, function(err, response){
-	// response returned from procedure
-});
-```
-
-### Site#statsSearchTerms([query, ]fn)
-
-Returns [search terms](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/search-terms/) data.
-
-```js
-site.statsSearchTerms( function(err, data){
-	// data search terms response
-});
-```
-
-### Site#statsStreak([query, ]fn)
-
-Returns [streak](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/streak/) data.
-
-```js
-site.statsStreak( function(err, data){
-	// data streak response
-});
-```
-
-### Site#statsSummary([query, ]fn)
-
-Returns [summary](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/summary/) data.
-
-```js
-site.statsSummary( function(err, data){
-	// data summary response
-});
-```
-
-### Site#statsTags([query, ]fn)
-
-Returns [tags](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/tags/) data.
-
-```js
-site.statsTags( function(err, data){
-	// data tags response
-});
-```
-
-### Site#statsTopAutors([query, ]fn)
-
-Returns [top authors](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/top-authors/) data.
-
-```js
-site.statsTopAuthors( function(err, data){
-	// data top authors response
-});
-```
-
-### Site#statsVideo(videoId,[query, ]fn)
-
-Returns stats about a particular VideoPress [video](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/video/%24post_id/).
-
-```js
-site.statsVideo( <videoId>, function(err, data){
-	// data about the video
-});
-```
-
-### Site#statsVideoPlays([query, ]fn)
-
-Returns [video plays](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/video-plays/) data.
-
-```js
-site.statsVideoPlays( function(err, data){
-	// data video plays response
-});
-```
-
-### Site#statsVisits([query, ]fn)
-
-Returns [visits](https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/visits/) data.
-
-```js
-site.statsVisits( function(err, data){
-	// data visits response
-});
-```

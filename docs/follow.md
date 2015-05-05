@@ -1,64 +1,72 @@
-# Follow
+## Members
+<dl>
+<dt><a href="#debug">debug</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Follow">Follow(site_id, wpcom)</a></dt>
+<dd><p>Follow</p>
+</dd>
+</dl>
+<a name="debug"></a>
+## debug
+Module dependencies.
 
-`Follow` handler class.
+**Kind**: global variable  
+<a name="Follow"></a>
+## Follow(site_id, wpcom)
+Follow
 
-## API
+**Kind**: global function  
+**Api**: public  
 
-### Follow(site-id, WPCOM);
+| Param | Type | Description |
+| --- | --- | --- |
+| site_id | <code>String</code> | site id |
+| wpcom | <code>WPCOM</code> |  |
 
-Createa a new `Follow` instance giving `site-id` and `WPCOM` instance.
 
-```js
-var follower = Follow('<site-id>', WPCOM);
-```
+* [Follow(site_id, wpcom)](#Follow)
+  * [.mine](#Follow#mine)
+  * [.follow](#Follow#follow)
+  * [.unfollow](#Follow#unfollow)
 
-### Follow#follow(query, fn)
+<a name="Follow#mine"></a>
+### follow.mine
+Get the follow status for current 
+user on current blog sites
 
-`Follow#add` alias
+**Kind**: instance property of <code>[Follow](#Follow)</code>  
+**Api**: public  
 
-### Follow#add(query, fn)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Follow the current blog
+<a name="Follow#follow"></a>
+### follow.follow
+Follow the site
 
-```js
-wpcom
-.sites('blog.wordpress.com')
-.follow()
-.add(function(err, data){
-	// response handler
-});
-```
+**Kind**: instance property of <code>[Follow](#Follow)</code>  
+**Api**: public  
 
-### Follow#unfollow(query, fn)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-`Follow#del` alias
+<a name="Follow#unfollow"></a>
+### follow.unfollow
+Unfollow the site
 
-### Follow#del(query, fn)
+**Kind**: instance property of <code>[Follow](#Follow)</code>  
+**Api**: public  
 
-Unfollow the current blog
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-```js
-wpcom
-.sites('blog.wordpress.com')
-.follow()
-.del(function(err, data){
-	// respnose handler
-});
-```
-
-### Follow#state(query, fn)
-
-`Follow#mine` alias.
-
-### Follow#mine(query, fn)
-
-Get your Follow status for a Site
-
-```js
-wpcom
-.sites('blog.wordpress.com')
-.follow()
-.mine(function(error, data){
-  // mine status
-});
-```

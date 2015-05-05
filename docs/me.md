@@ -1,72 +1,101 @@
+## Members
+<dl>
+<dt><a href="#debug">debug</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Me">Me(wpcom)</a></dt>
+<dd><p>Create a <code>Me</code> instance</p>
+</dd>
+</dl>
+<a name="debug"></a>
+## debug
+Module dependencies.
 
-# Me
+**Kind**: global variable  
+<a name="Me"></a>
+## Me(wpcom)
+Create a `Me` instance
 
-`Me` handler class.
+**Kind**: global function  
+**Api**: public  
 
-### Create a `Me` instance from WPCOM
+| Param | Type |
+| --- | --- |
+| wpcom | <code>WPCOM</code> | 
 
+
+* [Me(wpcom)](#Me)
+  * [.get([query], fn)](#Me#get)
+  * [.sites([query], fn)](#Me#sites)
+  * [.likes([query], fn)](#Me#likes)
+  * [.groups([query], fn)](#Me#groups)
+  * [.connections([query], fn)](#Me#connections)
+
+<a name="Me#get"></a>
+### me.get([query], fn)
+Meta data about auth token's User
+
+**Kind**: instance method of <code>[Me](#Me)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+**Example**  
 ```js
-var wpcom = require('wpcom')('<your-token>');
-var me = wpcom.me();
-});
+// returns 2
+   globalNS.method1(5, 10);
 ```
+<a name="Me#sites"></a>
+### me.sites([query], fn)
+A list of the current user's sites
 
-## API
+**Kind**: instance method of <code>[Me](#Me)</code>  
+**Api**: private  
 
-### Me(WPCOM)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Create a new `Me` giving a `WPCOM` instance.
+<a name="Me#likes"></a>
+### me.likes([query], fn)
+List the currently authorized user's likes
 
-```js
-var me = Me(WPCOM);
-```
+**Kind**: instance method of <code>[Me](#Me)</code>  
+**Api**: public  
 
-### Me#get([query, ]fn)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Get meta data about auth token's User
+<a name="Me#groups"></a>
+### me.groups([query], fn)
+A list of the current user's group
 
-```js
-me.get(function(err, info){
-  // `me` info object
-});
-```
+**Kind**: instance method of <code>[Me](#Me)</code>  
+**Api**: public  
 
-### Me#sites([query, ]fn)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Get a list of the current user's sites
+<a name="Me#connections"></a>
+### me.connections([query], fn)
+A list of the current user's connections to third-party services
 
-```js
-me.sites(function(err, list){
-  // posts list object
-});
-```
+**Kind**: instance method of <code>[Me](#Me)</code>  
+**Api**: public  
 
-### Me#likes([query, ]fn)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Get a list the currently authorized user's likes
-
-```js
-me.likes(function(err, data){
-  // likes data object
-});
-```
-
-### Me#groups([query, ]fn)
-
-Get a list of the current user's group
-
-```js
-me.groups(function(err, list){
-  // groups list object
-});
-```
-
-### Me#connections([query, ]fn)
-
-Get a list of the current user's connections to third-party services
-
-```js
-me.connections(function(err, list){
-  // connections list object
-});
-```

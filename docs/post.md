@@ -1,123 +1,202 @@
+## Members
+<dl>
+<dt><a href="#Like">Like</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Post">Post(id, sid, wpcom)</a></dt>
+<dd><p>Post methods</p>
+</dd>
+</dl>
+<a name="Like"></a>
+## Like
+Module dependencies.
 
-# Post
+**Kind**: global variable  
+<a name="Post"></a>
+## Post(id, sid, wpcom)
+Post methods
 
-`Post` handler class.
+**Kind**: global function  
+**Api**: public  
 
-### Create a `Post` instance from Site
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>String</code> |  |
+| sid | <code>String</code> | site id |
+| wpcom | <code>WPCOM</code> |  |
 
-```js
-var wpcom = require('wpcom')('<your-token>');
-var post = wpcom
-           .sites('blog.wordpress.com')
-           .post(342);
-});
-```
 
-## API
+* [Post(id, sid, wpcom)](#Post)
+  * [.del](#Post#del)
+  * [.id(id)](#Post#id)
+  * [.slug(slug)](#Post#slug)
+  * [.get([query], fn)](#Post#get)
+  * [.getBySlug([query], fn)](#Post#getBySlug)
+  * [.add([query], body, fn)](#Post#add)
+  * [.update([query], body, fn)](#Post#update)
+  * [.restore([query], fn)](#Post#restore)
+  * [.likesList([query], fn)](#Post#likesList)
+  * [.related(body, fn)](#Post#related)
+  * [.like()](#Post#like)
+  * [.reblog()](#Post#reblog)
+  * [.comment([cid])](#Post#comment)
+  * [.comments([query], fn)](#Post#comments)
 
-### Post(id, site, WPCOM);
+<a name="Post#del"></a>
+### post.del
+Delete post
 
-Create a new `Post` instance giving `id`, `site-id` and `WPCOM` instance.
+**Kind**: instance property of <code>[Post](#Post)</code>  
+**Api**: public  
 
-```js
-var post = Post('<id>', '<site-id>', WPCOM);
-```
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-### Post(data, site, WPCOM);
-
-Create a new `Post` instance giving `data` object, `site-id` and `WPCOM` instance.
-
-```js
-var data = { id: '<id>', slug: '<slug>' };
-var post = Post(data, '<site-id>', WPCOM);
-```
-
-### Post.id(id)
-
+<a name="Post#id"></a>
+### post.id(id)
 Set post `id`
 
-### Post.slug(slug)
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-Set post `slug`.
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
 
-### Post#get([query, ]fn)
+<a name="Post#slug"></a>
+### post.slug(slug)
+Set post `slug`
 
-Get post data by `id` or `slug` depending on which of these parameter is
-defined, giving priority to `id` over `slug`
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-```js
-post.get(function(err, data){
-  // post data object
-});
-```
+| Param | Type |
+| --- | --- |
+| slug | <code>String</code> | 
 
-### Post#getBySlug(fn)
+<a name="Post#get"></a>
+### post.get([query], fn)
+Get post
 
-Get post data by `slug`. `slug` must have been previously defined through the
-constructor or using the `.slug()` method.
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-```js
-var post = Post({ slug: '<slug>' }, '<site-id>', WPCOM);
-post.getBySlug(function(err, data){
-  // post data object
-});
-```
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-### Post#add(data, fn)
+<a name="Post#getBySlug"></a>
+### post.getBySlug([query], fn)
+Get post by slug
 
-### Post#update(data, fn)
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-### Post#del(fn) - Post#delete(fn)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Delete a Post. Note: If the post object is of type post or page and the trash
-is enabled, this request will send the post to the trash. A second request will
-permanently delete the post.
+<a name="Post#add"></a>
+### post.add([query], body, fn)
+Add post
 
-### Post#likesList(fn)
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| body | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Post#update"></a>
+### post.update([query], body, fn)
+Edit post
+
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| body | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Post#restore"></a>
+### post.restore([query], fn)
+Restore post
+
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Post#likesList"></a>
+### post.likesList([query], fn)
 Get post likes list
 
-```js
-wpcom
-.sites('blog.wordpress.com')
-.post(342)
-.likesList(function(err, list){
-  // like `list` object
-});
-```
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-### Post#like()
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Create and return a new `Like` instance.
-More info in [Like doc page](./like.md).
+<a name="Post#related"></a>
+### post.related(body, fn)
+Search within a site for related posts
 
-```js
-var like = wpcom.sites('blog.wordpress.com').post(342).like();
-```
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-### Post#reblog()
+| Param | Type |
+| --- | --- |
+| body | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-Create and return a new `Reblog` instance.
-More info in [Reblog doc page](./reblog.md).
+<a name="Post#like"></a>
+### post.like()
+Create a `Like` instance
 
-```js
-var reblog = wpcom.sites('blog.wordpress.com').post(342).reblog();
-```
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+<a name="Post#reblog"></a>
+### post.reblog()
+Create a `Reblog` instance
 
-### Post#comment()
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+<a name="Post#comment"></a>
+### post.comment([cid])
+Create a `Comment` instance
 
-Create and return a new `Comment` instance.
-More info in [Comment doc page](./comment.md).
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-### Post#comments()
+| Param | Type | Description |
+| --- | --- | --- |
+| [cid] | <code>String</code> | comment id |
 
-Recent recent comments
+<a name="Post#comments"></a>
+### post.comments([query], fn)
+Return recent comments
 
-```js
-wpcom
-.sites('blog.wordpress.com')
-.post(342)
-.comments(function(err, list){
-  // post comments list
-});
-```
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+

@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "browserify": "6.1.0",
+    "dox": "0.7.1",
     "mocha": "1.21.4"
   }
 }
