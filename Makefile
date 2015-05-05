@@ -6,11 +6,15 @@ THIS_DIR:=$(shell cd $(dir $(THIS_MAKEFILE_PATH));pwd)
 # BIN directory
 BIN := $(THIS_DIR)/node_modules/.bin
 
+# Files
+JS_FILES := $(wildcard lib/*.js)
+
 # applications
 NODE ?= node
 NPM ?= $(NODE) $(shell which npm)
 MOCHA ?= $(NODE) $(BIN)/mocha
 BROWSERIFY ?= $(NODE) $(BIN)/browserify
+DOX ?= $(NODE) $(BIN)/dox
 
 standalone: dist/wpcom.js
 
@@ -37,6 +41,17 @@ example-browser-cors: all
 	cd examples/browser-cors/; $(NPM) install
 	$(NODE) examples/browser-cors/index.js
 
+docs/%:
+	$(eval SOURCE := $(addprefix lib/, $(notdir $@)))
+	$(eval OUTPUT := $(addsuffix .md, $(basename $@)))
+	@printf '\e[1;35m %-10s\e[m %s > %s\n' "dox --api" " $(SOURCE) " "$(OUTPUT)"
+	$(DOX) --api < "$(SOURCE)" > "$(OUTPUT)"
+
+gen-docs: $(addprefix docs/, $(notdir $(JS_FILES)))
+
+#docs:
+#	$(DOX) --api < index.js > coco.md
+
 test:
 	@$(MOCHA) \
 		--timeout 60s \
@@ -52,4 +67,4 @@ test-all:
 		--bail \
 		--reporter spec
 
-.PHONY: all standalone install clean test test-all
+.PHONY: all standalone install clean test test-all docs
