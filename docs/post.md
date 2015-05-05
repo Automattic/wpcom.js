@@ -1,75 +1,202 @@
-  - [Post()](#postidstringsidstringwpcomwpcom)
-  - [Post.id()](#postididstring)
-  - [Post.slug()](#postslugslugstring)
-  - [Post.get()](#postgetqueryobjectfnfunction)
-  - [Post.getBySlug()](#postgetbyslugqueryobjectfnfunction)
-  - [Post.add()](#postaddqueryobjectbodyobjectfnfunction)
-  - [Post.update()](#postupdatequeryobjectbodyobjectfnfunction)
-  - [Post.prototype.del](#postprototypedel)
-  - [Post.restore()](#postrestorequeryobjectfnfunction)
-  - [Post.likesList()](#postlikeslistqueryobjectfnfunction)
-  - [Post.related()](#postrelatedbodyobjectfnfunction)
-  - [Post.like()](#postlike)
-  - [Post.reblog()](#postreblog)
-  - [Post.comment()](#postcommentcidstring)
-  - [Post.comments()](#postcommentsqueryobjectfnfunction)
+## Members
+<dl>
+<dt><a href="#Like">Like</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Post">Post(id, sid, wpcom)</a></dt>
+<dd><p>Post methods</p>
+</dd>
+</dl>
+<a name="Like"></a>
+## Like
+Module dependencies.
 
-## Post(id:String, sid:String, wpcom:WPCOM)
+**Kind**: global variable  
+<a name="Post"></a>
+## Post(id, sid, wpcom)
+Post methods
 
-  Post methods
+**Kind**: global function  
+**Api**: public  
 
-## Post.id(id:String)
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>String</code> |  |
+| sid | <code>String</code> | site id |
+| wpcom | <code>WPCOM</code> |  |
 
-  Set post `id`
 
-## Post.slug(slug:String)
+* [Post(id, sid, wpcom)](#Post)
+  * [.del](#Post#del)
+  * [.id(id)](#Post#id)
+  * [.slug(slug)](#Post#slug)
+  * [.get([query], fn)](#Post#get)
+  * [.getBySlug([query], fn)](#Post#getBySlug)
+  * [.add([query], body, fn)](#Post#add)
+  * [.update([query], body, fn)](#Post#update)
+  * [.restore([query], fn)](#Post#restore)
+  * [.likesList([query], fn)](#Post#likesList)
+  * [.related(body, fn)](#Post#related)
+  * [.like()](#Post#like)
+  * [.reblog()](#Post#reblog)
+  * [.comment([cid])](#Post#comment)
+  * [.comments([query], fn)](#Post#comments)
 
-  Set post `slug`
+<a name="Post#del"></a>
+### post.del
+Delete post
 
-## Post.get([query]:Object, fn:Function)
+**Kind**: instance property of <code>[Post](#Post)</code>  
+**Api**: public  
 
-  Get post
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-## Post.getBySlug([query]:Object, fn:Function)
+<a name="Post#id"></a>
+### post.id(id)
+Set post `id`
 
-  Get post by slug
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-## Post.add([query]:Object, body:Object, fn:Function)
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
 
-  Add post
+<a name="Post#slug"></a>
+### post.slug(slug)
+Set post `slug`
 
-## Post.update([query]:Object, body:Object, fn:Function)
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-  Edit post
+| Param | Type |
+| --- | --- |
+| slug | <code>String</code> | 
 
-## Post.prototype.del
+<a name="Post#get"></a>
+### post.get([query], fn)
+Get post
 
-  Delete post
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-## Post.restore([query]:Object, fn:Function)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-  Restore post
+<a name="Post#getBySlug"></a>
+### post.getBySlug([query], fn)
+Get post by slug
 
-## Post.likesList([query]:Object, fn:Function)
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-  Get post likes list
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-## Post.related(body:Object, fn:Function)
+<a name="Post#add"></a>
+### post.add([query], body, fn)
+Add post
 
-  Search within a site for related posts
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-## Post.like()
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| body | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-  Create a `Like` instance
+<a name="Post#update"></a>
+### post.update([query], body, fn)
+Edit post
 
-## Post.reblog()
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-  Create a `Reblog` instance
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| body | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-## Post.comment([cid]:String)
+<a name="Post#restore"></a>
+### post.restore([query], fn)
+Restore post
 
-  Create a `Comment` instance
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
 
-## Post.comments([query]:Object, fn:Function)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-  Return recent comments
+<a name="Post#likesList"></a>
+### post.likesList([query], fn)
+Get post likes list
+
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Post#related"></a>
+### post.related(body, fn)
+Search within a site for related posts
+
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| body | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Post#like"></a>
+### post.like()
+Create a `Like` instance
+
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+<a name="Post#reblog"></a>
+### post.reblog()
+Create a `Reblog` instance
+
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+<a name="Post#comment"></a>
+### post.comment([cid])
+Create a `Comment` instance
+
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [cid] | <code>String</code> | comment id |
+
+<a name="Post#comments"></a>
+### post.comments([query], fn)
+Return recent comments
+
+**Kind**: instance method of <code>[Post](#Post)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+

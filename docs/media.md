@@ -1,30 +1,107 @@
-  - [def](#def)
-  - [Media()](#mediaidstringsidstringwpcomwpcom)
-  - [Media.get()](#mediagetqueryobjectfnfunction)
-  - [Media.update()](#mediaupdatequeryobjectbodyobjectfnfunction)
-  - [Media.addFiles()](#mediaaddfilesqueryobjectfilesstringobjectarrayfnfunction)
-  - [Media.addUrls()](#mediaaddurlsqueryobjectfilesstringarrayobjectfnfunction)
+## Members
+<dl>
+<dt><a href="#fs">fs</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+<dt><a href="#def">def</a></dt>
+<dd><p>Default</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Media">Media(id, sid, wpcom)</a></dt>
+<dd><p>Media methods</p>
+</dd>
+</dl>
+<a name="fs"></a>
+## fs
+Module dependencies.
 
+**Kind**: global variable  
+<a name="def"></a>
 ## def
+Default
 
-  Default
+**Kind**: global variable  
+<a name="Media"></a>
+## Media(id, sid, wpcom)
+Media methods
 
-## Media(id:String, sid:String, wpcom:WPCOM)
+**Kind**: global function  
+**Api**: public  
 
-  Media methods
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>String</code> |  |
+| sid | <code>String</code> | site id |
+| wpcom | <code>WPCOM</code> |  |
 
-## Media.get([query]:Object, fn:Function)
 
-  Get media
+* [Media(id, sid, wpcom)](#Media)
+  * [.'delete'](#Media#'delete')
+  * [.get([query], fn)](#Media#get)
+  * [.update([query], body, fn)](#Media#update)
+  * [.addFiles([query], files, fn)](#Media#addFiles)
+  * [.addUrls([query], files, fn)](#Media#addUrls)
 
-## Media.update([query]:Object, body:Object, fn:Function)
+<a name="Media#'delete'"></a>
+### media.'delete'
+Delete media
 
-  Edit media
+**Kind**: instance property of <code>[Media](#Media)</code>  
+**Api**: public  
 
-## Media.addFiles([query]:Object, files:String|Object|Array, fn:Function)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-  Add media file
+<a name="Media#get"></a>
+### media.get([query], fn)
+Get media
 
-## Media.addUrls([query]:Object, files:String|Array|Object, fn:Function)
+**Kind**: instance method of <code>[Media](#Media)</code>  
+**Api**: public  
 
-  Add media files from URL
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Media#update"></a>
+### media.update([query], body, fn)
+Edit media
+
+**Kind**: instance method of <code>[Media](#Media)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| body | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Media#addFiles"></a>
+### media.addFiles([query], files, fn)
+Add media file
+
+**Kind**: instance method of <code>[Media](#Media)</code>  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| files | <code>String</code> &#124; <code>Object</code> &#124; <code>Array</code> | 
+| fn | <code>function</code> | 
+
+<a name="Media#addUrls"></a>
+### media.addUrls([query], files, fn)
+Add media files from URL
+
+**Kind**: instance method of <code>[Media](#Media)</code>  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| files | <code>String</code> &#124; <code>Array</code> &#124; <code>Object</code> | 
+| fn | <code>function</code> | 
+

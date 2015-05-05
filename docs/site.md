@@ -1,114 +1,305 @@
-  - [resources](#resources)
-  - [Site()](#sitewpcomwpcom)
-  - [Site.get()](#sitegetqueryobjectfnfunction)
-  - [listMethod()](#listmethodqueryobjectfnfunction)
-  - [Site.post()](#sitepostidstring)
-  - [Site.addPost()](#siteaddpostbodyobjectfnfunction)
-  - [Site.deletePost()](#sitedeletepostidstringfnfunction)
-  - [Site.media()](#sitemediaidstring)
-  - [Site.addMediaFiles()](#siteaddmediafilesqueryobjectfilesarraystringfnfunction)
-  - [Site.addMediaUrls()](#siteaddmediaurlsqueryobjectfilesarraystringfnfunction)
-  - [Site.deleteMedia()](#sitedeletemediaidstringfnfunction)
-  - [Site.comment()](#sitecommentidstring)
-  - [Site.follow()](#sitefollow)
-  - [Site.prototype.cat](#siteprototypecat)
-  - [Site.tag()](#sitetagslugstring)
-  - [Site.renderShortcode()](#siterendershortcodeurlstringqueryobjectfnfunction)
-  - [Site.renderEmbed()](#siterenderembedurlstringqueryobjectfnfunction)
-  - [Site.statsReferrersSpamNew()](#sitestatsreferrersspamnewdomainstringfnfunction)
-  - [Site.statsReferrersSpamDelete()](#sitestatsreferrersspamdeletedomainstringfnfunction)
-  - [Site.statsVideo()](#sitestatsvideovideoidstringqueryobjectfnfunction)
-  - [Site.statsPostViews()](#sitestatspostviewspostidstringqueryobjectfnfunction)
+## Members
+<dl>
+<dt><a href="#Post">Post</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+<dt><a href="#resources">resources</a></dt>
+<dd><p>Resources array
+A list of endpoints with the same structure</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Site">Site(wpcom)</a></dt>
+<dd><p>Create a Site instance</p>
+</dd>
+<dt><a href="#list">list(subpath)</a></dt>
+<dd><p>List method builder</p>
+</dd>
+</dl>
+<a name="Post"></a>
+## Post
+Module dependencies.
 
+**Kind**: global variable  
+<a name="resources"></a>
 ## resources
+Resources array
+A list of endpoints with the same structure
 
-  Resources array
-  A list of endpoints with the same structure
+**Kind**: global variable  
+<a name="Site"></a>
+## Site(wpcom)
+Create a Site instance
 
-## Site(wpcom:WPCOM)
+**Kind**: global function  
+**Api**: public  
 
-  Create a Site instance
+| Param | Type |
+| --- | --- |
+| wpcom | <code>WPCOM</code> | 
 
-## Site.get([query]:Object, fn:Function)
 
-  Require site information
+* [Site(wpcom)](#Site)
+  * [.cat](#Site#cat)
+  * [.get([query], fn)](#Site#get)
+  * [.post(id)](#Site#post)
+  * [.addPost(body, fn)](#Site#addPost) ⇒ <code>[Post](#Post)</code>
+  * [.deletePost(id, fn)](#Site#deletePost) ⇒ <code>[Post](#Post)</code>
+  * [.media(id)](#Site#media)
+  * [.addMediaFiles([query], files, fn)](#Site#addMediaFiles) ⇒ <code>[Post](#Post)</code>
+  * [.addMediaUrls([query], files, fn)](#Site#addMediaUrls) ⇒ <code>[Post](#Post)</code>
+  * [.deleteMedia(id, fn)](#Site#deleteMedia) ⇒ <code>[Post](#Post)</code>
+  * [.comment(id)](#Site#comment)
+  * [.follow()](#Site#follow)
+  * [.tag([slug])](#Site#tag)
+  * [.renderShortcode(url, [query], fn)](#Site#renderShortcode)
+  * [.renderEmbed(url, [query], fn)](#Site#renderEmbed)
+  * [.statsReferrersSpamNew(domain, fn)](#Site#statsReferrersSpamNew)
+  * [.statsReferrersSpamDelete(domain, fn)](#Site#statsReferrersSpamDelete)
+  * [.statsVideo(videoId, [query], fn)](#Site#statsVideo)
+  * [.statsPostViews(postId, [query], fn)](#Site#statsPostViews)
 
-## listMethod([query]:Object, fn:Function)
+<a name="Site#cat"></a>
+### site.cat
+Create a `Category` instance
+Set `cat` alias
 
-  Create and return the <names>List method
+**Kind**: instance property of <code>[Site](#Site)</code>  
+**Api**: public  
 
-## Site.post(id:String)
+| Param | Type |
+| --- | --- |
+| [slug] | <code>String</code> | 
 
-  :POST:
-  Create a `Post` instance
+<a name="Site#get"></a>
+### site.get([query], fn)
+Require site information
 
-## Site.addPost(body:Object, fn:Function)
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
 
-  :POST:
-  Add a new blog post
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-## Site.deletePost(id:String, fn:Function)
+<a name="Site#post"></a>
+### site.post(id)
+:POST:
+Create a `Post` instance
 
-  :POST:
-  Delete a blog post
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
 
-## Site.media(id:String)
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
 
-  Create a `Media` instance
+<a name="Site#addPost"></a>
+### site.addPost(body, fn) ⇒ <code>[Post](#Post)</code>
+:POST:
+Add a new blog post
 
-## Site.addMediaFiles([query]:Object, files:Array|String, fn:Function)
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Returns**: <code>[Post](#Post)</code> - new Post instance  
 
-  Add a media from a file
+| Param | Type |
+| --- | --- |
+| body | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-## Site.addMediaUrls([query]:Object, files:Array|String, fn:Function)
+<a name="Site#deletePost"></a>
+### site.deletePost(id, fn) ⇒ <code>[Post](#Post)</code>
+:POST:
+Delete a blog post
 
-  Add a new media from url
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Returns**: <code>[Post](#Post)</code> - remove Post instance  
 
-## Site.deleteMedia(id:String, fn:Function)
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
+| fn | <code>function</code> | 
 
-  Delete a blog media
+<a name="Site#media"></a>
+### site.media(id)
+Create a `Media` instance
 
-## Site.comment(id:String)
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
 
-  Create a `Comment` instance
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
 
-## Site.follow()
+<a name="Site#addMediaFiles"></a>
+### site.addMediaFiles([query], files, fn) ⇒ <code>[Post](#Post)</code>
+Add a media from a file
 
-  Create a `Follow` instance
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Returns**: <code>[Post](#Post)</code> - new Post instance  
 
-## Site.prototype.cat
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| files | <code>Array</code> &#124; <code>String</code> | 
+| fn | <code>function</code> | 
 
-  Create a `Category` instance
-  Set `cat` alias
+<a name="Site#addMediaUrls"></a>
+### site.addMediaUrls([query], files, fn) ⇒ <code>[Post](#Post)</code>
+Add a new media from url
 
-## Site.tag([slug]:String)
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Returns**: <code>[Post](#Post)</code> - new Post instance  
 
-  Create a `Tag` instance
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| files | <code>Array</code> &#124; <code>String</code> | 
+| fn | <code>function</code> | 
 
-## Site.renderShortcode(url:String, [query]:Object, fn:Function)
+<a name="Site#deleteMedia"></a>
+### site.deleteMedia(id, fn) ⇒ <code>[Post](#Post)</code>
+Delete a blog media
 
-  Get a rendered shortcode for a site.
-  
-  Note: The current user must have publishing access.
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Returns**: <code>[Post](#Post)</code> - removed Media instance  
 
-## Site.renderEmbed(url:String, [query]:Object, fn:Function)
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
+| fn | <code>function</code> | 
 
-  Get a rendered embed for a site.
-  
-  Note: The current user must have publishing access.
+<a name="Site#comment"></a>
+### site.comment(id)
+Create a `Comment` instance
 
-## Site.statsReferrersSpamNew(domain:String, fn:Function)
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
 
-  Mark a referrering domain as spam
+| Param | Type |
+| --- | --- |
+| id | <code>String</code> | 
 
-## Site.statsReferrersSpamDelete(domain:String, fn:Function)
+<a name="Site#follow"></a>
+### site.follow()
+Create a `Follow` instance
 
-  Remove referrering domain from spam
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+<a name="Site#tag"></a>
+### site.tag([slug])
+Create a `Tag` instance
 
-## Site.statsVideo(videoId:String, [query]:Object, fn:Function)
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
 
-  Get detailed stats about a VideoPress video
+| Param | Type |
+| --- | --- |
+| [slug] | <code>String</code> | 
 
-## Site.statsPostViews(postId:String, [query]:Object, fn:Function)
+<a name="Site#renderShortcode"></a>
+### site.renderShortcode(url, [query], fn)
+Get a rendered shortcode for a site.
 
-  Get detailed stats about a particular post
+Note: The current user must have publishing access.
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| url | <code>String</code> | 
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Site#renderEmbed"></a>
+### site.renderEmbed(url, [query], fn)
+Get a rendered embed for a site.
+
+Note: The current user must have publishing access.
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| url | <code>String</code> | 
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Site#statsReferrersSpamNew"></a>
+### site.statsReferrersSpamNew(domain, fn)
+Mark a referrering domain as spam
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| domain | <code>String</code> | 
+| fn | <code>function</code> | 
+
+<a name="Site#statsReferrersSpamDelete"></a>
+### site.statsReferrersSpamDelete(domain, fn)
+Remove referrering domain from spam
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| domain | <code>String</code> | 
+| fn | <code>function</code> | 
+
+<a name="Site#statsVideo"></a>
+### site.statsVideo(videoId, [query], fn)
+Get detailed stats about a VideoPress video
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| videoId | <code>String</code> | 
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Site#statsPostViews"></a>
+### site.statsPostViews(postId, [query], fn)
+Get detailed stats about a particular post
+
+**Kind**: instance method of <code>[Site](#Site)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| postId | <code>String</code> | 
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="list"></a>
+## list(subpath)
+List method builder
+
+**Kind**: global function  
+**Api**: private  
+
+| Param | Type |
+| --- | --- |
+| subpath | <code>String</code> | 
+|  | <code>function</code> | 
+
+<a name="list..listMethod"></a>
+### list~listMethod([query], fn)
+Create and return the <names>List method
+
+**Kind**: inner method of <code>[list](#list)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+

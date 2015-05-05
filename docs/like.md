@@ -1,20 +1,72 @@
-  - [Like()](#likepidstringsidstringwpcomwpcom)
-  - [Like.prototype.mine](#likeprototypemine)
-  - [Like.add()](#likeaddqueryobjectfnfunction)
-  - [Like.prototype.del](#likeprototypedel)
+## Members
+<dl>
+<dt><a href="#debug">debug</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Like">Like(pid, sid, wpcom)</a></dt>
+<dd><p>Like methods</p>
+</dd>
+</dl>
+<a name="debug"></a>
+## debug
+Module dependencies.
 
-## Like(pid:String, sid:String, wpcom:WPCOM)
+**Kind**: global variable  
+<a name="Like"></a>
+## Like(pid, sid, wpcom)
+Like methods
 
-  Like methods
+**Kind**: global function  
+**Api**: public  
 
-## Like.prototype.mine
+| Param | Type | Description |
+| --- | --- | --- |
+| pid | <code>String</code> | post id |
+| sid | <code>String</code> | site id |
+| wpcom | <code>WPCOM</code> |  |
 
-  Get your Like status for a Post
 
-## Like.add([query]:Object, fn:Function)
+* [Like(pid, sid, wpcom)](#Like)
+  * [.mine](#Like#mine)
+  * [.del](#Like#del)
+  * [.add([query], fn)](#Like#add)
 
-  Like a post
+<a name="Like#mine"></a>
+### like.mine
+Get your Like status for a Post
 
-## Like.prototype.del
+**Kind**: instance property of <code>[Like](#Like)</code>  
+**Api**: public  
 
-  Remove your Like from a Post
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Like#del"></a>
+### like.del
+Remove your Like from a Post
+
+**Kind**: instance property of <code>[Like](#Like)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Like#add"></a>
+### like.add([query], fn)
+Like a post
+
+**Kind**: instance method of <code>[Like](#Like)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+

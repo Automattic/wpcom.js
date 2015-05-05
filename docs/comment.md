@@ -1,45 +1,135 @@
-  - [Comment()](#commentcidstringpidstringsidstringwpcomwpcom)
-  - [Comment.get()](#commentgetqueryobjectfnfunction)
-  - [Comment.replies()](#commentrepliesqueryobjectfnfunction)
-  - [Comment.add()](#commentaddqueryobjectbodystringobjectfnfunction)
-  - [Comment.update()](#commentupdatequeryobjectbodystringobjectfnfunction)
-  - [Comment.reply()](#commentreplyqueryobjectbodystringobjectfnfunction)
-  - [Comment.prototype.del](#commentprototypedel)
-  - [Comment.like()](#commentlike)
-  - [Comment.likesList()](#commentlikeslistqueryobjectfnfunction)
+## Members
+<dl>
+<dt><a href="#CommentLike">CommentLike</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Comment">Comment([cid], [pid], sid, wpcom)</a></dt>
+<dd><p>Comment methods</p>
+</dd>
+</dl>
+<a name="CommentLike"></a>
+## CommentLike
+Module dependencies.
 
-## Comment([cid]:String, [pid]:String, sid:String, wpcom:WPCOM)
+**Kind**: global variable  
+<a name="Comment"></a>
+## Comment([cid], [pid], sid, wpcom)
+Comment methods
 
-  Comment methods
+**Kind**: global function  
+**Api**: public  
 
-## Comment.get([query]:Object, fn:Function)
+| Param | Type | Description |
+| --- | --- | --- |
+| [cid] | <code>String</code> | comment id |
+| [pid] | <code>String</code> | post id |
+| sid | <code>String</code> | site id |
+| wpcom | <code>WPCOM</code> |  |
 
-  Return a single Comment
 
-## Comment.replies([query]:Object, fn:Function)
+* [Comment([cid], [pid], sid, wpcom)](#Comment)
+  * [.del](#Comment#del)
+  * [.get([query], fn)](#Comment#get)
+  * [.replies([query], fn)](#Comment#replies)
+  * [.add([query], body, fn)](#Comment#add)
+  * [.update([query], body, fn)](#Comment#update)
+  * [.reply([query], body, fn)](#Comment#reply)
+  * [.like()](#Comment#like)
+  * [.likesList([query], fn)](#Comment#likesList)
 
-  Return recent comments for a post
+<a name="Comment#del"></a>
+### comment.del
+Delete a comment
 
-## Comment.add([query]:Object, body:String|Object, fn:Function)
+**Kind**: instance property of <code>[Comment](#Comment)</code>  
+**Api**: public  
 
-  Create a comment on a post
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-## Comment.update([query]:Object, body:String|Object, fn:Function)
+<a name="Comment#get"></a>
+### comment.get([query], fn)
+Return a single Comment
 
-  Edit a comment
+**Kind**: instance method of <code>[Comment](#Comment)</code>  
+**Api**: public  
 
-## Comment.reply([query]:Object, body:String|Object, fn:Function)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-  Create a Comment as a reply to another Comment
+<a name="Comment#replies"></a>
+### comment.replies([query], fn)
+Return recent comments for a post
 
-## Comment.prototype.del
+**Kind**: instance method of <code>[Comment](#Comment)</code>  
+**Api**: public  
 
-  Delete a comment
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
 
-## Comment.like()
+<a name="Comment#add"></a>
+### comment.add([query], body, fn)
+Create a comment on a post
 
-  Create a `CommentLike` instance
+**Kind**: instance method of <code>[Comment](#Comment)</code>  
+**Api**: public  
 
-## Comment.likesList([query]:Object, fn:Function)
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| body | <code>String</code> &#124; <code>Object</code> | 
+| fn | <code>function</code> | 
 
-  Get comment likes list
+<a name="Comment#update"></a>
+### comment.update([query], body, fn)
+Edit a comment
+
+**Kind**: instance method of <code>[Comment](#Comment)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| body | <code>String</code> &#124; <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Comment#reply"></a>
+### comment.reply([query], body, fn)
+Create a Comment as a reply to another Comment
+
+**Kind**: instance method of <code>[Comment](#Comment)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| body | <code>String</code> &#124; <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Comment#like"></a>
+### comment.like()
+Create a `CommentLike` instance
+
+**Kind**: instance method of <code>[Comment](#Comment)</code>  
+**Api**: public  
+<a name="Comment#likesList"></a>
+### comment.likesList([query], fn)
+Get comment likes list
+
+**Kind**: instance method of <code>[Comment](#Comment)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+

@@ -1,21 +1,72 @@
-  - [Follow()](#followsite_idstringwpcomwpcom)
-  - [Follow.prototype.mine](#followprototypemine)
-  - [Follow.prototype.follow](#followprototypefollow)
-  - [Follow.prototype.unfollow](#followprototypeunfollow)
+## Members
+<dl>
+<dt><a href="#debug">debug</a></dt>
+<dd><p>Module dependencies.</p>
+</dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#Follow">Follow(site_id, wpcom)</a></dt>
+<dd><p>Follow</p>
+</dd>
+</dl>
+<a name="debug"></a>
+## debug
+Module dependencies.
 
-## Follow(site_id:String, wpcom:WPCOM)
+**Kind**: global variable  
+<a name="Follow"></a>
+## Follow(site_id, wpcom)
+Follow
 
-  Follow
+**Kind**: global function  
+**Api**: public  
 
-## Follow.prototype.mine
+| Param | Type | Description |
+| --- | --- | --- |
+| site_id | <code>String</code> | site id |
+| wpcom | <code>WPCOM</code> |  |
 
-  Get the follow status for current 
-  user on current blog sites
 
-## Follow.prototype.follow
+* [Follow(site_id, wpcom)](#Follow)
+  * [.mine](#Follow#mine)
+  * [.follow](#Follow#follow)
+  * [.unfollow](#Follow#unfollow)
 
-  Follow the site
+<a name="Follow#mine"></a>
+### follow.mine
+Get the follow status for current 
+user on current blog sites
 
-## Follow.prototype.unfollow
+**Kind**: instance property of <code>[Follow](#Follow)</code>  
+**Api**: public  
 
-  Unfollow the site
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Follow#follow"></a>
+### follow.follow
+Follow the site
+
+**Kind**: instance property of <code>[Follow](#Follow)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
+<a name="Follow#unfollow"></a>
+### follow.unfollow
+Unfollow the site
+
+**Kind**: instance property of <code>[Follow](#Follow)</code>  
+**Api**: public  
+
+| Param | Type |
+| --- | --- |
+| [query] | <code>Object</code> | 
+| fn | <code>function</code> | 
+
