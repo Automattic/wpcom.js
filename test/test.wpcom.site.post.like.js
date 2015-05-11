@@ -20,7 +20,7 @@ var fixture = require('./fixture');
 describe('wpcom.site.post.like', function(){
   // Global instances
   var wpcom = util.wpcom();
-  var site = wpcom.site(fixture.site.url);
+  var site = wpcom.site(util.site());
   var testing_post;
 
   // Create a testing_post before to start the tests

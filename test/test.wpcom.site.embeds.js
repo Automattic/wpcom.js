@@ -19,7 +19,7 @@ var fixture = require('./fixture');
 describe('wpcom.site.embeds', function () {
   // Global instances
   var wpcom = util.wpcom();
-  var site = wpcom.site(fixture.site.url);
+  var site = wpcom.site(util.site());
 
   describe('wpcom.site.renderEmbed(\'embed\')', function () {
     it('should render embed', function(done){

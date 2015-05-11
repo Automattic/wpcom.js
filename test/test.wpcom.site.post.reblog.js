@@ -19,7 +19,7 @@ var fixture = require('./fixture');
 describe('wpcom.site.post.reblog', function(){
   // Global instances
   var wpcom = util.wpcom();
-  var site = wpcom.site(fixture.site.url);
+  var site = wpcom.site(util.site());
   var testing_reblog_post = wpcom
                             .site(fixture.reblog.original_blog)
                             .post(fixture.reblog.original_post);

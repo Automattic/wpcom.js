@@ -20,7 +20,7 @@ describe('wpcom.site.batch', function() {
   it('should require site data', function(done) {
     var wpcom = util.wpcom();
     var batch = wpcom.batch();
-    var site = wpcom.site(fixture.site.url);
+    var site = wpcom.site(util.site());
 
     var url_site = '/sites/' + site._id;
     var url_posts = '/sites/' + site._id + '/posts';

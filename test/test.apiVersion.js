@@ -19,7 +19,7 @@ var fixture = require('./fixture');
 describe('apiVersion', function() {
   // Global instances
   var wpcom = util.wpcom();
-  var site = wpcom.site(fixture.site.url);
+  var site = wpcom.site(util.site());
 
   it('should request changing api version', function(done) {
     site

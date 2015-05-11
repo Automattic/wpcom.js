@@ -19,7 +19,7 @@ var fixture = require('./fixture');
 describe('wpcom.site.tag', function(){
   // Global instances
   var wpcom = util.wpcom();
-  var site = wpcom.site(fixture.site.url);
+  var site = wpcom.site(util.site());
   var new_tag;
 
   // Create a testing_tag before to start tests

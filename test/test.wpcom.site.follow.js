@@ -19,7 +19,7 @@ var fixture = require('./fixture');
 describe('wpcom.site.follow', function(){
   // Global instances
   var wpcom = util.wpcom();
-  var site = wpcom.site(fixture.site.url);
+  var site = wpcom.site(util.site());
   var follow = site.follow();
 
   describe('wpcom.site.follow.follow', function(){

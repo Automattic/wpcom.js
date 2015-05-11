@@ -15,7 +15,7 @@ var fixture = require('./fixture');
 describe('wpcom.site.category', function() {
   // Global instances
   var wpcom = util.wpcom();
-  var site = wpcom.site(fixture.site.url);
+  var site = wpcom.site(util.site());
   var new_category;
 
   // Create a testing_category before to start tests

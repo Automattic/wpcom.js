@@ -19,7 +19,7 @@ var fixture = require('./fixture');
 describe('wpcom.site', function () {
   // Global instances
   var wpcom = util.wpcom();
-  var site = wpcom.site(fixture.site.url);
+  var site = wpcom.site(util.site());
   var testing_post;
   var new_post_ID;
   var site_ID;
@@ -396,7 +396,7 @@ describe('wpcom.site', function () {
 
           assert.equal('string', typeof Date(data.date));
           assert.equal('object', typeof data.days);
-          assert.ok(data['country-info'] instanceof Array);
+          assert.equal('object', typeof data['country-info']);
           done();
         });
       });

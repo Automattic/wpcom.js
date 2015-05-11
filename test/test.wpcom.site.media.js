@@ -19,7 +19,7 @@ var fixture = require('./fixture');
 describe('wpcom.site.media', function(){
   // Global instances
   var wpcom = util.wpcom();
-  var site = wpcom.site(fixture.site.url);
+  var site = wpcom.site(util.site());
   var add_urls_array;
   var add_urls_object;
 

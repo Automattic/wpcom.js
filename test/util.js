@@ -28,7 +28,7 @@ var fixture = require('./fixture');
 module.exports = {
   wpcom: wpcom,
   wpcom_public: function() { return WPCOM(); },
-  util: function () { return config.site; }
+  site: function () { return config.site; }
 };
 
 function wpcom() {
