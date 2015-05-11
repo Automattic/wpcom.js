@@ -3,7 +3,7 @@
  * Module dependencies
  */
 
-var WPCOM = require('../');
+var util = require('./util');
 var assert = require('assert');
 
 /**
@@ -18,7 +18,7 @@ var fixture = require('./fixture');
 
 describe('apiVersion', function() {
   // Global instances
-  var wpcom = WPCOM(fixture.site.token);
+  var wpcom = util.wpcom();
   var site = wpcom.site(fixture.site.url);
 
   it('should request changing api version', function(done) {
