@@ -4,12 +4,20 @@
  */
 
 var WPCOM = require('../');
+var config = require('./config');
 
 /**
  * Detect client/server side
  */
 
 var is_client_side = 'undefined' !== typeof window;
+
+/**
+ * Config vars
+ */
+
+var token = process.env.TOKEN || config.token;
+var site = process.env.SITE || config.site;
 
 /**
  * Testing data
@@ -19,7 +27,8 @@ var fixture = require('./fixture');
 
 module.exports = {
   wpcom: wpcom,
-  wpcom_public: function() { return WPCOM(); }
+  wpcom_public: function() { return WPCOM(); },
+  util: function () { return config.site; }
 };
 
 function wpcom() {
@@ -36,8 +45,6 @@ function wpcom() {
 
     return _wpcom;
   } else {
-    // get token from environment var
-    var token = process.env.TOKEN || require('./token').value;
     return WPCOM(token);
   }
 }
