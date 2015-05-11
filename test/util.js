@@ -4,7 +4,13 @@
  */
 
 var WPCOM = require('../');
-var config = require('./config');
+
+try {
+  var config = require('./config');
+} catch (ex) {
+  var config = {};
+}
+
 
 /**
  * Detect client/server side
