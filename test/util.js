@@ -18,7 +18,8 @@ var is_client_side = 'undefined' !== typeof window;
 var fixture = require('./fixture');
 
 module.exports = {
-  wpcom: wpcom
+  wpcom: wpcom,
+  wpcom_public: function() { return WPCOM(); }
 };
 
 function wpcom() {

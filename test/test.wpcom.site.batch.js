@@ -3,7 +3,7 @@
  * Module dependencies
  */
 
-var WPCOM = require('../');
+var util = require('./util');
 var assert = require('assert');
 
 /**
@@ -18,7 +18,7 @@ var fixture = require('./fixture');
 
 describe('wpcom.site.batch', function(){
   it('should require site data', function(done){
-    var wpcom = WPCOM();
+    var wpcom = util.wpcom_public();
     var batch = wpcom.batch();
     var site = wpcom.site(fixture.site.url);
 
