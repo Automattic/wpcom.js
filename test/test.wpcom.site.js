@@ -3,7 +3,7 @@
  * WPCOM module
  */
 
-var WPCOM = require('../');
+var util = require('./util');
 var assert = require('assert');
 
 /**
@@ -18,7 +18,7 @@ var fixture = require('./fixture');
 
 describe('wpcom.site', function () {
   // Global instances
-  var wpcom = WPCOM(fixture.site.token);
+  var wpcom = util.wpcom();
   var site = wpcom.site(fixture.site.url);
   var testing_post;
   var new_post_ID;
@@ -37,7 +37,7 @@ describe('wpcom.site', function () {
         site_ID = data_site.ID;
 
         done();
-      })
+      });
     });
   });
 
@@ -234,8 +234,9 @@ describe('wpcom.site', function () {
           assert.equal('string', typeof Date(data.day));
           assert.ok(data.authors instanceof Array);
           assert.ok(data.posts instanceof Array);
+
           assert.equal('number', typeof data.monthly_comments);
-          assert.equal('number', typeof data.total_comments);
+          assert.equal('string', typeof data.total_comments);
           assert.equal('string', typeof data.most_active_day);
           assert.equal('string', typeof data.most_active_time);
 
