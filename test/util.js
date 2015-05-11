@@ -37,7 +37,7 @@ function wpcom() {
     return _wpcom;
   } else {
     // get token from environment var
-    var token = require('./token').value || process.env.TOKEN;
+    var token = process.env.TOKEN || require('./token').value;
     return WPCOM(token);
   }
 }
