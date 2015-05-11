@@ -11,7 +11,6 @@ try {
   var config = {};
 }
 
-
 /**
  * Detect client/server side
  */
@@ -34,7 +33,7 @@ var fixture = require('./fixture');
 module.exports = {
   wpcom: wpcom,
   wpcom_public: function() { return WPCOM(); },
-  site: function () { return config.site; }
+  site: function () { return site; }
 };
 
 function wpcom() {
