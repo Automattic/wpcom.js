@@ -16,9 +16,9 @@ var fixture = require('./fixture');
  * Create a `Site` instance
  */
 
-describe('wpcom.site.batch', function(){
-  it('should require site data', function(done){
-    var wpcom = util.wpcom_public();
+describe('wpcom.site.batch', function() {
+  it('should require site data', function(done) {
+    var wpcom = util.wpcom();
     var batch = wpcom.batch();
     var site = wpcom.site(fixture.site.url);
 
@@ -30,14 +30,13 @@ describe('wpcom.site.batch', function(){
     .add(url_site)
     .add(url_posts)
     .add(url_me)
-    .run(function(err, data){
+    .run(function(err, data) {
       if (err) throw err;
 
       assert.ok(data);
       assert.ok(data[url_site]);
       assert.ok(data[url_posts]);
       assert.ok(data[url_me]);
-
       done();
     });
   });
