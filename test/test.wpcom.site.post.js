@@ -3,8 +3,7 @@
  * WPCOM module
  */
 
-var WPCOM = require('../');
-var Site = require('../lib/site');
+var util = require('./util');
 var assert = require('assert');
 
 /**
@@ -14,12 +13,12 @@ var assert = require('assert');
 var fixture = require('./fixture');
 
 /**
- * WPCOM instance
+ * wpcom.site.post
  */
 
 describe('wpcom.site.post', function(){
   // Global instances
-  var wpcom = WPCOM(fixture.site.token);
+  var wpcom = util.wpcom();
   var site = wpcom.site(fixture.site.url);
   var new_post;
   var site_ID;
@@ -37,7 +36,6 @@ describe('wpcom.site.post', function(){
         site_ID = data_site.ID;
         done();
       });
-
     });
   });
 
@@ -106,7 +104,6 @@ describe('wpcom.site.post', function(){
         done();
       });
     });
-
   });
 
   describe('wpcom.site.post.update', function(){
