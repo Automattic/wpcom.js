@@ -44,12 +44,13 @@ Batch.prototype.add = function (url) {
  */
 
 Batch.prototype.run = function (query, fn) {
-  // add urls to query object
   if ('function' === typeof query) {
     fn = query;
     query = {};
   }
-  query.urls = this.urls;
+
+  // add urls to query object
+  query['urls[]'] = this.urls;
 
   return this.wpcom.req.get('/batch', query, fn);
 };
@@ -59,6 +60,7 @@ Batch.prototype.run = function (query, fn) {
  */
 
 module.exports = Batch;
+
 },{"debug":17}],2:[function(require,module,exports){
 
 /**
@@ -78,7 +80,7 @@ var debug = require('debug')('wpcom:category');
 
 function Category(slug, sid, wpcom) {
   if (!sid) {
-    throw new Error('`side id` is not correctly defined');
+    throw new Error('`site id` is not correctly defined');
   }
 
   if (!(this instanceof Category)) {
@@ -181,7 +183,7 @@ var debug = require('debug')('wpcom:comment');
 
 function Comment(cid, pid, sid, wpcom) {
   if (!sid) {
-    throw new Error('`side id` is not correctly defined');
+    throw new Error('`site id` is not correctly defined');
   }
 
   if (!(this instanceof Comment)) {
@@ -294,8 +296,8 @@ Comment.prototype.reply = function (query, body, fn) {
  * @api public
  */
 
-Comment.prototype['delete'] =
-Comment.prototype.del = function (query, fn) {
+Comment.prototype.del =
+Comment.prototype['delete'] = function (query, fn) {
   var path = '/sites/' + this._sid + '/comments/' + this._cid + '/delete';
   return this.wpcom.req.del(path, query, fn);
 };
@@ -347,7 +349,7 @@ var debug = require('debug')('wpcom:commentlike');
 
 function CommentLike(cid, sid, wpcom) {
   if (!sid) {
-    throw new Error('`side id` is not correctly defined');
+    throw new Error('`site id` is not correctly defined');
   }
 
   if (!cid) {
@@ -371,8 +373,8 @@ function CommentLike(cid, sid, wpcom) {
  * @api public
  */
 
-CommentLike.prototype.state =
-CommentLike.prototype.mine = function (query, fn) {
+CommentLike.prototype.mine =
+CommentLike.prototype.state = function (query, fn) {
   var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes/mine';
   return this.wpcom.req.get(path, query, fn);
 };
@@ -385,20 +387,21 @@ CommentLike.prototype.mine = function (query, fn) {
  * @api public
  */
 
-CommentLike.prototype.add = function (query, body, fn) {
+CommentLike.prototype.add = function (query, fn) {
   var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes/new';
-  return this.wpcom.req.post(path, query, body, fn);
+  return this.wpcom.req.post(path, query, fn);
 };
 
 /**
  * Remove your Like from a Comment
  *
+ * @param {Object} [query]
  * @param {Function} fn
  * @api public
  */
 
-CommentLike.prototype['delete'] =
-CommentLike.prototype.del = function (query, fn) {
+CommentLike.prototype.del =
+CommentLike.prototype['delete'] = function (query, fn) {
   var path = '/sites/' + this._sid + '/comments/' + this._cid + '/likes/mine/delete';
   return this.wpcom.req.del(path, query, fn);
 };
@@ -443,10 +446,11 @@ function Follow(site_id, wpcom) {
  *
  * @param {Object} [query]
  * @param {Function} fn
+ * @api public
  */
 
-Follow.prototype.state =
-Follow.prototype.mine = function (query, fn) {
+Follow.prototype.mine =
+Follow.prototype.state = function (query, fn) {
   var path = '/sites/' + this._sid + '/follows/mine';
   return this.wpcom.req.get(path, query, fn);
 };
@@ -456,6 +460,7 @@ Follow.prototype.mine = function (query, fn) {
  *
  * @param {Object} [query]
  * @param {Function} fn
+ * @api public
  */
 
 Follow.prototype.follow =
@@ -469,6 +474,7 @@ Follow.prototype.add = function (query, fn) {
  *
  * @param {Object} [query]
  * @param {Function} fn
+ * @api public
  */
 
 Follow.prototype.unfollow =
@@ -501,7 +507,7 @@ var debug = require('debug')('wpcom:like');
 
 function Like(pid, sid, wpcom) {
   if (!sid) {
-    throw new Error('`side id` is not correctly defined');
+    throw new Error('`site id` is not correctly defined');
   }
 
   if (!pid) {
@@ -525,8 +531,8 @@ function Like(pid, sid, wpcom) {
  * @api public
  */
 
-Like.prototype.state =
-Like.prototype.mine = function (query, fn) {
+Like.prototype.mine =
+Like.prototype.state = function (query, fn) {
   var path = '/sites/' + this._sid + '/posts/' + this._pid + '/likes/mine';
   return this.wpcom.req.get(path, query, fn);
 };
@@ -547,12 +553,13 @@ Like.prototype.add = function (query, fn) {
 /**
  * Remove your Like from a Post
  *
+ * @param {Object} [query]
  * @param {Function} fn
  * @api public
  */
 
-Like.prototype['delete'] =
-Like.prototype.del = function (query, fn) {
+Like.prototype.del =
+Like.prototype['delete'] = function (query, fn) {
   var path = '/sites/' + this._sid + '/posts/' + this._pid + '/likes/mine/delete';
   return this.wpcom.req.del(path, query, fn);
 };
@@ -650,6 +657,7 @@ Me.prototype.connections = function (query, fn) {
  */
 
 module.exports = Me;
+
 },{"debug":17}],8:[function(require,module,exports){
   
 /**
@@ -879,6 +887,7 @@ function Post(id, sid, wpcom) {
 /**
  * Set post `id`
  *
+ * @param {String} id
  * @api public
  */
 
@@ -982,8 +991,8 @@ Post.prototype.update = function (query, body, fn) {
  * @api public
  */
 
-Post.prototype['delete'] =
-Post.prototype.del = function (query, fn) {
+Post.prototype.del =
+Post.prototype['delete'] = function (query, fn) {
   var path = '/sites/' + this._sid + '/posts/' + this._id + '/delete';
   return this.wpcom.req.del(path, query, fn);
 };
@@ -1017,7 +1026,6 @@ Post.prototype.likesList = function (query, fn) {
 /**
  * Search within a site for related posts
  *
- * @param {Object} [query]
  * @param {Object} body
  * @param {Function} fn
  * @api public
@@ -1025,7 +1033,7 @@ Post.prototype.likesList = function (query, fn) {
 
 Post.prototype.related = function (body, fn) {
   var path = '/sites/' + this._sid + '/posts/' + this._id + '/related';
-  return this.wpcom.req.put(path, query, null, fn);
+  return this.wpcom.req.put(path, body, null, fn);
 };
 
 /**
@@ -1062,15 +1070,14 @@ Post.prototype.comment = function (cid) {
 /**
  * Return recent comments
  *
- * @param {Objecy} [query]
- * @param {String} id
+ * @param {Object} [query]
+ * @param {Function} fn
  * @api public
  */
 
 Post.prototype.comments = function (query, fn) {
   var comment = new Comment(null, this._id, this._sid, this.wpcom);
-  comment.replies(query, fn);
-  return comment;
+  return comment.replies(query, fn);
 };
 
 /**
@@ -1097,7 +1104,7 @@ var debug = require('debug')('wpcom:reblog');
 
 function Reblog(pid, sid, wpcom) {
   if (!sid) {
-    throw new Error('`side id` is not correctly defined');
+    throw new Error('`site id` is not correctly defined');
   }
 
   if (!pid) {
@@ -1121,8 +1128,8 @@ function Reblog(pid, sid, wpcom) {
  * @api public
  */
 
-Reblog.prototype.state =
-Reblog.prototype.mine = function (query, fn) {
+Reblog.prototype.mine =
+Reblog.prototype.state = function (query, fn) {
   var path = '/sites/' + this._sid + '/posts/' + this._pid + '/reblogs/mine';
   return this.wpcom.req.get(path, query, fn);
 };
@@ -1203,12 +1210,21 @@ var resources = [
   'shortcodes',
   'embeds',
   [ 'stats', 'stats' ],
-  [ 'statsVisits', 'stats/visits' ],
-  [ 'statsReferrers', 'stats/referrers' ],
-  [ 'statsTopPosts', 'stats/top-posts' ],
-  [ 'statsCountryViews', 'stats/country-views' ],
   [ 'statsClicks', 'stats/clicks' ],
+  [ 'statsComments', 'stats/comments' ],
+  [ 'statsCommentFollowers', 'stats/comment-followers' ],
+  [ 'statsCountryViews', 'stats/country-views' ],
+  [ 'statsFollowers', 'stats/followers' ],
+  [ 'statsPublicize', 'stats/publicize' ],
+  [ 'statsReferrers', 'stats/referrers' ],
   [ 'statsSearchTerms', 'stats/search-terms' ],
+  [ 'statsStreak', 'stats/streak' ],
+  [ 'statsSummary', 'stats/summary' ],
+  [ 'statsTags', 'stats/tags' ],
+  [ 'statsTopAuthors', 'stats/top-authors' ],
+  [ 'statsTopPosts', 'stats/top-posts' ],
+  [ 'statsVideoPlays', 'stats/video-plays' ],
+  [ 'statsVisits', 'stats/visits' ],
   'tags',
   'users'
 ];
@@ -1254,17 +1270,19 @@ Site.prototype.get = function (query, fn) {
 function list(subpath) {
 
   /**
-   * Return the <names>List method
+   * Create and return the <names>List method
    *
    * @param {Object} [query]
    * @param {Function} fn
    * @api public
    */
 
-  return function (query, fn) {
+  var listMethod = function (query, fn) {
     var path = '/sites/' + this._id + '/' + subpath;
     return this.wpcom.req.get(path, query, fn);
   };
+  listMethod._publicAPI = true;
+  return listMethod;
 }
 
 // walk for each resource and create related method
@@ -1423,6 +1441,7 @@ Site.prototype.tag = function (slug) {
  *
  * @param {String} url
  * @param {Object} [query]
+ * @param {Function} fn
  * @api public
  */
 
@@ -1451,6 +1470,7 @@ Site.prototype.renderShortcode = function (url, query, fn) {
  *
  * @param {String} url
  * @param {Object} [query]
+ * @param {Function} fn
  * @api public
  */
 
@@ -1468,6 +1488,76 @@ Site.prototype.renderEmbed = function (url, query, fn) {
   query.embed_url = url;
 
   var path = '/sites/' + this._id + '/embeds/render';
+  return this.wpcom.req.get(path, query, fn);
+};
+
+/**
+ * Mark a referrering domain as spam
+ *
+ * @param {String} domain
+ * @param {Function} fn
+ * @api public
+ */
+
+Site.prototype.statsReferrersSpamNew = function (domain, fn) {
+  var path = '/sites/' + this._id + '/stats/referrers/spam/new';
+  var body = { domain: domain };
+
+  return this.wpcom.req.post(path, body, null, fn);
+};
+
+/**
+ * Remove referrering domain from spam
+ *
+ * @param {String} domain
+ * @param {Function} fn
+ * @api public
+ */
+
+Site.prototype.statsReferrersSpamDelete = function (domain, fn) {
+  var path = '/sites/' + this._id + '/stats/referrers/spam/delete';
+  var body = { domain: domain };
+
+  return this.wpcom.req.post(path, body, null, fn);
+};
+
+/**
+ * Get detailed stats about a VideoPress video
+ *
+ * @param {String} videoId
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Site.prototype.statsVideo = function (videoId, query, fn) {
+  var path = '/sites/' + this._id + '/stats/video/' + videoId;
+
+  if ('function' == typeof query) {
+    fn = query;
+    query = {};
+  }
+
+  return this.wpcom.req.get(path, query, fn);
+};
+
+/**
+ * Get detailed stats about a particular post
+ *
+ * @param {String} postId
+ * @param {Object} [query]
+ * @param {Function} fn
+ * @api public
+ */
+
+Site.prototype.statsPostViews = function (postId, query, fn) {
+  var path = '/sites/' + this._id + '/stats/post/' + postId;
+
+  if ('function' == typeof query) {
+    fn = query;
+    query = {};
+  }
+
   return this.wpcom.req.get(path, query, fn);
 };
 
@@ -1495,7 +1585,7 @@ var debug = require('debug')('wpcom:tag');
 
 function Tag(slug, sid, wpcom) {
   if (!sid) {
-    throw new Error('`side id` is not correctly defined');
+    throw new Error('`site id` is not correctly defined');
   }
 
   if (!(this instanceof Tag)) {
@@ -1664,8 +1754,8 @@ Req.prototype.get = function (params, query, fn) {
  * @api public
  */
 
-Req.prototype.put =
-Req.prototype.post = function (params, query, body, fn) {
+Req.prototype.post =
+Req.prototype.put = function (params, query, body, fn) {
   if ('function' === typeof body) {
     fn = body;
     body = query;
@@ -1710,7 +1800,9 @@ module.exports = Req;
  * Module dependencies
  */
 
+var qs = require('qs');
 var debug = require('debug')('wpcom:send-request');
+var debug_res = require('debug')('wpcom:send-request:res');
 
 /**
  * Request to WordPress REST API
@@ -1753,10 +1845,21 @@ module.exports = function (params, query, body, fn) {
   // - `apiVersion`
   if (query.apiVersion) {
     params.apiVersion = query.apiVersion;
+    debug('apiVersion: %o', params.apiVersion);
     delete query.apiVersion;
   } else {
     params.apiVersion = this.apiVersion;
   }
+
+  // - `proxyOrigin`
+  if (query.proxyOrigin) {
+    params.proxyOrigin = query.proxyOrigin;
+    debug('proxyOrigin: %o', params.proxyOrigin);
+    delete query.proxyOrigin;
+  }
+
+  // Stringify query object before to send
+  query = qs.stringify(query);
 
   if (body) {
     params.body = body;
@@ -1769,9 +1872,13 @@ module.exports = function (params, query, body, fn) {
 
   debug('params: %o', params);
   // request method
-  return this.request(params, fn);
+  return this.request(params, function(err, res) {
+    debug_res(res);
+    fn(err, res);
+  });
 };
-},{"debug":17}],16:[function(require,module,exports){
+
+},{"debug":17,"qs":20}],16:[function(require,module,exports){
 
 },{}],17:[function(require,module,exports){
 
@@ -1797,7 +1904,7 @@ var storage;
 if (typeof chrome !== 'undefined' && typeof chrome.storage !== 'undefined')
   storage = chrome.storage.local;
 else
-  storage = window.localStorage;
+  storage = localstorage();
 
 /**
  * Colors.
@@ -1932,6 +2039,23 @@ function load() {
  */
 
 exports.enable(load());
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage(){
+  try {
+    return window.localStorage;
+  } catch (e) {}
+}
 
 },{"./debug":18}],18:[function(require,module,exports){
 
@@ -2173,13 +2297,15 @@ module.exports = function(val, options){
  */
 
 function parse(str) {
-  var match = /^((?:\d+)?\.?\d+) *(ms|seconds?|s|minutes?|m|hours?|h|days?|d|years?|y)?$/i.exec(str);
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
   if (!match) return;
   var n = parseFloat(match[1]);
   var type = (match[2] || 'ms').toLowerCase();
   switch (type) {
     case 'years':
     case 'year':
+    case 'yrs':
+    case 'yr':
     case 'y':
       return n * y;
     case 'days':
@@ -2188,16 +2314,26 @@ function parse(str) {
       return n * d;
     case 'hours':
     case 'hour':
+    case 'hrs':
+    case 'hr':
     case 'h':
       return n * h;
     case 'minutes':
     case 'minute':
+    case 'mins':
+    case 'min':
     case 'm':
       return n * m;
     case 'seconds':
     case 'second':
+    case 'secs':
+    case 'sec':
     case 's':
       return n * s;
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
     case 'ms':
       return n;
   }
@@ -2246,6 +2382,526 @@ function plural(ms, n, name) {
 }
 
 },{}],20:[function(require,module,exports){
+// Load modules
+
+var Stringify = require('./stringify');
+var Parse = require('./parse');
+
+
+// Declare internals
+
+var internals = {};
+
+
+module.exports = {
+    stringify: Stringify,
+    parse: Parse
+};
+
+},{"./parse":21,"./stringify":22}],21:[function(require,module,exports){
+// Load modules
+
+var Utils = require('./utils');
+
+
+// Declare internals
+
+var internals = {
+    delimiter: '&',
+    depth: 5,
+    arrayLimit: 20,
+    parameterLimit: 1000,
+    strictNullHandling: false,
+    plainObjects: false,
+    allowPrototypes: false
+};
+
+
+internals.parseValues = function (str, options) {
+
+    var obj = {};
+    var parts = str.split(options.delimiter, options.parameterLimit === Infinity ? undefined : options.parameterLimit);
+
+    for (var i = 0, il = parts.length; i < il; ++i) {
+        var part = parts[i];
+        var pos = part.indexOf(']=') === -1 ? part.indexOf('=') : part.indexOf(']=') + 1;
+
+        if (pos === -1) {
+            obj[Utils.decode(part)] = '';
+
+            if (options.strictNullHandling) {
+                obj[Utils.decode(part)] = null;
+            }
+        }
+        else {
+            var key = Utils.decode(part.slice(0, pos));
+            var val = Utils.decode(part.slice(pos + 1));
+
+            if (!Object.prototype.hasOwnProperty.call(obj, key)) {
+                obj[key] = val;
+            }
+            else {
+                obj[key] = [].concat(obj[key]).concat(val);
+            }
+        }
+    }
+
+    return obj;
+};
+
+
+internals.parseObject = function (chain, val, options) {
+
+    if (!chain.length) {
+        return val;
+    }
+
+    var root = chain.shift();
+
+    var obj;
+    if (root === '[]') {
+        obj = [];
+        obj = obj.concat(internals.parseObject(chain, val, options));
+    }
+    else {
+        obj = options.plainObjects ? Object.create(null) : {};
+        var cleanRoot = root[0] === '[' && root[root.length - 1] === ']' ? root.slice(1, root.length - 1) : root;
+        var index = parseInt(cleanRoot, 10);
+        var indexString = '' + index;
+        if (!isNaN(index) &&
+            root !== cleanRoot &&
+            indexString === cleanRoot &&
+            index >= 0 &&
+            (options.parseArrays &&
+             index <= options.arrayLimit)) {
+
+            obj = [];
+            obj[index] = internals.parseObject(chain, val, options);
+        }
+        else {
+            obj[cleanRoot] = internals.parseObject(chain, val, options);
+        }
+    }
+
+    return obj;
+};
+
+
+internals.parseKeys = function (key, val, options) {
+
+    if (!key) {
+        return;
+    }
+
+    // Transform dot notation to bracket notation
+
+    if (options.allowDots) {
+        key = key.replace(/\.([^\.\[]+)/g, '[$1]');
+    }
+
+    // The regex chunks
+
+    var parent = /^([^\[\]]*)/;
+    var child = /(\[[^\[\]]*\])/g;
+
+    // Get the parent
+
+    var segment = parent.exec(key);
+
+    // Stash the parent if it exists
+
+    var keys = [];
+    if (segment[1]) {
+        // If we aren't using plain objects, optionally prefix keys
+        // that would overwrite object prototype properties
+        if (!options.plainObjects &&
+            Object.prototype.hasOwnProperty(segment[1])) {
+
+            if (!options.allowPrototypes) {
+                return;
+            }
+        }
+
+        keys.push(segment[1]);
+    }
+
+    // Loop through children appending to the array until we hit depth
+
+    var i = 0;
+    while ((segment = child.exec(key)) !== null && i < options.depth) {
+
+        ++i;
+        if (!options.plainObjects &&
+            Object.prototype.hasOwnProperty(segment[1].replace(/\[|\]/g, ''))) {
+
+            if (!options.allowPrototypes) {
+                continue;
+            }
+        }
+        keys.push(segment[1]);
+    }
+
+    // If there's a remainder, just add whatever is left
+
+    if (segment) {
+        keys.push('[' + key.slice(segment.index) + ']');
+    }
+
+    return internals.parseObject(keys, val, options);
+};
+
+
+module.exports = function (str, options) {
+
+    options = options || {};
+    options.delimiter = typeof options.delimiter === 'string' || Utils.isRegExp(options.delimiter) ? options.delimiter : internals.delimiter;
+    options.depth = typeof options.depth === 'number' ? options.depth : internals.depth;
+    options.arrayLimit = typeof options.arrayLimit === 'number' ? options.arrayLimit : internals.arrayLimit;
+    options.parseArrays = options.parseArrays !== false;
+    options.allowDots = options.allowDots !== false;
+    options.plainObjects = typeof options.plainObjects === 'boolean' ? options.plainObjects : internals.plainObjects;
+    options.allowPrototypes = typeof options.allowPrototypes === 'boolean' ? options.allowPrototypes : internals.allowPrototypes;
+    options.parameterLimit = typeof options.parameterLimit === 'number' ? options.parameterLimit : internals.parameterLimit;
+    options.strictNullHandling = typeof options.strictNullHandling === 'boolean' ? options.strictNullHandling : internals.strictNullHandling;
+
+    if (str === '' ||
+        str === null ||
+        typeof str === 'undefined') {
+
+        return options.plainObjects ? Object.create(null) : {};
+    }
+
+    var tempObj = typeof str === 'string' ? internals.parseValues(str, options) : str;
+    var obj = options.plainObjects ? Object.create(null) : {};
+
+    // Iterate over the keys and setup the new object
+
+    var keys = Object.keys(tempObj);
+    for (var i = 0, il = keys.length; i < il; ++i) {
+        var key = keys[i];
+        var newObj = internals.parseKeys(key, tempObj[key], options);
+        obj = Utils.merge(obj, newObj, options);
+    }
+
+    return Utils.compact(obj);
+};
+
+},{"./utils":23}],22:[function(require,module,exports){
+// Load modules
+
+var Utils = require('./utils');
+
+
+// Declare internals
+
+var internals = {
+    delimiter: '&',
+    arrayPrefixGenerators: {
+        brackets: function (prefix, key) {
+
+            return prefix + '[]';
+        },
+        indices: function (prefix, key) {
+
+            return prefix + '[' + key + ']';
+        },
+        repeat: function (prefix, key) {
+
+            return prefix;
+        }
+    },
+    strictNullHandling: false
+};
+
+
+internals.stringify = function (obj, prefix, generateArrayPrefix, strictNullHandling, filter) {
+
+    if (typeof filter === 'function') {
+        obj = filter(prefix, obj);
+    }
+    else if (Utils.isBuffer(obj)) {
+        obj = obj.toString();
+    }
+    else if (obj instanceof Date) {
+        obj = obj.toISOString();
+    }
+    else if (obj === null) {
+        if (strictNullHandling) {
+            return Utils.encode(prefix);
+        }
+
+        obj = '';
+    }
+
+    if (typeof obj === 'string' ||
+        typeof obj === 'number' ||
+        typeof obj === 'boolean') {
+
+        return [Utils.encode(prefix) + '=' + Utils.encode(obj)];
+    }
+
+    var values = [];
+
+    if (typeof obj === 'undefined') {
+        return values;
+    }
+
+    var objKeys = Array.isArray(filter) ? filter : Object.keys(obj);
+    for (var i = 0, il = objKeys.length; i < il; ++i) {
+        var key = objKeys[i];
+
+        if (Array.isArray(obj)) {
+            values = values.concat(internals.stringify(obj[key], generateArrayPrefix(prefix, key), generateArrayPrefix, strictNullHandling, filter));
+        }
+        else {
+            values = values.concat(internals.stringify(obj[key], prefix + '[' + key + ']', generateArrayPrefix, strictNullHandling, filter));
+        }
+    }
+
+    return values;
+};
+
+
+module.exports = function (obj, options) {
+
+    options = options || {};
+    var delimiter = typeof options.delimiter === 'undefined' ? internals.delimiter : options.delimiter;
+    var strictNullHandling = typeof options.strictNullHandling === 'boolean' ? options.strictNullHandling : internals.strictNullHandling;
+    var objKeys;
+    var filter;
+    if (typeof options.filter === 'function') {
+        filter = options.filter;
+        obj = filter('', obj);
+    }
+    else if (Array.isArray(options.filter)) {
+        objKeys = filter = options.filter;
+    }
+
+    var keys = [];
+
+    if (typeof obj !== 'object' ||
+        obj === null) {
+
+        return '';
+    }
+
+    var arrayFormat;
+    if (options.arrayFormat in internals.arrayPrefixGenerators) {
+        arrayFormat = options.arrayFormat;
+    }
+    else if ('indices' in options) {
+        arrayFormat = options.indices ? 'indices' : 'repeat';
+    }
+    else {
+        arrayFormat = 'indices';
+    }
+
+    var generateArrayPrefix = internals.arrayPrefixGenerators[arrayFormat];
+
+    if (!objKeys) {
+        objKeys = Object.keys(obj);
+    }
+    for (var i = 0, il = objKeys.length; i < il; ++i) {
+        var key = objKeys[i];
+        keys = keys.concat(internals.stringify(obj[key], key, generateArrayPrefix, strictNullHandling, filter));
+    }
+
+    return keys.join(delimiter);
+};
+
+},{"./utils":23}],23:[function(require,module,exports){
+// Load modules
+
+
+// Declare internals
+
+var internals = {};
+internals.hexTable = new Array(256);
+for (var h = 0; h < 256; ++h) {
+    internals.hexTable[h] = '%' + ((h < 16 ? '0' : '') + h.toString(16)).toUpperCase();
+}
+
+
+exports.arrayToObject = function (source, options) {
+
+    var obj = options.plainObjects ? Object.create(null) : {};
+    for (var i = 0, il = source.length; i < il; ++i) {
+        if (typeof source[i] !== 'undefined') {
+
+            obj[i] = source[i];
+        }
+    }
+
+    return obj;
+};
+
+
+exports.merge = function (target, source, options) {
+
+    if (!source) {
+        return target;
+    }
+
+    if (typeof source !== 'object') {
+        if (Array.isArray(target)) {
+            target.push(source);
+        }
+        else if (typeof target === 'object') {
+            target[source] = true;
+        }
+        else {
+            target = [target, source];
+        }
+
+        return target;
+    }
+
+    if (typeof target !== 'object') {
+        target = [target].concat(source);
+        return target;
+    }
+
+    if (Array.isArray(target) &&
+        !Array.isArray(source)) {
+
+        target = exports.arrayToObject(target, options);
+    }
+
+    var keys = Object.keys(source);
+    for (var k = 0, kl = keys.length; k < kl; ++k) {
+        var key = keys[k];
+        var value = source[key];
+
+        if (!Object.prototype.hasOwnProperty.call(target, key)) {
+            target[key] = value;
+        }
+        else {
+            target[key] = exports.merge(target[key], value, options);
+        }
+    }
+
+    return target;
+};
+
+
+exports.decode = function (str) {
+
+    try {
+        return decodeURIComponent(str.replace(/\+/g, ' '));
+    } catch (e) {
+        return str;
+    }
+};
+
+exports.encode = function (str) {
+
+    // This code was originally written by Brian White (mscdex) for the io.js core querystring library.
+    // It has been adapted here for stricter adherence to RFC 3986
+    if (str.length === 0) {
+        return str;
+    }
+
+    if (typeof str !== 'string') {
+        str = '' + str;
+    }
+
+    var out = '';
+    for (var i = 0, il = str.length; i < il; ++i) {
+        var c = str.charCodeAt(i);
+
+        if (c === 0x2D || // -
+            c === 0x2E || // .
+            c === 0x5F || // _
+            c === 0x7E || // ~
+            (c >= 0x30 && c <= 0x39) || // 0-9
+            (c >= 0x41 && c <= 0x5A) || // a-z
+            (c >= 0x61 && c <= 0x7A)) { // A-Z
+
+            out += str[i];
+            continue;
+        }
+
+        if (c < 0x80) {
+            out += internals.hexTable[c];
+            continue;
+        }
+
+        if (c < 0x800) {
+            out += internals.hexTable[0xC0 | (c >> 6)] + internals.hexTable[0x80 | (c & 0x3F)];
+            continue;
+        }
+
+        if (c < 0xD800 || c >= 0xE000) {
+            out += internals.hexTable[0xE0 | (c >> 12)] + internals.hexTable[0x80 | ((c >> 6) & 0x3F)] + internals.hexTable[0x80 | (c & 0x3F)];
+            continue;
+        }
+
+        ++i;
+        c = 0x10000 + (((c & 0x3FF) << 10) | (str.charCodeAt(i) & 0x3FF));
+        out += internals.hexTable[0xF0 | (c >> 18)] + internals.hexTable[0x80 | ((c >> 12) & 0x3F)] + internals.hexTable[0x80 | ((c >> 6) & 0x3F)] + internals.hexTable[0x80 | (c & 0x3F)];
+    }
+
+    return out;
+};
+
+exports.compact = function (obj, refs) {
+
+    if (typeof obj !== 'object' ||
+        obj === null) {
+
+        return obj;
+    }
+
+    refs = refs || [];
+    var lookup = refs.indexOf(obj);
+    if (lookup !== -1) {
+        return refs[lookup];
+    }
+
+    refs.push(obj);
+
+    if (Array.isArray(obj)) {
+        var compacted = [];
+
+        for (var i = 0, il = obj.length; i < il; ++i) {
+            if (typeof obj[i] !== 'undefined') {
+                compacted.push(obj[i]);
+            }
+        }
+
+        return compacted;
+    }
+
+    var keys = Object.keys(obj);
+    for (i = 0, il = keys.length; i < il; ++i) {
+        var key = keys[i];
+        obj[key] = exports.compact(obj[key], refs);
+    }
+
+    return obj;
+};
+
+
+exports.isRegExp = function (obj) {
+
+    return Object.prototype.toString.call(obj) === '[object RegExp]';
+};
+
+
+exports.isBuffer = function (obj) {
+
+    if (obj === null ||
+        typeof obj === 'undefined') {
+
+        return false;
+    }
+
+    return !!(obj.constructor &&
+              obj.constructor.isBuffer &&
+              obj.constructor.isBuffer(obj));
+};
+
+},{}],24:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -2293,6 +2949,9 @@ function request (params, fn) {
   var apiVersion = params.apiVersion || defaultApiVersion;
   delete params.apiVersion;
 
+  proxyOrigin = params.proxyOrigin || proxyOrigin;
+  delete params.proxyOrigin;
+
   var url = proxyOrigin + '/rest/v' + apiVersion + params.path;
   debug('API URL: %o', url);
   delete params.path;
@@ -2333,7 +2992,10 @@ function request (params, fn) {
 
   // start the request
   req.end(function (err, res){
-    if (err) return fn(err);
+    if (err && !res) {
+      return fn(err);
+    }
+
     var body = res.body;
     var headers = res.headers;
     var statusCode = res.status;
@@ -2343,17 +3005,21 @@ function request (params, fn) {
       body._headers = headers;
     }
 
-    if (2 === Math.floor(statusCode / 100)) {
-      // 2xx status code, success
-      fn(null, body);
-    } else {
-      // any other status code is a failure
-      err = new Error();
-      err.statusCode = statusCode;
-      for (var i in body) err[i] = body[i];
-      if (body && body.error) err.name = toTitle(body.error) + 'Error';
-      fn(err);
+    if (!err) {
+      return fn(null, body);
     }
+
+    err = new Error();
+    err.statusCode = statusCode;
+    for (var i in body) {
+      err[i] = body[i];
+    }
+
+    if (body && body.error) {
+      err.name = toTitle(body.error) + 'Error';
+    }
+
+    fn(err);
   });
 
   return req.xhr;
@@ -2366,7 +3032,7 @@ function toTitle (str) {
   });
 }
 
-},{"debug":17,"superagent":21}],21:[function(require,module,exports){
+},{"debug":17,"superagent":25}],25:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -2379,7 +3045,7 @@ var reduce = require('reduce');
  */
 
 var root = 'undefined' == typeof window
-  ? this
+  ? (this || self)
   : window;
 
 /**
@@ -2418,7 +3084,8 @@ function isHost(obj) {
 
 request.getXHR = function () {
   if (root.XMLHttpRequest
-    && ('file:' != root.location.protocol || !root.ActiveXObject)) {
+      && (!root.location || 'file:' != root.location.protocol
+          || !root.ActiveXObject)) {
     return new XMLHttpRequest;
   } else {
     try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
@@ -2754,6 +3421,11 @@ Response.prototype.parseBody = function(str){
  */
 
 Response.prototype.setStatusProperties = function(status){
+  // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+  if (status === 1223) {
+    status = 204;
+  }
+
   var type = status / 100 | 0;
 
   // status / class
@@ -2771,7 +3443,7 @@ Response.prototype.setStatusProperties = function(status){
 
   // sugar
   this.accepted = 202 == status;
-  this.noContent = 204 == status || 1223 == status;
+  this.noContent = 204 == status;
   this.badRequest = 400 == status;
   this.unauthorized = 401 == status;
   this.notAcceptable = 406 == status;
@@ -3279,12 +3951,18 @@ Request.prototype.end = function(fn){
   };
 
   // progress
+  var handleProgress = function(e){
+    if (e.total > 0) {
+      e.percent = e.loaded / e.total * 100;
+    }
+    self.emit('progress', e);
+  };
+  if (this.hasListeners('progress')) {
+    xhr.onprogress = handleProgress;
+  }
   try {
     if (xhr.upload && this.hasListeners('progress')) {
-      xhr.upload.onprogress = function(e){
-        e.percent = e.loaded / e.total * 100;
-        self.emit('progress', e);
-      };
+      xhr.upload.onprogress = handleProgress;
     }
   } catch(e) {
     // Accessing xhr.upload fails in IE from a web worker, so just pretend it doesn't exist.
@@ -3479,7 +4157,7 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":22,"reduce":23}],22:[function(require,module,exports){
+},{"emitter":26,"reduce":27}],26:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -3645,7 +4323,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],23:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 
 /**
  * Reduce `arr` with `fn`.
@@ -3670,7 +4348,8 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
-},{}],24:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+
 
 /**
  * Module dependencies.
@@ -3717,6 +4396,7 @@ function WPCOM(token, reqHandler) {
 
   if (token) {
     debug('Token defined: %s…', token.substring(0, 6));
+    this.token = token;
   }
 
   // Set default request handler
@@ -3813,5 +4493,6 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn) {
  */
 
 module.exports = WPCOM;
-},{"./lib/batch":1,"./lib/me":7,"./lib/site":11,"./lib/users":13,"./lib/util/request":14,"./lib/util/send-request":15,"debug":17,"wpcom-xhr-request":20}]},{},[24])(24)
+
+},{"./lib/batch":1,"./lib/me":7,"./lib/site":11,"./lib/users":13,"./lib/util/request":14,"./lib/util/send-request":15,"debug":17,"wpcom-xhr-request":24}]},{},[28])(28)
 });
