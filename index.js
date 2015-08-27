@@ -142,13 +142,10 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn) {
 };
 
 WPCOM.prototype.wpPromise = function ( callback, params, timeout ) {
-  var timeout = timeout || DEFAULT_ASYNC_TIMEOUT;
+  var timeout = timeout || DEFAULT_ASYNC_TIMEOUT,
+      timer;
 
-  return new Promise( function ( resolve, reject ) {
-    var timer = setTimeout( function() {
-      reject( new Error( 'Action timed out while waiting for return.' ) );
-    }, timeout );
-
+  var action = new Promise( function ( resolve, reject ) {
     var curriedCallback = params ? function(fn) { callback(params, fn); } : function(fn) { callback(fn); };
 
     curriedCallback( function ( error, data ) {
@@ -161,6 +158,14 @@ WPCOM.prototype.wpPromise = function ( callback, params, timeout ) {
       }
     } );
   } );
+
+  var timeout = new Promise( function( resolve, reject ) {
+    timer = setTimeout( function() {
+      reject( new Error( 'Action timed out while waiting for return.' ) );
+    }, timeout );
+  } );
+
+  return Promise.race( [ action, timeout ] );
 };
 
 /**
