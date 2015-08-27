@@ -50,27 +50,21 @@ describe('wpcom.site.post', function(){
 
   describe('wpcom.site.post.get', function(){
     it('should get added post (by id)', function(done){
-      site
-      .post(testing_post.ID)
-      .get(function(err, data){
-        if (err) throw err;
-
-        assert.equal(testing_post.ID, data.ID);
-        assert.equal(testing_post.site_ID, data.site_ID);
-        done();
-      });
+      wpcom.wpPromise( site.post(testing_post.ID ).get )
+        .then( function( data ) {
+          assert.equal(testing_post.ID, data.ID);
+          assert.equal(testing_post.site_ID, data.site_ID);
+          done();
+        }).catch(done);
     });
 
     it('should get passing a query object', function(done){
-      site
-      .post(testing_post.ID)
-      .get({ content: 'edit' }, function(err, post){
-        if (err) throw err;
-
-        assert.equal(testing_post.ID, post.ID);
-        assert.equal(testing_post.site_ID, post.site_ID);
-        done();
-      });
+      wpcom.wpPromise( site.post(testing_post.ID ).get, { content: 'edit' } )
+        .then( function( post ) {
+          assert.equal(testing_post.ID, post.ID);
+          assert.equal(testing_post.site_ID, post.site_ID);
+          done();
+        }).catch(done);
     });
 
     it('should get added post (by slug)', function(done){

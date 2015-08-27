@@ -18,6 +18,10 @@ var Req = require('./lib/util/request');
 var sendRequest = require('./lib/util/send-request');
 var debug = require('debug')('wpcom');
 
+/**
+ * Local module constants
+ */
+var DEFAULT_ASYNC_TIMEOUT = 30000;
 
 /**
  * XMLHttpRequest (and CORS) API access method.
@@ -135,6 +139,28 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn) {
   }
   
   return sendRequest.call(this, params, query, body, fn)
+};
+
+WPCOM.prototype.wpPromise = function ( callback, params, timeout ) {
+  var timeout = timeout || DEFAULT_ASYNC_TIMEOUT;
+
+  return new Promise( function ( resolve, reject ) {
+    var timer = setTimeout( function() {
+      reject( new Error( 'Action timed out while waiting for return.' ) );
+    }, timeout );
+
+    var curriedCallback = params ? function(fn) { callback(params, fn); } : function(fn) { callback(fn); };
+
+    curriedCallback( function ( error, data ) {
+      clearTimeout( timer );
+
+      if ( error ) {
+        reject( error );
+      } else {
+        resolve( data );
+      }
+    } );
+  } );
 };
 
 /**
