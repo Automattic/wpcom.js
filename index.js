@@ -133,40 +133,47 @@ WPCOM.prototype.freshlyPressed = function (query, fn) {
 WPCOM.prototype.sendRequest = function (params, query, body, fn) {
   var msg = 'WARN! Don use `sendRequest() anymore. Use `this.req` method.';
   if (console && console.warn) {
-    console.warn(msg);  
+    console.warn(msg);
   } else {
     console.log(msg);
   }
-  
+
   return sendRequest.call(this, params, query, body, fn)
 };
 
-WPCOM.prototype.wpPromise = function ( callback, params, timeout ) {
-  var timeout = timeout || DEFAULT_ASYNC_TIMEOUT,
-      timer;
-
-  var action = new Promise( function ( resolve, reject ) {
-    var curriedCallback = params ? function(fn) { callback(params, fn); } : function(fn) { callback(fn); };
-
-    curriedCallback( function ( error, data ) {
-      clearTimeout( timer );
-
+WPCOM.prototype.Promise = ( callback, ...params ) => {
+  return new Promise( ( resolve, reject ) => {
+    // The functions here take a variable number of arguments,
+    // so pass in as many as we can but keep the callback last.
+    callback.apply( this, [...params, ( error, data ) => {
       if ( error ) {
         reject( error );
       } else {
         resolve( data );
       }
-    } );
+    } ] );
   } );
-
-  var timeout = new Promise( function( resolve, reject ) {
-    timer = setTimeout( function() {
-      reject( new Error( 'Action timed out while waiting for return.' ) );
-    }, timeout );
-  } );
-
-  return Promise.race( [ action, timeout ] );
 };
+
+
+if ( ! Promise.prototype.timeout ) {
+  Promise.prototype.timeout = ( delay = DEFAULT_ASYNC_TIMEOUT, callback ) => {
+    let cancelTimeout, timer, timeout;
+
+    timeout = new Promise( ( resolve, reject ) => {
+      timer = setTimeout( () => {
+        reject( new Error( 'Action timed out while waiting for response.' ) );
+      }, delay );
+    } );
+
+    cancelTimeout = () => {
+      clearTimeout( timer );
+      return this;
+    };
+
+    return Promise.race( [ this.then( cancelTimeout ).catch( cancelTimeout ), timeout ] );
+  };
+}
 
 /**
  * Expose `WPCOM` module

@@ -53,28 +53,35 @@ describe('wpcom.site', function () {
   describe('wpcom.site.lists', function () {
 
     describe('wpcom.site.postsList', function () {
-      it( 'should request post list', function(done) {
-        wpcom.wpPromise( site.postsList )
-          .then( function( list ) {
-            assert.equal('object', typeof list);
-            assert.equal('number', typeof list.found);
-            assert.equal('object', typeof list.posts);
-            assert.ok(list.posts instanceof Array);
-            done();
-          }).catch(done);
+      it('should request posts list', function (done) {
+        site.postsList(function (err, list) {
+          if (err) throw err;
+
+          // list object data testing
+          assert.equal('object', typeof list);
+
+          // `posts list` object data testing
+          assert.equal('number', typeof list.found);
+
+          assert.equal('object', typeof list.posts);
+          assert.ok(list.posts instanceof Array);
+
+          done();
+        });
       });
 
       it('should request only one post', function (done) {
-        wpcom.wpPromise( site.postsList, { number: 1 } )
-            .then( function( list ) {
-              // list object data testing
-              assert.equal('object', typeof list);
-              assert.equal('number', typeof list.found);
-              assert.equal('object', typeof list.posts);
-              assert.ok(list.posts instanceof Array);
-              assert.ok(list.posts.length <= 1);
-              done();
-            }).catch(done);
+        site.postsList({ number: 1 }, function (err, list) {
+          if (err) throw err;
+
+          // list object data testing
+          assert.equal('object', typeof list);
+          assert.equal('number', typeof list.found);
+          assert.equal('object', typeof list.posts);
+          assert.ok(list.posts instanceof Array);
+          assert.ok(list.posts.length <= 1);
+          done();
+        });
       });
     });
 

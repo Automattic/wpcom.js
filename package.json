@@ -23,6 +23,7 @@
     "wpcom-xhr-request": "0.3.2"
   },
   "devDependencies": {
+    "babel": "^5.8.23",
     "browserify": "^11.0.1",
     "mocha": "^2.2.5"
   }
