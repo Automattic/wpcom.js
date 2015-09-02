@@ -145,12 +145,8 @@ WPCOM.prototype.Promise = ( callback, ...params ) => {
   return new Promise( ( resolve, reject ) => {
     // The functions here take a variable number of arguments,
     // so pass in as many as we can but keep the callback last.
-    callback.apply( this, [...params, ( error, data ) => {
-      if ( error ) {
-        reject( error );
-      } else {
-        resolve( data );
-      }
+    callback.apply( callback, [...params, ( error, data ) => {
+      error ? reject( error ) : resolve( data );
     } ] );
   } );
 };
