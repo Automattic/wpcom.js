@@ -43,7 +43,7 @@ describe('wpcom', function(){
 			wpcom.Promise( timedCallback( 1000 ) )
 				.timeout( 10 )
 				.then( falseAssertion( done ) )
-				.catch( trueAssertion( done ) )
+				.catch( trueAssertion( done ) );
 		});
 
 		it('should still catch() with timeout()', done => {

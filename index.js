@@ -155,9 +155,8 @@ WPCOM.prototype.Promise = ( callback, ...params ) => {
   } );
 };
 
-
 if ( ! Promise.prototype.timeout ) {
-  Promise.prototype.timeout = ( delay = DEFAULT_ASYNC_TIMEOUT, callback ) => {
+  Promise.prototype.timeout = function( delay = DEFAULT_ASYNC_TIMEOUT ) {
     let cancelTimeout, timer, timeout;
 
     timeout = new Promise( ( resolve, reject ) => {
