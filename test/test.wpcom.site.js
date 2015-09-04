@@ -16,7 +16,7 @@ var fixture = require('./fixture');
  * Create a `Site` instance
  */
 
-describe('wpcom.siter', function () {
+describe('wpcom.site', function () {
   // Global instances
   var wpcom = util.wpcom();
   var site = wpcom.site(util.site());
