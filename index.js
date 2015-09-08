@@ -1,22 +1,20 @@
-
-
 /**
  * Module dependencies.
  */
 
-var request_handler = require('wpcom-xhr-request');
+var request_handler = require( 'wpcom-xhr-request' );
 
 /**
  * Local module dependencies.
  */
 
-var Me = require('./lib/me');
-var Site = require('./lib/site');
-var Users = require('./lib/users');
-var Batch = require('./lib/batch');
-var Req = require('./lib/util/request');
-var sendRequest = require('./lib/util/send-request');
-var debug = require('debug')('wpcom');
+var Me = require( './lib/me' );
+var Site = require( './lib/site' );
+var Users = require( './lib/users' );
+var Batch = require( './lib/batch' );
+var Req = require( './lib/util/request' );
+var sendRequest = require( './lib/util/send-request' );
+var debug = require( 'debug' )( 'wpcom' );
 
 /**
  * Local module constants
@@ -36,45 +34,45 @@ var DEFAULT_ASYNC_TIMEOUT = 30000;
  * @public
  */
 
-function WPCOM(token, reqHandler) {
-  if (!(this instanceof WPCOM)) {
-    return new WPCOM(token, reqHandler);
-  }
+function WPCOM( token, reqHandler ) {
+	if ( ! ( this instanceof WPCOM ) ) {
+		return new WPCOM( token, reqHandler );
+	}
 
-  // `token` is optional
-  if ('function' === typeof token) {
-    reqHandler = token;
-    token = null;
-  }
+	// `token` is optional
+	if ( 'function' === typeof token ) {
+		reqHandler = token;
+		token = null;
+	}
 
-  if (token) {
-    debug('Token defined: %s…', token.substring(0, 6));
-    this.token = token;
-  }
+	if ( token ) {
+		debug( 'Token defined: %s…', token.substring( 0, 6 ) );
+		this.token = token;
+	}
 
-  // Set default request handler
-  if (!reqHandler) {
-    debug('No request handler. Adding default XHR request handler');
+	// Set default request handler
+	if ( ! reqHandler ) {
+		debug( 'No request handler. Adding default XHR request handler' );
 
-    this.request = function (params, fn) {
-      params = params || {};
+		this.request = function( params, fn ) {
+			params = params || {};
 
-      // token is optional
-      if (token) {
-        params.authToken = token;
-      }
+			// token is optional
+			if ( token ) {
+				params.authToken = token;
+			}
 
-      return request_handler(params, fn);
-    };
-  } else {
-    this.request = reqHandler;
-  }
+			return request_handler( params, fn );
+		};
+	} else {
+		this.request = reqHandler;
+	}
 
-  // Add Req instance
-  this.req = new Req(this);
+	// Add Req instance
+	this.req = new Req( this );
 
-  // Default api version;
-  this.apiVersion = '1.1';
+	// Default api version;
+	this.apiVersion = '1.1';
 }
 
 /**
@@ -83,8 +81,8 @@ function WPCOM(token, reqHandler) {
  * @api public
  */
 
-WPCOM.prototype.me = function () {
-  return new Me(this);
+WPCOM.prototype.me = function() {
+	return new Me( this );
 };
 
 /**
@@ -94,8 +92,8 @@ WPCOM.prototype.me = function () {
  * @api public
  */
 
-WPCOM.prototype.site = function (id) {
-  return new Site(id, this);
+WPCOM.prototype.site = function( id ) {
+	return new Site( id, this );
 };
 
 /**
@@ -104,13 +102,12 @@ WPCOM.prototype.site = function (id) {
  * @api public
  */
 
-WPCOM.prototype.users = function () {
-  return new Users(this);
+WPCOM.prototype.users = function() {
+	return new Users( this );
 };
 
-
-WPCOM.prototype.batch = function () {
-  return new Batch(this);
+WPCOM.prototype.batch = function() {
+	return new Batch( this );
 };
 
 /**
@@ -121,8 +118,8 @@ WPCOM.prototype.batch = function () {
  * @api public
  */
 
-WPCOM.prototype.freshlyPressed = function (query, fn) {
-  return this.req.get('/freshly-pressed', query, fn);
+WPCOM.prototype.freshlyPressed = function( query, fn ) {
+	return this.req.get( '/freshly-pressed', query, fn );
 };
 
 /**
@@ -130,15 +127,15 @@ WPCOM.prototype.freshlyPressed = function (query, fn) {
  * @TODO: use `this.req` instead of this method
  */
 
-WPCOM.prototype.sendRequest = function (params, query, body, fn) {
-  var msg = 'WARN! Don use `sendRequest() anymore. Use `this.req` method.';
-  if (console && console.warn) {
-    console.warn(msg);
-  } else {
-    console.log(msg);
-  }
+WPCOM.prototype.sendRequest = function( params, query, body, fn ) {
+	var msg = 'WARN! Don use `sendRequest() anymore. Use `this.req` method.';
+	if ( console && console.warn ) {
+		console.warn( msg );
+	} else {
+		console.log( msg );
+	}
 
-  return sendRequest.call(this, params, query, body, fn)
+	return sendRequest.call( this, params, query, body, fn );
 };
 
 /**
@@ -154,17 +151,17 @@ WPCOM.prototype.sendRequest = function (params, query, body, fn) {
  * an API call is not empty. It resolves otherwise.
  *
  * @param {function} callback wpcom.js method to call
- * @param params variable list of parameters to send to callback
- * @returns {Promise}
+ * @param {*} params variable list of parameters to send to callback
+ * @returns {Promise} Promise following the callback's error/success
  */
 WPCOM.prototype.Promise = ( callback, ...params ) => {
-  return new Promise( ( resolve, reject ) => {
-    // The functions here take a variable number of arguments,
-    // so pass in as many as we can but keep the callback last.
-    callback.apply( callback, [...params, ( error, data ) => {
-      error ? reject( error ) : resolve( data );
-    } ] );
-  } );
+	return new Promise( ( resolve, reject ) => {
+		// The functions here take a variable number of arguments,
+		// so pass in as many as we can but keep the callback last.
+		callback.apply( callback, params.concat( ( error, data ) => {
+			error ? reject( error ) : resolve( data );
+		} ) );
+	} );
 };
 
 if ( ! Promise.prototype.timeout ) {
@@ -176,24 +173,27 @@ if ( ! Promise.prototype.timeout ) {
      * the deadline, the timer is cancelled.
      *
      * @param {number} delay how many ms to wait
-     * @returns {Promise}
+     * @returns {Promise} Race between the calling promise and the timeout
      */
-  Promise.prototype.timeout = function( delay = DEFAULT_ASYNC_TIMEOUT ) {
-    let cancelTimeout, timer, timeout;
+	Promise.prototype.timeout = function( delay = DEFAULT_ASYNC_TIMEOUT ) {
+		let cancelTimeout, timer, timeout;
 
-    timeout = new Promise( ( resolve, reject ) => {
-      timer = setTimeout( () => {
-        reject( new Error( 'Action timed out while waiting for response.' ) );
-      }, delay );
-    } );
+		timeout = new Promise( ( resolve, reject ) => {
+			timer = setTimeout( ( ) => {
+				reject( new Error( 'Action timed out while waiting for response.' ) );
+			}, delay );
+		} );
 
-    cancelTimeout = () => {
-      clearTimeout( timer );
-      return this;
-    };
+		cancelTimeout = ( ) => {
+			clearTimeout( timer );
+			return this;
+		};
 
-    return Promise.race( [ this.then( cancelTimeout ).catch( cancelTimeout ), timeout ] );
-  };
+		return Promise.race( [
+			this.then( cancelTimeout ).catch( cancelTimeout ),
+			timeout
+		] );
+	};
 }
 
 /**
