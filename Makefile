@@ -10,20 +10,26 @@ BIN := $(THIS_DIR)/node_modules/.bin
 NODE ?= node
 NPM ?= $(NODE) $(shell which npm)
 MOCHA ?= $(NODE) $(BIN)/mocha
-BROWSERIFY ?= $(NODE) $(BIN)/browserify
+WEBPACK ?= $(NODE) $(BIN)/webpack
 
 standalone: dist/wpcom.js
 
-install: node_modules
+install: node_modules index.js
 
 clean:
-	@rm -rf node_modules dist
+	@rm -rf dist index.js index.js.map
+
+distclean: clean
+	@rm -rf node_modules
 
 dist:
 	@mkdir -p $@
 
 dist/wpcom.js: node_modules *.js dist lib/*.js
-	@$(BROWSERIFY) -s WPCOM . > $@
+	@$(WEBPACK) -p --config webpack.config.dist.js
+
+index.js: node_modules lib/*.js
+	@$(WEBPACK) -p --config webpack.config.js
 
 node_modules: package.json
 	@NODE_ENV= $(NPM) install
@@ -37,7 +43,7 @@ example-browser-cors: all
 	cd examples/browser-cors/; $(NPM) install
 	$(NODE) examples/browser-cors/index.js
 
-test: node_modules
+test: install
 	@$(MOCHA) \
 		--compilers js:babel/register \
 		--timeout 120s \
@@ -46,7 +52,7 @@ test: node_modules
 		--bail \
 		--reporter spec
 
-test-all: node_modules
+test-all: install
 	@$(MOCHA) \
 		--compilers js:babel/register \
 		--timeout 120s \
