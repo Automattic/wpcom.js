@@ -1,4 +1,4 @@
-require("babel/register");
+require( 'babel/register' );
 
 const defaultConfig = require( './webpack.config.js' ),
 	webpack = require( 'webpack' ),
