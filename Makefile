@@ -14,10 +14,10 @@ WEBPACK ?= $(NODE) $(BIN)/webpack
 
 standalone: dist/wpcom.js
 
-install: node_modules index.js
+install: node_modules index.min.js
 
 clean:
-	@rm -rf dist index.js index.js.map
+	@rm -rf dist index.min.js index.min.js.map
 
 distclean: clean
 	@rm -rf node_modules
@@ -28,7 +28,7 @@ dist:
 dist/wpcom.js: node_modules *.js dist lib/*.js
 	@$(WEBPACK) -p --config webpack.config.dist.js
 
-index.js: node_modules lib/*.js
+index.min.js: node_modules lib/*.js
 	@$(WEBPACK) -p --config webpack.config.js
 
 node_modules: package.json
