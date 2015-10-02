@@ -2,7 +2,7 @@
   "name": "wpcom",
   "description": "Official JavaScript library for the WordPress.com REST API",
   "version": "4.8.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "Automattic, Inc.",
   "contributors": [
     "Damian Suarez <rdsuarez@gmail.com>",

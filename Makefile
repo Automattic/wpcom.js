@@ -12,12 +12,12 @@ NPM ?= $(NODE) $(shell which npm)
 MOCHA ?= $(NODE) $(BIN)/mocha
 WEBPACK ?= $(NODE) $(BIN)/webpack
 
-standalone: dist/wpcom.js
+standalone: dist/wpcom.js dist/index.js
 
-install: node_modules index.min.js
+install: node_modules
 
 clean:
-	@rm -rf dist index.min.js index.min.js.map
+	@rm -rf dist
 
 distclean: clean
 	@rm -rf node_modules
@@ -25,11 +25,11 @@ distclean: clean
 dist:
 	@mkdir -p $@
 
-dist/wpcom.js: node_modules *.js dist lib/*.js
-	@$(WEBPACK) -p --config webpack.config.dist.js
-
-index.min.js: node_modules lib/*.js
+dist/index.js: node_modules *.js dist lib/*.js
 	@$(WEBPACK) -p --config webpack.config.js
+
+dist/wpcom.js: node_modules *.js dist lib/*.js
+	@$(WEBPACK) -p --config webpack.config.standalone.js
 
 node_modules: package.json
 	@NODE_ENV= $(NPM) install

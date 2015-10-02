@@ -7,8 +7,8 @@ module.exports = {
 		'wpcom-xhr-request'
 	],
 	output: {
-		path: __dirname,
-		filename: 'index.min.js',
+		path: __dirname + '/dist',
+		filename: 'index.js',
 		libraryTarget: 'commonjs2',
 		library: 'WPCOM'
 	},

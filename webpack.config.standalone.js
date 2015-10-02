@@ -1,14 +1,15 @@
-require( 'babel/register' );
+require("babel/register");
 
 const defaultConfig = require( './webpack.config.js' ),
 	webpack = require( 'webpack' ),
 	WebpackStrip = require( 'strip-loader' );
 
 module.exports = Object.assign( {}, defaultConfig, {
+	externals: undefined,
 	output: {
 		path: __dirname + '/dist',
 		filename: 'wpcom.js',
-		libraryTarget: 'umd',
+		libraryTarget: 'var',
 		library: 'WPCOM'
 	},
 	loaders: [

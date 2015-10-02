@@ -3,7 +3,7 @@
  * Module dependencies
  */
 
-var WPCOM = require('../index.min.js');
+var WPCOM = require('../');
 var Site = require('../lib/site');
 var assert = require('assert');
 
