@@ -17,6 +17,10 @@
     "api",
     "library"
   ],
+  "scripts": {
+    "postinstall": "make babelify",
+    "prepublish": "make clean && make standalone"
+  },
   "repository": "git@github.com:Automattic/wpcom.js.git",
   "license": "MIT",
   "dependencies": {

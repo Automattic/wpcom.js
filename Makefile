@@ -10,9 +10,10 @@ BIN := $(THIS_DIR)/node_modules/.bin
 NODE ?= node
 NPM ?= $(NODE) $(shell which npm)
 MOCHA ?= $(NODE) $(BIN)/mocha
+BABEL ?= $(NODE) $(BIN)/babel
 WEBPACK ?= $(NODE) $(BIN)/webpack
 
-standalone: dist/wpcom.js dist/index.js
+standalone: dist/wpcom.js
 
 install: node_modules
 
@@ -25,11 +26,23 @@ distclean: clean
 dist:
 	@mkdir -p $@
 
-dist/index.js: node_modules *.js dist lib/*.js
+dist/lib:
+	@mkdir -p $@
+
+dist/lib/util:
+	@mkdir -p $@
+
+dist/test:
+	@mkdir -p $@
+
+dist/wpcom.js: *.js dist lib/*.js
 	@$(WEBPACK) -p --config webpack.config.js
 
-dist/wpcom.js: node_modules *.js dist lib/*.js
-	@$(WEBPACK) -p --config webpack.config.standalone.js
+babelify: dist dist/lib dist/lib/util dist/test
+	@$(BABEL) index.js --out-file dist/index.js
+	@$(BABEL) lib --out-dir dist/lib
+	@$(BABEL) lib/util --out-dir dist/lib/util
+	@$(BABEL) test --out-dir dist/test
 
 node_modules: package.json
 	@NODE_ENV= $(NPM) install

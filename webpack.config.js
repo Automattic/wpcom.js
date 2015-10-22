@@ -1,15 +1,9 @@
 module.exports = {
 	entry: __dirname + '/index.js',
-	externals: [
-		'debug',
-		'fs',
-		'qs',
-		'wpcom-xhr-request'
-	],
 	output: {
 		path: __dirname + '/dist',
-		filename: 'index.js',
-		libraryTarget: 'commonjs2',
+		filename: 'wpcom.js',
+		libraryTarget: 'var',
 		library: 'WPCOM'
 	},
 	module: {
