@@ -56,7 +56,7 @@ example-browser-cors: all
 	cd examples/browser-cors/; $(NPM) install
 	$(NODE) examples/browser-cors/index.js
 
-test: install
+test: 
 	@$(MOCHA) \
 		--compilers js:babel/register \
 		--timeout 120s \
@@ -65,7 +65,7 @@ test: install
 		--bail \
 		--reporter spec
 
-test-all: install
+test-all:
 	@$(MOCHA) \
 		--compilers js:babel/register \
 		--timeout 120s \
