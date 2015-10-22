@@ -56,7 +56,7 @@ example-browser-cors: all
 	cd examples/browser-cors/; $(NPM) install
 	$(NODE) examples/browser-cors/index.js
 
-test: 
+test: babelify
 	@$(MOCHA) \
 		--compilers js:babel/register \
 		--timeout 120s \
@@ -65,7 +65,7 @@ test:
 		--bail \
 		--reporter spec
 
-test-all:
+test-all: babelify
 	@$(MOCHA) \
 		--compilers js:babel/register \
 		--timeout 120s \
