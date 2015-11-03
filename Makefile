@@ -46,10 +46,6 @@ example-server:
 	cd examples/server/; $(NPM) install
 	$(NODE) examples/server/index.js
 
-example-browser-cors: all
-	cd examples/browser-cors/; $(NPM) install
-	$(NODE) examples/browser-cors/index.js
-
 test: babelify
 	@$(MOCHA) \
 		--compilers js:babel/register \
