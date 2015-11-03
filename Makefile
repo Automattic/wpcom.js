@@ -13,7 +13,7 @@ MOCHA ?= $(NODE) $(BIN)/mocha
 BABEL ?= $(NODE) $(BIN)/babel
 WEBPACK ?= $(NODE) $(BIN)/webpack
 
-standalone: dist/wpcom.js dist/index.js
+standalone: dist/wpcom.js
 
 clean:
 	@rm -rf dist
