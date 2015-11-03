@@ -23,10 +23,10 @@ clean:
 distclean: clean
 	@rm -rf node_modules
 
-dist:
+dist: dist/lib dist/test
 	@mkdir -p $@
 
-dist/lib:
+dist/lib: dist/lib/util
 	@mkdir -p $@
 
 dist/lib/util:
@@ -38,7 +38,7 @@ dist/test:
 dist/wpcom.js: *.js dist lib/*.js
 	@$(WEBPACK) -p --config webpack.config.js
 
-babelify: dist dist/lib dist/lib/util dist/test
+babelify: dist
 	@$(BABEL) index.js --out-file dist/index.js
 	@$(BABEL) lib --out-dir dist/lib
 	@$(BABEL) lib/util --out-dir dist/lib/util
