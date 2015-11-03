@@ -18,8 +18,7 @@
     "library"
   ],
   "scripts": {
-    "postinstall": "make babelify",
-    "prepublish": "make clean && make standalone"
+    "postinstall": "make babelify"
   },
   "repository": "git@github.com:Automattic/wpcom.js.git",
   "license": "MIT",

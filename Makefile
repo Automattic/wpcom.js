@@ -73,4 +73,7 @@ test-all: babelify
 		--bail \
 		--reporter spec
 
-.PHONY: all standalone install clean distclean babelify example-server example-browser-cors test test-all
+publish: clean standalone
+	$(NPM) publish
+
+.PHONY: all standalone install clean distclean babelify example-server example-browser-cors test test-all publish
