@@ -15,8 +15,6 @@ WEBPACK ?= $(NODE) $(BIN)/webpack
 
 standalone: dist/wpcom.js
 
-install: node_modules
-
 clean:
 	@rm -rf dist
 
@@ -43,10 +41,6 @@ babelify: dist
 	@$(BABEL) lib --out-dir dist/lib
 	@$(BABEL) lib/util --out-dir dist/lib/util
 	@$(BABEL) test --out-dir dist/test
-
-node_modules: package.json
-	@NODE_ENV= $(NPM) install
-	@touch node_modules
 
 example-server:
 	cd examples/server/; $(NPM) install
@@ -76,4 +70,4 @@ test-all: babelify
 publish: clean standalone
 	$(NPM) publish
 
-.PHONY: all standalone install clean distclean babelify example-server example-browser-cors test test-all publish
+.PHONY: all standalone clean distclean babelify example-server example-browser-cors test test-all publish
