@@ -1,5 +1,8 @@
 module.exports = {
 	entry: __dirname + '/index.js',
+	node: {
+		fs: "empty"
+	},
 	output: {
 		path: __dirname + '/dist',
 		filename: 'wpcom.js',

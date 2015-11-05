@@ -25,7 +25,6 @@
   "license": "MIT",
   "dependencies": {
     "debug": "^2.1.3",
-    "fs": "0.0.2",
     "qs": "^4.0.0",
     "babel": "^5.8.23",
     "wpcom-xhr-request": "0.3.2"
