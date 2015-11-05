@@ -13,42 +13,47 @@
     <p id="message"></p>
 
     <script src="/dist/wpcom.js"></script>
+    <script src="http://wzrd.in/standalone/wpcom-oauth-cors@1.0.x"></script>
     <script>
-      var token = ""; // <- your token here
-      var site = ""; // <- your site here
+      var clientId = ''; // <- your client id here
+      var site = ''; // <- your site here
 
-      if (!token.length) {
-        alert('Define your token !! :-)');
+      if (!clientId.length) {
+        alert('Define your client id !! :-)');
       }
 
       if (!site.length) {
         alert('Define your site !! :-)');
       }
 
-      var wpcom = WPCOM(token);
+      var wpcomOAuth = wpcomOauthCors(clientId);
 
-      // select files on the "input" element
-      var filecontainer = document.getElementById('message');
-      var input = document.getElementById('file');
+      wpcomOAuth.get(function(auth) {
+        var wpcom = WPCOM(auth.access_token);
 
-      input.onchange = function (e) {
-        var files = [];
-        for (var i = 0; i < e.target.files.length; i++) {
-          files.push(e.target.files[i]);
-        }
+        // select files on the "input" element
+        var filecontainer = document.getElementById('message');
+        var input = document.getElementById('file');
 
-        filecontainer.innerHTML = 'Uploading ' + files.length + ' images ...';
+        input.onchange = function (e) {
+          var files = [];
+          for (var i = 0; i < e.target.files.length; i++) {
+            files.push(e.target.files[i]);
+          }
 
-        var req = wpcom
-        .site(site)
-        .addMediaFiles(files, function(err, data){
-          if (err) return filecontainer.innerHTML = err.message;
+          filecontainer.innerHTML = 'Uploading ' + files.length + ' images ...';
 
-          filecontainer.innerHTML = data.media.length + ' files uploaded';
-        });
+          var req = wpcom
+          .site(site)
+          .addMediaFiles(files, function(err, data){
+            if (err) return filecontainer.innerHTML = err.message;
 
-        req.upload.onprogress = onprogress;
-      };
+            filecontainer.innerHTML = data.media.length + ' files uploaded';
+          });
+
+          req.upload.onprogress = onprogress;
+        };
+      });
 
       function onprogress (e) {
         if (e.lengthComputable) {
