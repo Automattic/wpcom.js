@@ -1,69 +1,69 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>wpcom.js - Upload an image</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  </head>
-  <body>
-    <div>
-      <input type="file" id="file" multiple />
-    </div>
+	<head>
+		<title>wpcom.js - Upload an image</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
 
-    <p id="message"></p>
+	<body>
+		<div>
+			<input type="file" id="file" multiple />
+		</div>
 
-    <script src="/dist/wpcom.js"></script>
-    <script src="http://wzrd.in/standalone/wpcom-oauth-cors@1.0.x"></script>
-    <script>
-      var clientId = ''; // <- your client id here
-      var site = ''; // <- your site here
+		<p id="message"></p>
 
-      if (!clientId.length) {
-        alert('Define your client id !! :-)');
-      }
+		<script src="wpcom.js"></script>
+		<script src="http://wzrd.in/standalone/wpcom-oauth-cors@1.0.x"></script>
+		<script>
+			var clientId = ''; // <- your client id here
+			var site = ''; // <- your site here
 
-      if (!site.length) {
-        alert('Define your site !! :-)');
-      }
+			if (!clientId.length) {
+				alert('Define your client id !! :-)');
+			}
 
-      var wpcomOAuth = wpcomOauthCors(clientId);
+			if (!site.length) {
+				alert('Define your site !! :-)');
+			}
 
-      wpcomOAuth.get(function(auth) {
-        var wpcom = WPCOM(auth.access_token);
+			var wpcomOAuth = wpcomOauthCors(clientId);
 
-        // select files on the "input" element
-        var filecontainer = document.getElementById('message');
-        var input = document.getElementById('file');
+			wpcomOAuth.get(function(auth) {
+				var wpcom = WPCOM(auth.access_token);
 
-        input.onchange = function (e) {
-          var files = [];
-          for (var i = 0; i < e.target.files.length; i++) {
-            files.push(e.target.files[i]);
-          }
+				// select files on the "input" element
+				var filecontainer = document.getElementById('message');
+				var input = document.getElementById('file');
 
-          filecontainer.innerHTML = 'Uploading ' + files.length + ' images ...';
+				input.onchange = function (e) {
+					var files = [];
+					for (var i = 0; i < e.target.files.length; i++) {
+						files.push(e.target.files[i]);
+					}
 
-          var req = wpcom
-          .site(site)
-          .addMediaFiles(files, function(err, data){
-            if (err) return filecontainer.innerHTML = err.message;
+					filecontainer.innerHTML = 'Uploading ' + files.length + ' images ...';
 
-            filecontainer.innerHTML = data.media.length + ' files uploaded';
-          });
+					var req = wpcom
+					.site(site)
+					.addMediaFiles(files, function(err, data){
+						if (err) return filecontainer.innerHTML = err.message;
 
-          req.upload.onprogress = onprogress;
-        };
-      });
+						filecontainer.innerHTML = data.media.length + ' files uploaded';
+					});
 
-      function onprogress (e) {
-        if (e.lengthComputable) {
-          var percentComplete = e.loaded / e.total * 100;
-          console.log('progress event! %s%', percentComplete.toFixed(2));
-        } else {
-          // Unable to compute progress information since the total size is unknown
-        }
-      }
+					req.upload.onprogress = onprogress;
+				};
+			});
 
-    </script>
-  </body>
+			function onprogress (e) {
+				if (e.lengthComputable) {
+				var percentComplete = e.loaded / e.total * 100;
+				console.log('progress event! %s%', percentComplete.toFixed(2));
+				} else {
+				// Unable to compute progress information since the total size is unknown
+				}
+			}
+		</script>
+	</body>
 </html>
