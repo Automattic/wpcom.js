@@ -17,7 +17,10 @@ standalone: dist/wpcom.js
 install: node_modules
 
 clean:
-	@rm -rf node_modules dist
+	@rm -rf dist
+
+distclean:
+	@rm -rf node_modules
 
 dist:
 	@mkdir -p $@
@@ -28,14 +31,6 @@ dist/wpcom.js: node_modules *.js dist lib/*.js
 node_modules: package.json
 	@NODE_ENV= $(NPM) install
 	@touch node_modules
-
-example-server:
-	cd examples/server/; $(NPM) install
-	$(NODE) examples/server/index.js
-
-example-browser-cors: all
-	cd examples/browser-cors/; $(NPM) install
-	$(NODE) examples/browser-cors/index.js
 
 test: node_modules
 	@$(MOCHA) \
@@ -54,4 +49,4 @@ test-all: node_modules
 		--bail \
 		--reporter spec
 
-.PHONY: all standalone install clean test test-all
+.PHONY: all standalone install clean distclean test test-all
