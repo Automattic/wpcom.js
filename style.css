@@ -212,11 +212,12 @@ a.button {
   display: inline;
 }
 .editor-inner {
-  margin: 50px 20px 0;
-  background-color: #2b303b;
+  margin: 30px 20px 0;
+  background-color: white;
   overflow-x: hidden;
   overflow-y: scroll;
   text-align: left;
+  padding-top: 5px;
   border-radius: 3px;
 }
 /**
@@ -229,7 +230,7 @@ a.button {
   width: 100%;
 }
 .gist .highlight {
-  background: #2b303b !important;
+  background: white !important;
 }
 .gist pre {
   font-family: Menlo, Monaco, 'Bitstream Vera Sans Mono', 'Courier New', monospace !important;
@@ -254,7 +255,7 @@ a.button {
 .gist,
 .gist-file,
 .gist-data,
-.line-numbers {
+.line-ndiv umbers {
   background: none !important;
   border-bottom: none !important;
 }
@@ -355,7 +356,7 @@ body {
 }
 @media screen and (min-width: 1200px) {
   .editor-inner {
-    margin: 50px auto 0;
+    margin: 30px auto 0;
     max-width: 900px;
   }
 }
