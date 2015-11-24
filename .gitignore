@@ -2,3 +2,4 @@ node_modules/
 gh-tmp/
 .DS_Store
 test/
+tmp/
