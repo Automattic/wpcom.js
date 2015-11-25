@@ -172,7 +172,7 @@ a {
   margin-bottom: 30px;
   padding: 0 20px;
   font-size: 1.75em;
-  line-height: 1.4em;
+  line-height: 1em;
   opacity: 1;
 }
 .project-desc {
@@ -272,6 +272,13 @@ a.button {
   border: none;
   -webkit-user-select: text;
 }
+
+#wpcom-version {
+	font-size: 10px;
+	color: #add;
+	padding-top: 3px;
+}
+
 /**
  * Footer
  */
@@ -330,7 +337,7 @@ body {
   }
   .project-title {
     font-size: 1.75em;
-    line-height: 1.4em;
+    line-height: 1em;
     opacity: 1;
   }
   .project-desc {
