@@ -8,81 +8,87 @@ Compatible with Node.js and web browsers.
 
 ### Node.js
 
-Introduce the `wpcom` dependency into your `package.json`, and then initialize
-it with your API token ([optional](#authentication)).
+Introduce the `wpcom` dependency into your `package.json` ...
+
+```cli
+npm install --save wpcom
+```
+
+... and then initialize it with your API token ( [optional ] ( #authentication ) ).
+
 
 ```js
 // Edit a post on a site
-var wpcom = require('wpcom')('<your-token>');
-var blog = wpcom.site('your-blog.wordpress.com');
-blog.posts({ number: 8 })
-  .then(list => { ... })
-  .catch(error => { ... });
+var wpcom = require( 'wpcom' )( '<your-token>' );
+
+wpcom
+	.site( 'your-blog.wordpress.com' )
+	.postsList( { number: 8 } )
+		then( list => { ... } )
+		catch( error => { ... } );
 ```
 
 ### Browser
 
-Include `dist/wpcom.js` and a suitable browser shim if needed
-to support the ES2015 features in `<script>` tags:
+Include `dist/wpcom.js`.
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.25/browser-polyfill.js"></script>
 <script src="wpcom.js"></script>
 <script>
-  var wpcom = WPCOM('<your-token>');
-  var blog = wpcom.site('your-blog.wordpress.com');
-  blog.posts({ number: 8 })
-    .then(list => { ... })
-    .catch(error => { ... });
+	var wpcom = WPCOM( '<your-token>' );
+	var blog = wpcom.site( 'your-blog.wordpress.com' );
+	blog.posts( { number: 8 } )
+		.then( list => { ... } )
+		.catch( error => { ... } );
 </script>
 ```
 
 ### Authentication
 
-Not all requests require a REST API token.  For example, listing posts on a
+Not all requests require a REST API token. For example, listing posts on a
 public site is something anyone can do.
 
 If you do need a token, here are some links that will help you generate one:
-- [OAuth2 Authentication](https://developer.wordpress.com/docs/oauth2/)
-  at WordPress.com Developer Resources
-- [`wpcom-oauth-cors`](https://github.com/Automattic/wpcom-oauth-cors):
-  a client-side WordPress.com OAuth2 library using CORS
-- [`wpcom-oauth`](https://github.com/Automattic/node-wpcom-oauth):
-  a server-side (Node.js) WordPress.com OAuth2 library
+- [OAuth2 Authentication]( https://developer.wordpress.com/docs/oauth2/)
+	at WordPress.com Developer Resources
+- [`wpcom-oauth-cors`]( https://github.com/Automattic/wpcom-oauth-cors ):
+	a client-side WordPress.com OAuth2 library using CORS
+- [`wpcom-oauth`]( https://github.com/Automattic/node-wpcom-oauth ):
+	a server-side ( Node.js ) WordPress.com OAuth2 library
 - If you just want to quickly create a token, the
-  [example app bundled with `wpcom-oauth`](https://github.com/Automattic/node-wpcom-oauth/tree/master/example)
-  is probably the easiest way.
+	[example app bundled with `wpcom-oauth`]( https://github.com/Automattic/node-wpcom-oauth/tree/master/example )
+	is probably the easiest way.
 
 ## API
 
-* [WPCOM](./docs/wpcom.md)
-* [WPCOM#Req](./docs/wpcom.req.md) - Direct requests to WordPress REST-API
-* [Me](./docs/me.md)
-* [Site](./docs/site.md)
-* [Post](./docs/post.md)
-* [Media](./docs/media.md)
-* [Users](./docs/users.md)
+* [WPCOM](./docs/wpcom.md )
+* [WPCOM#Req](./docs/wpcom.req.md ) - Direct requests to WordPress REST-API
+* [Me](./docs/me.md )
+* [Site](./docs/site.md )
+* [Post](./docs/post.md )
+* [Media](./docs/media.md )
+* [Users](./docs/users.md )
 
 ## Examples
 
 ```js
 // Edit a post on a site
-var wpcom = require('wpcom')('<your-token>');
-var blog = wpcom.site('your-blog.wordpress.com');
-blog.post({ slug: 'a-post-slug' }).update(data)
-  .then(res => { ... })
-  .catch(err => { ... });
+var wpcom = require( 'wpcom' )( '<your-token>' );
+var blog = wpcom.site( 'your-blog.wordpress.com' );
+blog.post( { slug: 'a-post-slug' } ).update( data )
+	then( res => { ... } )
+	catch( err => { ... } );
 ```
 
 You can omit the API token for operations that don't require permissions:
 
 ```js
 // List the last 8 posts on a site
-var wpcom = require('wpcom')();
-var blog = wpcom.site('your-blog.wordpress.com');
-blog.posts({ number: 8 })
-  .then(list => { ... })
-  .catch(error => { ... });
+var wpcom = require( 'wpcom' )();
+var blog = wpcom.site( 'your-blog.wordpress.com' );
+blog.posts( { number: 8 } )
+	.then( list => { ... } )
+	.catch( error => { ... } );
 ```
 
 More pre-made examples are in the [`examples/`](./examples/) directory.
@@ -95,8 +101,8 @@ config.json file into `test/` folder like bellow:
 
 ```json
 {
-  "site": "<site-url>",
-  "token": "<token>"
+	"site": "<site-id>",
+	"token": "<token>"
 }
 ```
 
