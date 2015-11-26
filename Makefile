@@ -95,4 +95,7 @@ commit-dist: clean standalone babelify
 publish: clean standalone
 	$(NPM) publish
 
-.PHONY: standalone clean distclean babelify example-server test test-all publish node_modules lint eslint
+webapp:
+	@$(WEBPACK) -p --config webapp/webpack.config.js
+
+.PHONY: standalone clean distclean babelify example-server test test-all publish node_modules lint eslint webapp
