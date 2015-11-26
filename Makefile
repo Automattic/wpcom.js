@@ -98,4 +98,18 @@ publish: clean standalone
 webapp:
 	@$(WEBPACK) -p --config webapp/webpack.config.js
 
+deploy:
+	mkdir -p tmp/
+	rm -rf tmp/*
+	make webapp
+	cp webapp/index.html tmp/
+	cp webapp/style.css tmp/
+	cp webapp/webapp-bundle.js tmp/
+	git checkout gh-pages
+	cp tmp/* .
+	git add ./ -v
+	git commit -m "built"
+	git push origin gh-pages
+	git checkout master
+
 .PHONY: standalone clean distclean babelify example-server test test-all publish node_modules lint eslint webapp
