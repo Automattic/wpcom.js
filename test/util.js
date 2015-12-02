@@ -16,10 +16,6 @@ try {
 /**
  * Detect client/server side
  */
-
-/**
- * Detect client/server side
- */
 const isClientSide = 'undefined' !== typeof window;
 let qryString;
 let reqHandler;
@@ -82,11 +78,11 @@ function wpcom() {
 			} );
 		} else {
 			console.log( 'XHR request handler' );
-			let token = JSON.parse( localStorage.wp_oauth ).access_token;
-			_wpcom = wpcomFactory( token );
+			let oauthToken = JSON.parse( localStorage.wp_oauth ).access_token;
+			_wpcom = wpcomFactory( oauthToken );
 		}
 	} else {
-		_wpcom = wpcomFactory( config.token );
+		_wpcom = wpcomFactory( process.env.TOKEN || config.token );
 	}
 	return _wpcom;
 }
