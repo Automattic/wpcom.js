@@ -24,9 +24,12 @@ const isClientSide = 'undefined' !== typeof window;
 let qryString;
 let reqHandler;
 
-const env = isClientSide && /^automattic\.github\.io/.test( document.location.host )
-	? 'production'
-	: 'development';
+const env = isClientSide && (
+		/^automattic\.github\.io/.test( document.location.host ) ||
+		/wpcomjs\.com/.test( document.location.host )
+	)
+		? 'production'
+		: 'development';
 
 const config = configFactory[ env ];
 
