@@ -124,15 +124,19 @@ webapp:
 deploy:
 	mkdir -p tmp/
 	rm -rf tmp/*
-	make -p webapp/
+	mkdir -p tmp/tests
 	cp webapp/index.html tmp/
 	cp webapp/style.css tmp/
 	cp webapp/webapp-bundle.js tmp/
+	cp $(TESTAPP_DIR)/index.html tmp/tests
+	cp $(TESTAPP_DIR)/mocha.css tmp/tests
+	cp $(TESTAPP_DIR)/mocha.js tmp/tests
+	cp $(TESTAPP_DIR)/testing-bundle.js tmp/tests
 	git checkout gh-pages
-	cp tmp/* .
+	cp -rf tmp/* .
 	git add ./ -v
 	git commit -m "built"
 	git push origin gh-pages
-	git checkout master
+	git checkout -
 
 .PHONY: standalone clean distclean babelify example-server test test-all publish node_modules lint eslint webapp
