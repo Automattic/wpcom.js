@@ -8,4 +8,3 @@ npm-debug.log
 /dist/test
 /webapp/webapp-bundle*
 /webapp/tests/testing-bundle*
-/webapp/tests/mocha*
