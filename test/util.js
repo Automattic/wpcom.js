@@ -55,7 +55,7 @@ module.exports = {
 		return wpcomFactory();
 	},
 	site: function() {
-		return fixture.site;
+		return fixture.site || process.env.SITE;
 	}
 };
 
