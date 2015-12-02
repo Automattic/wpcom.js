@@ -95,4 +95,16 @@ describe( 'wpcom.me', function() {
 				.catch( done );
 		} );
 	} );
+
+	describe( 'wpcom.me.connectedApps', function() {
+		it( 'should get current user\' connected applications', done => {
+			me.connectedApps()
+				.then( data => {
+					assert.ok( data );
+					assert.ok( data.connected_applications );
+					done();
+				} )
+				.catch( done );
+		} );
+	} );
 } );
