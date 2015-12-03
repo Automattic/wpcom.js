@@ -101,7 +101,19 @@ describe( 'wpcom.me', function() {
 			me.connectedApps()
 				.then( data => {
 					assert.ok( data );
-					assert.ok( data.connected_applications );
+					assert.ok( data.connected_applications instanceof Array );
+					done();
+				} )
+				.catch( done );
+		} );
+	} );
+
+	describe( 'wpcom.me.keyringConnections', function() {
+		it( 'should get current user\' keyring connections', done => {
+			me.keyringConnections()
+				.then( data => {
+					assert.ok( data );
+					assert.ok( data.connections instanceof Array );
 					done();
 				} )
 				.catch( done );
@@ -113,7 +125,7 @@ describe( 'wpcom.me', function() {
 			me.publicizeConnections()
 				.then( data => {
 					assert.ok( data );
-					assert.ok( data.connections );
+					assert.ok( data.connections instanceof Array );
 					done();
 				} )
 				.catch( done );
