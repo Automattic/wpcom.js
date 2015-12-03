@@ -6,15 +6,15 @@ var util = require( './util' );
 var assert = require( 'assert' );
 
 /**
- * me.connectedApps
+ * me.connectedApp
  */
-describe( 'wpcom.me.connectedApps', function() {
+describe( 'wpcom.me.connectedApp', function() {
 	// Global instances
 	var wpcom = util.wpcom();
 	var me = wpcom.me();
 	var appId;
 
-	describe( 'wpcom.me.connectedApps', function() {
+	describe( 'wpcom.me.connectedApp', function() {
 		it( 'should get current user\' connected applications', function( done ) {
 			me.connectedApps( function( err, data ) {
 				if ( err ) throw err;
@@ -27,7 +27,7 @@ describe( 'wpcom.me.connectedApps', function() {
 					: null;
 
 				if ( appId ) {
-					describe( 'wpcom.me.connectedApps.get', function() {
+					describe( 'wpcom.me.connectedApp.get', function() {
 						it( 'should get current user\' connected applications',
 						function( done2 ) {
 							me.connectedApp( appId ).get( function( err2, data2 ) {
