@@ -12,7 +12,6 @@ describe( 'wpcom.me.connectedApp', function() {
 	// Global instances
 	var wpcom = util.wpcom();
 	var me = wpcom.me();
-	var appId;
 
 	describe( 'wpcom.me.connectedApp', function() {
 		it( 'should get current user\' connected applications', function( done ) {
@@ -22,7 +21,7 @@ describe( 'wpcom.me.connectedApp', function() {
 				assert.ok( data );
 				assert.ok( data.connected_applications );
 
-				appId = data.connected_applications && data.connected_applications[0]
+				let appId = data.connected_applications && data.connected_applications[0]
 					? data.connected_applications[0].ID
 					: null;
 
