@@ -107,4 +107,16 @@ describe( 'wpcom.me', function() {
 				.catch( done );
 		} );
 	} );
+
+	describe( 'wpcom.me.publicizeConnections', function() {
+		it( 'should get current user\' publicize connections', done => {
+			me.publicizeConnections()
+				.then( data => {
+					assert.ok( data );
+					assert.ok( data.connections );
+					done();
+				} )
+				.catch( done );
+		} );
+	} );
 } );
