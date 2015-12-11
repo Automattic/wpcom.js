@@ -5,17 +5,12 @@ var util = require( './util' );
 var assert = require( 'assert' );
 
 /**
- * Testing data
- */
-var fixture = require( './fixture' );
-
-/**
  * wpcom.site.post.subscriber
  */
 describe( 'wpcom.site.wordads', function() {
 	// Global instances
 	var wpcom = util.wpcom();
-	var site = wpcom.site( util.site() );
+	var site = wpcom.site( util.wordAds().site );
 
 	describe( 'wpcom.site.wordads.settings', function() {
 		var wordAdsSettings = site.wordAds().settings();
