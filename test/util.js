@@ -27,7 +27,7 @@ const env = isClientSide && (
 		? 'production'
 		: 'development';
 
-console.log( `environment: %o`, env );
+console.log( 'environment: %o', env );
 
 const config = configFactory[ env ];
 
