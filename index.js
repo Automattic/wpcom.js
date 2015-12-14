@@ -8,6 +8,7 @@ var requestHandler = require( 'wpcom-xhr-request' );
  */
 var Me = require( './lib/me' );
 var Site = require( './lib/site' );
+var Domains = require( './lib/domains' );
 var Users = require( './lib/users' );
 var Batch = require( './lib/batch' );
 var Req = require( './lib/util/request' );
@@ -79,6 +80,15 @@ function WPCOM( token, reqHandler ) {
 */
 WPCOM.prototype.me = function() {
 	return new Me( this );
+};
+
+/**
+* Return `Domains` object instance
+*
+* @return {Domains} Domains instance
+*/
+WPCOM.prototype.domains = function() {
+	return new Domains( this );
 };
 
 /**
