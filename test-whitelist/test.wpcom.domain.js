@@ -18,8 +18,8 @@ describe( 'wpcom.domain', function() {
 			wpcom
 			.domain( 'dd32.me' )
 			.status()
-			.then( resp => {
-				assert.ok( resp );
+			.then( data => {
+				assert.ok( data );
 				done();
 			} )
 			.catch( done );
@@ -31,11 +31,11 @@ describe( 'wpcom.domain', function() {
 			wpcom
 			.domain( 'wordpress.com' )
 			.isAvailable()
-			.then( resp => {
-				console.log( `-> resp -> `, resp );
+			.then( data => {
+				console.log( `-> data -> `, data );
 
-				assert.ok( resp );
-				assert.equal( false, resp.is_available );
+				assert.ok( data );
+				assert.equal( false, data.is_available );
 				done();
 			} )
 			.catch( done );
