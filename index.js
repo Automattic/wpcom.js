@@ -125,7 +125,6 @@ WPCOM.prototype.users = function() {
  * Return `Batch` object instance
  *
  * @return {Batch} Batch instance
- *  @api public
  */
 WPCOM.prototype.batch = function() {
 	return new Batch( this );
@@ -134,10 +133,9 @@ WPCOM.prototype.batch = function() {
 /**
  * List Freshly Pressed Posts
  *
- * @param {Object} [query] - optional query object
+ * @param {Object} [query] - query object
  * @param {Function} fn - callback function
  * @return {Function} request handler
- * @api public
  */
 WPCOM.prototype.freshlyPressed = function( query, fn ) {
 	return this.req.get( '/freshly-pressed', query, fn );
