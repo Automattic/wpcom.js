@@ -53,11 +53,12 @@ if ( isClientSide ) {
 
 module.exports = {
 	wpcom: wpcom,
+	hasGlobalToken: process.env.GLOBAL || config.isGlobalToken,
 	wpcomPublic: function() {
 		return wpcomFactory();
 	},
 	site: function() {
-		return fixture.site || process.env.SITE;
+		return process.env.SITE || config.site || fixture.site;
 	},
 	wordAds: function() {
 		return config.wordads;
