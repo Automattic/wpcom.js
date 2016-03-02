@@ -100,9 +100,11 @@ The `token` and `site` vars must be given to testing scripts either using
 config.json file into `test/` folder like bellow:
 
 ```json
-{
-	"site": "<site-id>",
-	"token": "<token>"
+{ "development": {
+	"site": "site.ID or domain",
+	"token": "Your Token",
+	"skipRestrictedEndpoints": true, // some endpoints require special permissions to access
+	}
 }
 ```
 
@@ -117,6 +119,37 @@ Also tests can be filtered using `make test <filter>`:
 ```cli
 $ make test wpcom.site.post
 ```
+
+## Browser Tests
+
+To run the test suite in a browser, you will need to have `serve` installed globally:
+
+```cli
+$ npm install -g serve
+```
+
+Additionally you will need to add some oauth details to your `test\config.json`:
+
+```json
+{ "development": {
+	"site": "site.ID or domain",
+	"token": "Your Token",
+	"skipRestrictedEndpoints": true,
+	"oauth": {
+		"client_id": "client ID from oauth app used to generate your token",
+		"options": {
+			"scope": "global"
+		}
+	}
+}
+```
+You can then run the local test app by executing:
+
+```cli
+$ make run-test-app
+```
+
+And then open up your browser to `http://calypso.localhost:3001`.
 
 ## License
 

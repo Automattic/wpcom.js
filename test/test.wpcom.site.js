@@ -94,8 +94,9 @@ describe( 'wpcom.site', function() {
 				site.postCounts( 'post', function( err, data ) {
 					if ( err ) throw err;
 
-					assert.ok( 1 <= data.counts.all.draft );
-					assert.ok( 1 <= data.counts.mine.draft );
+					assert.ok( data.counts instanceof Object );
+					assert.ok( data.counts.all instanceof Object );
+					assert.ok( data.counts.mine instanceof Object );
 					done();
 				} );
 			} );
@@ -104,8 +105,9 @@ describe( 'wpcom.site', function() {
 				site.postCounts( 'page', function( err, data ) {
 					if ( err ) throw err;
 
-					assert.ok( 1 <= data.counts.all.draft );
-					assert.ok( 1 <= data.counts.mine.draft );
+					assert.ok( data.counts instanceof Object );
+					assert.ok( data.counts.all instanceof Object );
+					assert.ok( data.counts.mine instanceof Object );
 					done();
 				} );
 			} );

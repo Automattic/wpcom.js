@@ -62,16 +62,21 @@ describe( 'wpcom.me', function() {
 	} );
 
 	describe( 'wpcom.me.groups', function() {
-		it( 'should require groups', done => {
-			me.groups()
-				.then( data => {
-					assert.equal( 'object', typeof data.groups );
-					assert.ok( data.groups instanceof Array );
+		// me.groups is a restricted endpoint for Automattic Employees
+		if ( util.testRestrictedEndpoints() ) {
+			it( 'should require groups', done => {
+				me.groups()
+					.then( data => {
+						assert.equal( 'object', typeof data.groups );
+						assert.ok( data.groups instanceof Array );
 
-					done();
-				} )
-				.catch( done );
-		} );
+						done();
+					} )
+					.catch( done );
+			} );
+		} else {
+			console.log( 'Skipping restricted endpoint test' );
+		}
 	} );
 
 	describe( 'wpcom.me.keyringConnections', function() {
@@ -105,7 +110,6 @@ describe( 'wpcom.me', function() {
 			me.postsList()
 				.then( data => {
 					assert.equal( 'number', typeof data.found );
-					assert.equal( 'object', typeof data.meta );
 					assert.ok( data.posts instanceof Array );
 					done();
 				} )
