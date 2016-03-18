@@ -123,9 +123,21 @@ WPCOM.prototype.freshlyPressed = function( query, fn ) {
 };
 
 /**
-* Expose send-request
-* @TODO: use `this.req` instead of this method
-*/
+ * Timezones list
+ *
+ * @param {Object} [query] - optional query object
+ * @param {Function} fn - callback function
+ * @return {Function} request handler
+ * @api public
+ */
+WPCOM.prototype.timezones = function( query, fn ) {
+	return this.req.get( '/timezones', query, fn );
+};
+
+/**
+ * Expose send-request
+ * @TODO: use `this.req` instead of this method
+ */
 
 WPCOM.prototype.sendRequest = function( params, query, body, fn ) {
 	var msg = 'WARN! Don use `sendRequest() anymore. Use `this.req` method.';
