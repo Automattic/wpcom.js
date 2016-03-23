@@ -133,9 +133,11 @@ WPCOM.prototype.batch = function() {
 /**
  * List Freshly Pressed Posts
  *
- * @param {Object} [query] - query object
+ * @param {Object} [query] - optional query object
  * @param {Function} fn - callback function
  * @return {Function} request handler
+ * @api public
+>>>>>>> 00d3f4e... domain: add /domains/%s methods
  */
 WPCOM.prototype.freshlyPressed = function( query, fn ) {
 	return this.req.get( '/freshly-pressed', query, fn );
