@@ -1,3 +1,7 @@
+4.9.0 / 2016-03-28
+==================
+
+* version bump wpcom-xhr-request (see https://github.com/Automattic/wpcom-xhr-request/pull/17)
 
 4.8.6 / 2016-03-23
 ==================
