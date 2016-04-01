@@ -57,7 +57,16 @@ module.exports = {
 		return wpcomFactory();
 	},
 	site: function() {
-		return fixture.site || process.env.SITE;
+		// check for existence of config in this env, and site if available
+		var site = config && config.site ? config.site : null;
+
+		return site || fixture.site || process.env.SITE;
+	},
+	testRestrictedEndpoints: function() {
+		if ( config && config.skipRestrictedEndpoints ) {
+			return false;
+		}
+		return true;
 	},
 	wordAds: function() {
 		return config.wordads;
