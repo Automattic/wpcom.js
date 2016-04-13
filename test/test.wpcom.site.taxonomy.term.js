@@ -5,7 +5,7 @@ var util = require( './util' );
 var assert = require( 'assert' );
 
 /**
- * site.follow
+ * site.taxonomy.term
  */
 describe( 'wpcom.site.taxonomy.term', () => {
 	// Global instances
