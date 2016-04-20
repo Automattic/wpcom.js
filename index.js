@@ -1,25 +1,26 @@
 /**
  * Module dependencies.
  */
-var requestHandler = require( 'wpcom-xhr-request' );
+import requestHandler from 'wpcom-xhr-request';
 
 /**
  * Local module dependencies.
  */
-var Me = require( './lib/me' );
-var Site = require( './lib/site' );
-var Domains = require( './lib/domains' );
-var Domain = require( './lib/domain' );
-var Users = require( './lib/users' );
-var Batch = require( './lib/batch' );
-var Req = require( './lib/util/request' );
-var sendRequest = require( './lib/util/send-request' );
-var debug = require( 'debug' )( 'wpcom' );
+import Me from './lib/me';
+import Site from './lib/site';
+import Domains from './lib/domains';
+import Domain from './lib/domain';
+import Users from './lib/users';
+import Batch from './lib/batch';
+import Req from './lib/util/request';
+import sendRequest from './lib/util/send-request';
+import debugFactory from 'debug';
 
 /**
  * Local module constants
  */
-var DEFAULT_ASYNC_TIMEOUT = 30000;
+const DEFAULT_ASYNC_TIMEOUT = 30000;
+const debug = debugFactory( 'wpcom' );
 
 /**
  * XMLHttpRequest (and CORS) API access method.
@@ -139,6 +140,28 @@ WPCOM.prototype.batch = function() {
  */
 WPCOM.prototype.freshlyPressed = function( query, fn ) {
 	return this.req.get( '/freshly-pressed', query, fn );
+};
+
+/**
+ * Get a list of available plans on WordPress.com
+ *
+ * @param {Object} [query] - query object
+ * @param {Function} fn - callback function
+ * @return {Function} request handler
+ */
+WPCOM.prototype.plansList = function( query, fn ) {
+	return this.req.get( '/plans', query, fn );
+};
+
+/**
+ * Get a list of available features on WordPress.com
+ *
+ * @param {Object} [query] - query object
+ * @param {Function} fn - callback function
+ * @return {Function} request handler
+ */
+WPCOM.prototype.plansFeatures = function( query, fn ) {
+	return this.req.get( '/plans/features', query, fn );
 };
 
 /**
