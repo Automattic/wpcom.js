@@ -5,6 +5,7 @@
 	{ "name": "embedsList", "subpath": "embeds" },
 	{ "name": "embedsList", "subpath": "embeds" },
 	{ "name": "followsList", "subpath": "follows" },
+	{ "name": "jetpackModules", "subpath": "jetpack/modules" },
 	{ "name": "mediaList", "subpath":  "media" },
 	{ "name": "pageTemplates", "subpath": "page-templates" },
 	{ "name": "plansList", "subpath":  "plans", "apiVersion": "1.2" },
