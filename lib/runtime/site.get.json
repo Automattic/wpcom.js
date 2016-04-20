@@ -7,6 +7,7 @@
 	{ "name": "followsList", "subpath": "follows" },
 	{ "name": "mediaList", "subpath":  "media" },
 	{ "name": "pageTemplates", "subpath": "page-templates" },
+	{ "name": "plansList", "subpath":  "plans", "apiVersion": "1.2" },
 	{ "name": "pluginsList", "subpath":  "plugins" },
 	{ "name": "postsList", "subpath": "posts" },
 	{ "name": "postTypesList", "subpath": "post-types" },
