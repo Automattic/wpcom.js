@@ -161,6 +161,17 @@ describe( 'wpcom.site', function() {
 			} );
 		} );
 
+		describe( 'wpcom.site.plansList', function() {
+			it( 'should get available plans for the site', function( done ) {
+				site.plansList()
+					.then( data => {
+						assert.ok( data );
+						done();
+					} )
+					.catch( done );
+			} );
+		} );
+
 		describe( 'wpcom.site.postsList', function() {
 			it( 'should request posts list', done => {
 				site.postsList()
