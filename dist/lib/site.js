@@ -63,13 +63,11 @@ var _utilRuntimeBuilder = require('./util/runtime-builder');
 
 var _utilRuntimeBuilder2 = _interopRequireDefault(_utilRuntimeBuilder);
 
-var _runtimeSiteGetJson = require('./runtime/site.get.json');
-
-var _runtimeSiteGetJson2 = _interopRequireDefault(_runtimeSiteGetJson);
-
 var _debug = require('debug');
 
 var _debug2 = _interopRequireDefault(_debug);
+
+var siteGetMethods = require('./runtime/site.get.json');
 
 /**
  * Module vars
@@ -499,7 +497,7 @@ var Site = (function () {
 	return Site;
 })();
 
-(0, _utilRuntimeBuilder2['default'])(Site, _runtimeSiteGetJson2['default'], function (methodParams, ctx) {
+(0, _utilRuntimeBuilder2['default'])(Site, siteGetMethods, function (methodParams, ctx) {
 	return '/sites/' + ctx._id + '/' + methodParams.subpath;
 });
 
