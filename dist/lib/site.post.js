@@ -33,10 +33,6 @@ var _utilRuntimeBuilder = require('./util/runtime-builder');
 
 var _utilRuntimeBuilder2 = _interopRequireDefault(_utilRuntimeBuilder);
 
-var _runtimeSitePostGetJson = require('./runtime/site.post.get.json');
-
-var _runtimeSitePostGetJson2 = _interopRequireDefault(_runtimeSitePostGetJson);
-
 var _debug = require('debug');
 
 var _debug2 = _interopRequireDefault(_debug);
@@ -44,6 +40,7 @@ var _debug2 = _interopRequireDefault(_debug);
 /**
  * Module vars
  */
+var sitePostGetMethods = require('./runtime/site.post.get.json');
 var debug = (0, _debug2['default'])('wpcom:post');
 var root = '/sites';
 
@@ -330,7 +327,7 @@ var SitePost = (function () {
 	return SitePost;
 })();
 
-(0, _utilRuntimeBuilder2['default'])(SitePost, _runtimeSitePostGetJson2['default'], function (item, ctx) {
+(0, _utilRuntimeBuilder2['default'])(SitePost, sitePostGetMethods, function (item, ctx) {
 	return '/sites/' + ctx._sid + '/posts/' + ctx._id + '/' + item.subpath;
 });
 
