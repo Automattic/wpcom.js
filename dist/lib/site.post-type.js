@@ -44,15 +44,16 @@ var SitePostType = (function () {
 	/**
   * Get a list of taxonomies for the post type
   *
+  * @param {Object} query - query object
   * @param {Function} fn - callback function
   * @return {Promise} Promise
   */
 
 	_createClass(SitePostType, [{
 		key: 'taxonomiesList',
-		value: function taxonomiesList(fn) {
+		value: function taxonomiesList(query, fn) {
 			var termsPath = this._rootPath + '/taxonomies';
-			return this.wpcom.req.get(termsPath, fn);
+			return this.wpcom.req.get(termsPath, query, fn);
 		}
 	}]);
 
