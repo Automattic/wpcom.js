@@ -29,24 +29,43 @@ function Pinghub(wpcom) {
  * @api public
  */
 Pinghub.prototype.connect = function (path, fn) {
+	var _this = this;
+
 	debug("connect", path, fn);
-	var pinghub = this,
-	    params = {
+
+	var params = {
 		action: 'connect',
 		path: '/pinghub' + path
-	},
-	    errorCallback = function errorCallback() {},
-	    // we want an xhr, not a promise
-	xhr = this.conns[path] = this.wpcom.req.get(params, errorCallback);
-	xhr.onload = function (e) {
-		debug("onload", path, e);
-		fn(null, e);
 	};
-	xhr.onerror = xhr.onabort = xhr.onclose = function (e) {
-		debug("onerror", path, e);
-		pinghub.remove(path);
-		fn(e, null);
+
+	var xhr = {};
+
+	try {
+		xhr = this.wpcom.req.get(params, function () {
+			return null;
+		});
+	} catch (e) {
+		console.log(e);
+	}
+
+	xhr.onload = function (data) {
+		debug("onload", path, data);
+		fn(null, data);
 	};
+
+	var finishConnection = function finishConnection(method) {
+		return function (error) {
+			debug(method, path, error);
+			_this.remove(path);
+			fn(error, null);
+		};
+	};
+
+	xhr.onerror = finishConnection('onerror');
+	xhr.onabort = finishConnection('onabort');
+	xhr.onclose = finishConnection('onclose');
+
+	this.conns[path] = xhr;
 };
 
 /**
