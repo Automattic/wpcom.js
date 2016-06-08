@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 import requestHandler from 'wpcom-xhr-request';
-import DEBUG from 'debug';
+import debugModule from 'debug';
 
 /**
  * Local module dependencies.
@@ -22,7 +22,7 @@ import sendRequest from './lib/util/send-request';
 /**
  * Local module constants
  */
-const debug = DEBUG( 'wpcom' );
+const debug = debugModule( 'wpcom' );
 const DEFAULT_ASYNC_TIMEOUT = 30000;
 
 /**
