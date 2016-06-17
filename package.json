@@ -4,6 +4,9 @@
   "version": "4.9.15",
   "main": "dist/index.js",
   "author": "Automattic, Inc.",
+  "scripts": {
+    "prepublish": "make build"
+  },
   "contributors": [
     "Damian Suarez <rdsuarez@gmail.com>",
     "Dennis Snell <dennis.snell@automattic.com>",
