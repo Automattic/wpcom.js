@@ -38,6 +38,6 @@
     "strip-loader": "^0.1.0",
     "webpack": "^1.12.1",
     "wpcom-oauth-cors": "^1.0.0",
-    "wpcom-proxy-request": "^1.0.5"
+    "wpcom-proxy-request": "^2.0.0"
   }
 }
