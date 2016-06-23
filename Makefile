@@ -23,6 +23,8 @@ WEBPACK ?= $(NODE) $(BIN)/webpack
 
 standalone: build/wpcom.js
 
+build/wpcom.js: $(COMPILED_FILES)
+
 install: node_modules
 
 node_modules:
@@ -40,24 +42,20 @@ example-server:
 
 test: build
 	@$(MOCHA) \
-		--compilers js:babel/register \
 		--timeout 120s \
 		--slow 3s \
 		--grep "$(FILTER)" \
 		--bail \
-		--reporter spec
+		--reporter spec \
+		build/test
 
 test-all: build
 	@$(MOCHA) \
-		--compilers js:babel/register \
 		--timeout 120s \
 		--slow 3s \
 		--bail \
-		--reporter spec
-
-commit-build: clean standalone build
-	git add build/ -v
-	git commit -m "re-build build/"
+		--reporter spec \
+		build/test
 
 publish: clean standalone
 	$(NPM) publish
