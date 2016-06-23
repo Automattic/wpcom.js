@@ -43,7 +43,7 @@ test: build
 		--compilers js:babel/register \
 		--timeout 120s \
 		--slow 3s \
-		--grep "$(filter-out $@,$(MAKECMDGOALS))" \
+		--grep "$(FILTER)" \
 		--bail \
 		--reporter spec
 
