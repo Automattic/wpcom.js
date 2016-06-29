@@ -48,7 +48,8 @@ test: build
 		--grep "$(FILTER)" \
 		--bail \
 		--reporter spec \
-		build/test
+		--compilers js:babel-register \
+		test/
 
 test-all: build
 	@$(MOCHA) \
@@ -56,7 +57,8 @@ test-all: build
 		--slow 3s \
 		--bail \
 		--reporter spec \
-		build/test
+		--compilers js:babel-register \
+		test/
 
 publish: clean standalone
 	$(NPM) publish
