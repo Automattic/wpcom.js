@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "author": "Automattic, Inc.",
   "scripts": {
-    "prepublish": "make build"
+    "prepublish": "make standalone"
   },
   "contributors": [
     "Damian Suarez <rdsuarez@gmail.com>",
