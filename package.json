@@ -27,6 +27,11 @@
   "babel": {
     "presets": [ "es2015", "stage-2" ]
   },
+  "files": [
+    "build",
+    "History.md",
+    "README.md"
+  ],
   "dependencies": {
     "babel-runtime": "^6.9.2",
     "debug": "^2.2.0",
