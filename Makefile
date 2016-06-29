@@ -52,14 +52,14 @@ test:
 		--compilers js:babel-register \
 		test/
 
-test-all: build
+test-all:
 	@$(MOCHA) \
 		--timeout 120s \
 		--slow 3s \
 		--bail \
 		--reporter spec \
 		--compilers js:babel-register \
-		test/
+		test
 
 webapp:
 	@$(WEBPACK) -p --config webapp/webpack.config.js
