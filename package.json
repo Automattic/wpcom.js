@@ -24,6 +24,9 @@
   ],
   "repository": "git@github.com:Automattic/wpcom.js.git",
   "license": "MIT",
+  "babel": {
+    "presets": [ "es2015", "stage-2" ]
+  },
   "dependencies": {
     "babel-runtime": "^6.9.2",
     "debug": "^2.2.0",
@@ -32,6 +35,9 @@
   },
   "devDependencies": {
     "babel-eslint": "^4.1.6",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-2": "^6.11.0",
+    "babel-register": "^6.9.0",
     "eslint": "^1.10.1",
     "n8-make": "git://github.com/retrofox/n8-make.git#master",
     "mocha": "^2.5.3",
