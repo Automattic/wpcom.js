@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>wpcom.js browser example with iframe proxy</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <script src="./wpcom.js"></script>
+    <script>
+      var wpcom = WPCOM();
+
+      // get information about the currently logged in user (via cookie)
+      wpcom
+      .site( 'en.blog.wordpress.com ' )
+      .get(function( err, blogInfo ){
+        if (err) { 
+          return console.log( err );
+        }
+
+        console.log( blogInfo );
+
+        var d = document.createElement( 'pre' );
+        d.innerHTML = JSON.stringify( blogInfo, null, 2 );
+        document.body.appendChild( d );
+      } );
+    </script>
+  </body>
+</html>
