@@ -46,20 +46,21 @@ test:
 	@$(MOCHA) \
 		--timeout 120s \
 		--slow 3s \
-		--grep "$(FILTER)" \
 		--bail \
 		--reporter spec \
 		--compilers js:babel-register \
 		test/
 
-test-all:
+test-watch:
 	@$(MOCHA) \
 		--timeout 120s \
 		--slow 3s \
 		--bail \
 		--reporter spec \
 		--compilers js:babel-register \
-		test
+		--watch \
+		--grep "$(FILTER)" \
+		test/
 
 webapp:
 	@$(WEBPACK) -p --config webapp/webpack.config.js
