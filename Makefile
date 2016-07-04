@@ -46,6 +46,7 @@ test:
 	@$(MOCHA) \
 		--timeout 120s \
 		--slow 3s \
+		--grep "$(FILTER)" \
 		--bail \
 		--reporter spec \
 		--compilers js:babel-register \
