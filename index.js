@@ -14,7 +14,7 @@ import Marketing from './lib/marketing';
 import Me from './lib/me';
 import Pinghub from './lib/util/pinghub';
 import Plans from './lib/plans';
-import Req from './lib/util/request';
+import Request from './lib/util/request';
 import Site from './lib/site';
 import Users from './lib/users';
 import sendRequest from './lib/util/send-request';
@@ -182,6 +182,22 @@ WPCOM.prototype.sendRequest = function( params, query, body, fn ) {
 
 	return sendRequest.call( this, params, query, body, fn );
 };
+
+/**
+ * Re-export all the class types.
+ */
+
+WPCOM.Batch = Batch;
+WPCOM.Domain = Domain;
+WPCOM.Domains = Domains;
+WPCOM.Marketing = Marketing;
+WPCOM.Me = Me;
+WPCOM.Pinghub = Pinghub;
+WPCOM.Plans = Plans;
+WPCOM.Request = Request;
+WPCOM.Site = Site;
+WPCOM.Users = Users;
+
 
 if ( ! Promise.prototype.timeout ) {
 	/**
