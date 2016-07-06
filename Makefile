@@ -22,12 +22,12 @@ NPM ?= $(NODE) $(shell which npm)
 MOCHA ?= $(NODE) $(BIN)/mocha
 WEBPACK ?= $(NODE) $(BIN)/webpack
 
-standalone: compile build/wpcom.js
+standalone: compile dist/wpcom.js
 
 compile:
 	make build --jobs=8
 
-build/wpcom.js:
+dist/wpcom.js:
 	@$(WEBPACK) -p --config ./webpack.config.js
 
 install: node_modules
