@@ -72,7 +72,7 @@ export default function WPCOM( token, reqHandler ) {
 	}
 
 	// Add Req instance
-	this.req = new Req( this );
+	this.req = new Request( this );
 
 	// Add Pinghub instance
 	this.pinghub = new Pinghub( this );
