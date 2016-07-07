@@ -198,7 +198,6 @@ WPCOM.Request = Request;
 WPCOM.Site = Site;
 WPCOM.Users = Users;
 
-
 if ( ! Promise.prototype.timeout ) {
 	/**
 	* Returns a new promise with a deadline
