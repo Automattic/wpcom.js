@@ -170,7 +170,6 @@ WPCOM.prototype.freshlyPressed = function( query, fn ) {
  * Expose send-request
  * @TODO: use `this.req` instead of this method
  */
-
 WPCOM.prototype.sendRequest = function( params, query, body, fn ) {
 	var msg = 'WARN! Don use `sendRequest() anymore. Use `this.req` method.';
 
@@ -186,7 +185,6 @@ WPCOM.prototype.sendRequest = function( params, query, body, fn ) {
 /**
  * Re-export all the class types.
  */
-
 WPCOM.Batch = Batch;
 WPCOM.Domain = Domain;
 WPCOM.Domains = Domains;
