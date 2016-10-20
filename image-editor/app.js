@@ -120,6 +120,11 @@ var WPCOM =
 				.catch( error => console.error( error ) );
 		} );
 	
+		function getDate( date ) {
+			var date = new Date( date );
+			return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+		}
+	
 		function loadImages( mediaId ) {
 			wpcom
 			.site( siteId )
@@ -178,8 +183,7 @@ var WPCOM =
 							'<a href="' + prevImage.URL + random_query_string + '" target="_blank" title="open `' + prevImage.file + '`">' +
 							  '<span class="image-revision-filename">' + prevImage.file + '</span>' +
 							'</a>' +
-							'<span class="image-revision-date">' + ( prevImage.date ? new Date( prevImage.date ) : 'null' ) + '</span>' +
-							'<span class="image-revision-extension">' + prevImage.extension + '</span>' +
+							'<span class="image-revision-date">' + ( prevImage.date ? getDate( prevImage.date ) : 'null' ) + '</span>' +
 							'<span class="image-revision-mimetype">' + prevImage.mime_type + '</span>';
 	
 						imageContainer.appendChild( imageSummary );
@@ -11190,7 +11194,7 @@ var WPCOM =
 		}
 	
 		var media = void 0;
-		var params = { path: '/sites/' + this._sid + '/media/edit/' + this._id };
+		var params = { path: '/sites/' + this._sid + '/media/' + this._id + '/edit' };
 	
 		if (body && body.media) {
 			// build the request with a formData
