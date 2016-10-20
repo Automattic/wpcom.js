@@ -216,14 +216,14 @@ var WPCOM =
 							( ! devenv ? '/image-editor' : '' ) +
 							'/?mediaId=' + res.media[0].ID +
 							'&siteId=' + siteId;
-						document.location.href = redirect;
+						//document.location.href = redirect;
 					} );
 			} else {
 				var file = e.target.files[ 0 ];
 				req = wpcom
 					.site( siteId )
 					.media( mediaId )
-					.update( { apiVersion: '1.2' }, {
+					.edit( {
 						title: titleNode.value,
 						caption: captionNode.value,
 						description: descriptionNode.value,
@@ -11156,8 +11156,22 @@ var WPCOM =
 		var fn = arguments[1];
 	
 		query.apiVersion = query.apiVersion || '1.2';
+	
 		var path = '/sites/' + this._sid + '/media/' + this._id;
 		return this.wpcom.req.get(path, query, fn);
+	};
+	
+	/**
+	 * Update media
+	 *
+	 * @param {Object} [query] - query object parameter
+	 * @param {Object} body - body object parameter
+	 * @param {Function} fn - callback function
+	 * @return {Function} request handler
+	 */
+	Media.prototype.update = function (query, body, fn) {
+		var params = { path: '/sites/' + this._sid + '/media/' + this._id };
+		return this.wpcom.req.put(params, query, body, fn);
 	};
 	
 	/**
@@ -11168,17 +11182,15 @@ var WPCOM =
 	 * @param {Function} fn - callback function
 	 * @return {Function} request handler
 	 */
-	Media.prototype.update = function (query, body, fn) {
+	Media.prototype.edit = function (query, body, fn) {
 		if (typeof body == 'function' || !body) {
 			fn = body;
 			body = query;
 			query = {};
 		}
 	
-		query.apiVersion = query.apiVersion || '1.2';
-	
 		var media = void 0;
-		var params = { path: '/sites/' + this._sid + '/media/' + this._id };
+		var params = { path: '/sites/' + this._sid + '/media/edit/' + this._id };
 	
 		if (body && body.media) {
 			// build the request with a formData
