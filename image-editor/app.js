@@ -46,15 +46,17 @@ var WPCOM =
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var wpcomOAuth = __webpack_require__( 1 )( 49798 );
-	var wpcomFactory = __webpack_require__ ( 11 );
 	
-	console.log( 'wpcomOAuth: %o', wpcomOAuth );
+	var clientId = document.location.hostname === 'calypso.localhost' ? 49801 : 49798;
+	
+	var wpcomOAuth = __webpack_require__( 1 )( clientId );
+	var wpcomFactory = __webpack_require__ ( 11 );
 	
 	// get auth object
 	wpcomOAuth.get( function( auth ) {
 	
 		var wpcom = wpcomFactory( auth.access_token );
+		window.wpcom = wpcom;
 	
 		var siteNode = document.getElementById( 'site-node' );
 		var imageNodeId = document.getElementById( 'image-node-id' );
@@ -71,15 +73,44 @@ var WPCOM =
 		var input = document.getElementById( 'file' );
 		var deleteLink = document.getElementById( 'image-delete' );
 	
+		var mediaId = document.location.search.match( /mediaId=(\d+)/ );
+		mediaId = mediaId ? Number( mediaId[ 1 ] ) : null;
+		window.mediaId = mediaId;
+	
+		var siteId = document.location.search.match( /siteId=(.+)/ );
+		siteId = siteId ? siteId[ 1 ] : null;
+		window.siteId = siteId;
+	
+		if ( siteId ) {
+			siteNode.value = siteId;
+			console.log( 'siteId: %o', siteId );
+		}
+	
+		if ( mediaId && siteId ) {
+			imageNodeId.value = mediaId;
+			loadImages( mediaId );
+			console.log( 'mediaId: %o', mediaId );
+		}
+	
+		siteNode.addEventListener( 'keyup', ( event ) => {
+			const value = event.target.value;
+			console.log( 'value: %o', value );
+	
+			if ( value.length ) {
+				input.removeAttribute( 'disabled' );
+			} else {
+				input.setAttribute( 'disabled', true );
+			}
+		} )
+	
 		deleteLink.addEventListener( 'click', ( event ) => {
 			event.preventDefault();
-	
 			wpcom
-			.site( siteId )
-			.media( mediaId )
-			.delete( { apiVersion: '1.1' } )
-			.then( resp => console.log( resp ) )
-			.catch( error => console.error( error ) );
+				.site( siteId )
+				.media( mediaId )
+				.delete()
+				.then( resp => console.log( resp ) )
+				.catch( error => console.error( error ) );
 		} );
 	
 		function loadImages( mediaId ) {
@@ -88,15 +119,14 @@ var WPCOM =
 			.media( mediaId )
 			.get()
 			.then( image => {
+				console.log( 'image.revision_history: %o', image.revision_history );
+	
 				titleNode.value = image.title;
 				captionNode.value = image.caption;
 				descriptionNode.value = image.description;
 				input.removeAttribute( 'disabled' );
 	
 				var revision_history = image.revision_history.items || [];
-	
-				console.log( 'revision_history: %o', revision_history );
-	
 				var random_query_string = '?tmp=' + String( Math.random() ).substr( 2 );
 	
 				imageDetailsNode.innerHTML =
@@ -107,12 +137,10 @@ var WPCOM =
 					'<p>revisions: <span>' + revision_history.length + '</span></p>' +
 					'<p>date: <span>' + ( new Date( image.date ) ) + '</span></p>';
 	
-				console.log( 'image: %o', image );
-	
 				imageNode.setAttribute( 'src', image.URL + random_query_string );
 	
 	
-				if ( image.revision_history && image.revision_history.original ) {
+				if ( image.revision_history && image.revision_history.original && image.revision_history.original.URL ) {
 					revisionHistoryNodeOriginal.setAttribute( 'src', image.revision_history.original.URL );
 					revisionHistoryNodeDetails.innerHTML =
 						'<div><a href="' + image.revision_history.original.URL + '" target="_blank" title="open `' + image.revision_history.original.file + '`">' +
@@ -128,7 +156,6 @@ var WPCOM =
 				if ( revision_history && revision_history.length ) {
 					for ( const index in revision_history ) {
 						const prevImage = revision_history[ index ];
-						console.log( 'prevImage: %o', prevImage );
 	
 						const imageContainer = document.createElement( 'div' );
 						imageContainer.setAttribute( 'class', 'image-container' );
@@ -156,30 +183,12 @@ var WPCOM =
 			} )
 			.catch( err => console.error( err ) );
 		}
-		/* global WPCOM, wpcomProxyRequest */
-		/* eslint-disable no-var, no-console, no-trailing-spaces, eol-last */
-		/* eslint no-undef: "error" */
-	
-		// have this `wpcom` instance use the `wpcom-proxy-request`
-		// function for API requests
-		// wpcom.request = wpcomProxyRequest;
-	
-		// upgrade to "access all users blogs" mode
-	
-	
-		let mediaId = document.location && document.location.search ? document.location.search.replace( /\?id=/, '' ) : null;
-		var siteId = siteNode.value;
-	
-		if ( mediaId ) {
-			imageNodeId.value = mediaId;
-			loadImages( mediaId );
-		} else {
-			input.removeAttribute( 'disabled' );
-		}
 	
 		// select files on the "input" element
 		input.onchange = function( e ) {
 			mediaId = Number( imageNodeId.value );
+			siteId = siteNode.value;
+	
 			var req;
 	
 			if ( ! mediaId ) {
@@ -196,7 +205,8 @@ var WPCOM =
 							throw err;
 						}
 	
-						console.log( 'response', res );
+						var redirect = 'http://' + document.location.host + '/?mediaId=' + res.media[0].ID + '&siteId=' + siteId;
+						document.location.href = redirect;
 					} );
 			} else {
 				var file = e.target.files[ 0 ];
@@ -212,6 +222,8 @@ var WPCOM =
 						if ( error ) {
 							return console.error( error );
 						}
+	
+						console.log( 'resp.revision_history: %o', resp.revision_history );
 	
 						loadImages( mediaId );
 						imageNode.setAttribute( 'src', resp.URL );
@@ -11269,10 +11281,7 @@ var WPCOM =
 	 * @param {Function} fn - callback function
 	 * @return {Function} request handler
 	 */
-	Media.prototype.delete = Media.prototype.del = function () {
-		var query = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-		var fn = arguments[1];
-	
+	Media.prototype.delete = Media.prototype.del = function (query, fn) {
 		var path = '/sites/' + this._sid + '/media/' + this._id + '/delete';
 		return this.wpcom.req.del(path, query, fn);
 	};
@@ -13522,4 +13531,4 @@ var WPCOM =
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=wpcom.js.map
+//# sourceMappingURL=app.js.map
