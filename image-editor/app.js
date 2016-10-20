@@ -47,7 +47,8 @@ var WPCOM =
 
 	
 	
-	var clientId = document.location.hostname === 'calypso.localhost' ? 49801 : 49798;
+	var devenv = document.location.hostname === 'calypso.localhost';
+	var clientId = devenv ? 49801 : 49798;
 	
 	var wpcomOAuth = __webpack_require__( 1 )( clientId );
 	var wpcomFactory = __webpack_require__ ( 11 );
@@ -211,7 +212,10 @@ var WPCOM =
 							throw err;
 						}
 	
-						var redirect = 'http://' + document.location.host + '/?mediaId=' + res.media[0].ID + '&siteId=' + siteId;
+						var redirect = 'http://' + document.location.host +
+							( ! devenv ? '/image-editor' : '' ) +
+							'/?mediaId=' + res.media[0].ID +
+							'&siteId=' + siteId;
 						document.location.href = redirect;
 					} );
 			} else {
