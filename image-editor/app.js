@@ -216,7 +216,7 @@ var WPCOM =
 							( ! devenv ? '/image-editor' : '' ) +
 							'/?mediaId=' + res.media[0].ID +
 							'&siteId=' + siteId;
-						//document.location.href = redirect;
+						document.location.href = redirect;
 					} );
 			} else {
 				var file = e.target.files[ 0 ];
