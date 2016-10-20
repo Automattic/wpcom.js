@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>wpcom.js over iframe proxy Media Upload Test Page</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<style type="text/css">
+			body {
+				font-family: sans-serif;
+				color: #444;
+			}
+
+			input[type=text] {
+				width: 300px;
+				height: 20px;
+				line-height: 20px;
+				padding: 2px;
+			}
+			label {
+				display: inline-block;
+				width: 200px;
+			}
+
+			.revision-history-container {
+				width: 400px;
+			    background-color: #f5f5f5;
+			    float: left;
+			}
+
+			.revision-history-container h3 {
+			    text-align: center;
+			    height: 40px;
+			    line-height: 40px;
+			    margin: 0;
+			}
+
+			.history-original {
+				margin: 10px;
+			    border: 1px solid #bbb;
+			    padding: 10px;
+			}
+
+			.history-original img {
+				width: 100%;
+			}
+
+			#revision-history {
+				height: 700px;
+			    overflow-y: auto;
+			    border: 1px solid #aaa;
+			    margin: 10px;
+			}
+
+			#revision-history .image-container {
+				margin: 5px 5%;
+				width: 90%;
+			    box-sizing: border-box;
+			}
+
+			#revision-history img {
+				width: 100%;
+				min-height: 50px;
+			}
+
+			.image-container {
+				border: 1px solid #eee;
+				background-color: #fafafa;
+				padding: 5px;
+				margin-left: 15px;
+				float: left;
+			}
+
+			.image-container .image-summary {
+			}
+
+			.image-container .image-summary span {
+				display: block;
+				font-size: 10px;
+			}
+
+			.image-container .image-summary span.image-revision-number {
+				font-size: 14px;
+				font-weight: bold;
+			}
+
+			.image-container img {
+				width: 600px;
+				min-height: 100px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="site">connecting to blog ...</div>
+		<hr />
+		<div>
+			<label>site ID</label>
+			<input type="text" id="site-node" value="altovalledotorg.wordpress.com"  />
+			<br />
+
+			<label>image ID</label>
+			<input type="text" id="image-node-id"/>
+			<br />
+
+			<label>Title</label>
+			<input type="text" id="image-node-title" />
+			<br />
+
+			<label>Caption</label>
+			<input type="text" id="image-node-caption" />
+			<br />
+
+			<label>Description</label>
+			<input type="text" id="image-node-description" />
+
+			<hr />
+
+			<input type="file" id="file" disabled />
+		</div>
+		<hr />
+
+		
+		<div class="revision-history-container">		
+			<div class="history-original">
+				<h3>Original</h3>
+				<img id="revision-history-original" />
+				<div id="revision-history-details"></div>
+			</div>
+
+			<br />
+
+			<h3>Revision History</h3>
+			<div id="revision-history">
+			</div>
+		</div>
+
+		<div class="image-container" id="image-container">
+			<h3>Current media</h3>
+			<img id="image-node" />
+			<div id="image-details"></div>
+			<div id="image-actions">
+				<a href="#" id="image-delete">delete</a>
+			</div>
+		</div>
+
+		<script src="app.js"></script>
+	</body>
+</html>
