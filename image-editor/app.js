@@ -48,25 +48,31 @@ var WPCOM =
 	var devenv = document.location.hostname === 'calypso.localhost';
 	var clientId = devenv ? 49801 : 49798;
 	
-	var wpcomOAuth = __webpack_require__( 1 );
+	var wpcomOAuth = __webpack_require__( 1 )( clientId, {
+		scope: 'global'
+	} );
+	
 	var proxy = __webpack_require__( 11 );
 	var wpcomFactory = __webpack_require__ ( 97 );
 	
-	// run the proxy
-	// upgrade to "access all users blogs" mode
-	proxy( {
-		metaAPI: { accessAllUsersBlogs: true }
-	}, function( err ) {
-		if ( err ) {
-			throw err;
-		}
-		console.log( 'proxy now running in "access all user\'s blogs" mode' );
-	} );
+	// // run the proxy
+	// // upgrade to "access all users blogs" mode
+	// proxy( {
+	// 	metaAPI: { accessAllUsersBlogs: true }
+	// }, function( err ) {
+	// 	if ( err ) {
+	// 		throw err;
+	// 	}
+	// 	console.log( 'proxy now running in "access all user\'s blogs" mode' );
+	// } );
+	
+	// get auth object
+	wpcomOAuth.get( function( auth ) {
 	
 	// get auth object
 	//wpcomOAuth.get( function( auth ) {
 	
-		var wpcom = wpcomFactory( proxy );
+		var wpcom = wpcomFactory( auth.access_token );
 		window.wpcom = wpcom;
 	
 		var siteNode = document.getElementById( 'site-node' );
@@ -274,7 +280,7 @@ var WPCOM =
 				// Unable to compute progress information since the total size is unknown
 			}
 		}	  // your token is here auth.access_token!
-	//} );
+	} );
 
 /***/ },
 /* 1 */
