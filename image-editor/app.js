@@ -45,18 +45,28 @@ var WPCOM =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	
 	var devenv = document.location.hostname === 'calypso.localhost';
 	var clientId = devenv ? 49801 : 49798;
 	
-	var wpcomOAuth = __webpack_require__( 1 )( clientId );
-	var wpcomFactory = __webpack_require__ ( 11 );
+	var wpcomOAuth = __webpack_require__( 1 );
+	var proxy = __webpack_require__( 11 );
+	var wpcomFactory = __webpack_require__ ( 97 );
+	
+	// run the proxy
+	// upgrade to "access all users blogs" mode
+	proxy( {
+		metaAPI: { accessAllUsersBlogs: true }
+	}, function( err ) {
+		if ( err ) {
+			throw err;
+		}
+		console.log( 'proxy now running in "access all user\'s blogs" mode' );
+	} );
 	
 	// get auth object
-	wpcomOAuth.get( function( auth ) {
+	//wpcomOAuth.get( function( auth ) {
 	
-		var wpcom = wpcomFactory( auth.access_token );
+		var wpcom = wpcomFactory( proxy );
 		window.wpcom = wpcom;
 	
 		var siteNode = document.getElementById( 'site-node' );
@@ -121,6 +131,10 @@ var WPCOM =
 		} );
 	
 		function getDate( date ) {
+			if ( ! date ) {
+				return 'no-date';
+			}
+	
 			var date = new Date( date );
 			return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
 		}
@@ -131,7 +145,7 @@ var WPCOM =
 			.media( mediaId )
 			.get()
 			.then( image => {
-				console.log( 'image.revision_history: %o', image.revision_history );
+				console.log( 'image: %o', image );
 	
 				titleNode.value = image.title;
 				captionNode.value = image.caption;
@@ -147,9 +161,12 @@ var WPCOM =
 						'" target="_blank">' + image.file + '</a>' +
 					'</span></p>' +
 					'<p>revisions: <span>' + revision_history.length + '</span></p>' +
-					'<p>date: <span>' + ( new Date( image.date ) ) + '</span></p>';
+					'<p>created: <span>' + ( getDate( image.date ) ) + '</span></p>' +
+					'<p>modified: <span>' + ( getDate( image.modified ) ) + '</span></p>' + 
+					'<p>mime_type: <span>' + image.mime_type + '</span></p>';
 	
-				imageNode.setAttribute( 'src', image.URL + random_query_string );
+	
+				imageNode.style.backgroundImage = 'url( ' + ( image.URL + random_query_string ) + ')';
 	
 	
 				if ( image.revision_history && image.revision_history.original && image.revision_history.original.URL ) {
@@ -158,9 +175,10 @@ var WPCOM =
 						'<div><a href="' + image.revision_history.original.URL + '" target="_blank" title="open `' + image.revision_history.original.file + '`">' +
 						  '<span class="image-revision-filename">' + image.revision_history.original.file + '</span>' +
 						'</a></div>' +
-						'<div class="image-revision-date">' + ( image.revision_history.original.date ? new Date( image.revision_history.original.date ) : 'null' ) + '</div>' +
+						'<div class="image-revision-date">' + getDate( image.revision_history.original.date ) + '</div>' +
 						'<div class="image-revision-extension">' + image.revision_history.original.extension + '</div>' +
-						'<div class="image-revision-mimetype">' + image.revision_history.original.mime_type + '</div>';
+						'<div class="image-revision-extension">extension: <em>' + image.revision_history.original.extension + '</em></div>' + 
+						'<div class="image-revision-mimetype">mime_type: <em>' + image.revision_history.original.mime_type + '</em></div>';
 				}
 	
 				revisionHistoryNode.innerHTML = '';
@@ -184,7 +202,8 @@ var WPCOM =
 							  '<span class="image-revision-filename">' + prevImage.file + '</span>' +
 							'</a>' +
 							'<span class="image-revision-date">' + ( prevImage.date ? getDate( prevImage.date ) : 'null' ) + '</span>' +
-							'<span class="image-revision-mimetype">' + prevImage.mime_type + '</span>';
+							'<span class="image-revision-mimetype">extension: <em>' + prevImage.extension + '</em></span>' +
+							'<span class="image-revision-mimetype">mime_type: <em>' + prevImage.mime_type + '</em></span>';
 	
 						imageContainer.appendChild( imageSummary );
 	
@@ -255,8 +274,7 @@ var WPCOM =
 				// Unable to compute progress information since the total size is unknown
 			}
 		}	  // your token is here auth.access_token!
-	} );
-
+	//} );
 
 /***/ },
 /* 1 */
@@ -2305,285 +2323,573 @@ var WPCOM =
 		value: true
 	});
 	
-	var _promise = __webpack_require__(12);
+	var _typeof2 = __webpack_require__(12);
 	
-	var _promise2 = _interopRequireDefault(_promise);
+	var _typeof3 = _interopRequireDefault(_typeof2);
 	
-	exports.default = WPCOM;
+	var _stringify = __webpack_require__(80);
 	
-	var _wpcomXhrRequest = __webpack_require__(77);
+	var _stringify2 = _interopRequireDefault(_stringify);
 	
-	var _wpcomXhrRequest2 = _interopRequireDefault(_wpcomXhrRequest);
+	var _assign = __webpack_require__(82);
+	
+	var _assign2 = _interopRequireDefault(_assign);
+	
+	var _uid = __webpack_require__(86);
+	
+	var _uid2 = _interopRequireDefault(_uid);
+	
+	var _wpError = __webpack_require__(87);
+	
+	var _wpError2 = _interopRequireDefault(_wpError);
+	
+	var _componentEvent = __webpack_require__(92);
+	
+	var _componentEvent2 = _interopRequireDefault(_componentEvent);
+	
+	var _progressEvent = __webpack_require__(93);
+	
+	var _progressEvent2 = _interopRequireDefault(_progressEvent);
 	
 	var _debug = __webpack_require__(94);
 	
 	var _debug2 = _interopRequireDefault(_debug);
 	
-	var _batch = __webpack_require__(97);
-	
-	var _batch2 = _interopRequireDefault(_batch);
-	
-	var _domain = __webpack_require__(103);
-	
-	var _domain2 = _interopRequireDefault(_domain);
-	
-	var _domains = __webpack_require__(106);
-	
-	var _domains2 = _interopRequireDefault(_domains);
-	
-	var _marketing = __webpack_require__(107);
-	
-	var _marketing2 = _interopRequireDefault(_marketing);
-	
-	var _me = __webpack_require__(127);
-	
-	var _me2 = _interopRequireDefault(_me);
-	
-	var _pinghub = __webpack_require__(136);
-	
-	var _pinghub2 = _interopRequireDefault(_pinghub);
-	
-	var _plans = __webpack_require__(137);
-	
-	var _plans2 = _interopRequireDefault(_plans);
-	
-	var _request = __webpack_require__(138);
-	
-	var _request2 = _interopRequireDefault(_request);
-	
-	var _site = __webpack_require__(144);
-	
-	var _site2 = _interopRequireDefault(_site);
-	
-	var _users = __webpack_require__(171);
-	
-	var _users2 = _interopRequireDefault(_users);
-	
-	var _sendRequest = __webpack_require__(139);
-	
-	var _sendRequest2 = _interopRequireDefault(_sendRequest);
-	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	/**
-	 * Local module constants
+	 * debug instance
 	 */
-	var debug = (0, _debug2.default)('wpcom');
+	var debug = (0, _debug2.default)('wpcom-proxy-request');
 	
 	/**
-	 * Local module dependencies.
+	 * WordPress.com REST API base endpoint.
 	 */
+	
 	/**
 	 * Module dependencies.
 	 */
-	
-	var DEFAULT_ASYNC_TIMEOUT = 30000;
+	var proxyOrigin = 'https://public-api.wordpress.com';
 	
 	/**
-	 * XMLHttpRequest (and CORS) API access method.
-	 *
-	 * API authentication is done via an (optional) access `token`,
-	 * which needs to be retrieved via OAuth.
-	 *
-	 * Request Handler is optional and XHR is defined as default.
-	 *
-	 * @param {String} [token] - OAuth API access token
-	 * @param {Function} [reqHandler] - function Request Handler
-	 * @return {WPCOM} wpcom instance
+	 * "Origin" of the current HTML page.
 	 */
-	function WPCOM(token, reqHandler) {
-		if (!(this instanceof WPCOM)) {
-			return new WPCOM(token, reqHandler);
-		}
+	var origin = window.location.protocol + '//' + window.location.host;
 	
-		// `token` is optional
-		if ('function' === typeof token) {
-			reqHandler = token;
-			token = null;
-		}
-	
-		if (token) {
-			debug('Token defined: %s…', token.substring(0, 6));
-			this.token = token;
-		}
-	
-		// Set default request handler
-		if (!reqHandler) {
-			debug('No request handler. Adding default XHR request handler');
-	
-			this.request = function (params, fn) {
-				params = params || {};
-	
-				// token is optional
-				if (token) {
-					params.authToken = token;
+	/**
+	 * Detecting support for the structured clone algorithm. IE8 and 9, and Firefox
+	 * 6.0 and below only support strings as postMessage's message. This browsers
+	 * will try to use the toString method.
+	 *
+	 * https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage
+	 * https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/The_structured_clone_algorithm
+	 * https://github.com/Modernizr/Modernizr/issues/388#issuecomment-31127462
+	 */
+	var postStrings = function () {
+		var r = false;
+		try {
+			window.postMessage({
+				toString: function toString() {
+					r = true;
 				}
+			}, '*');
+		} catch (e) {/* empty */}
+		return r;
+	}();
 	
-				return (0, _wpcomXhrRequest2.default)(params, fn);
-			};
-		} else {
-			this.request = reqHandler;
+	/**
+	 * Reference to the <iframe> DOM element.
+	 * Gets set in the install() function.
+	 */
+	var iframe = null;
+	
+	/**
+	 * Set to `true` upon the iframe's "load" event.
+	 */
+	var loaded = false;
+	
+	/**
+	 * Array of buffered API requests. Added to when API requests are done before the
+	 * proxy <iframe> is "loaded", and fulfilled once the "load" DOM event on the
+	 * iframe occurs.
+	 */
+	var buffered = void 0;
+	
+	/**
+	 * Firefox apparently doesn't like sending `File` instances cross-domain.
+	 * It results in a "DataCloneError: The object could not be cloned." error.
+	 * Apparently this is for "security purposes" but it's actually silly if that's
+	 * the argument because we can just read the File manually into an ArrayBuffer
+	 * and we can work around this "security restriction".
+	 *
+	 * See: https://bugzilla.mozilla.org/show_bug.cgi?id=722126#c8
+	 */
+	var hasFileSerializationBug = false;
+	
+	/**
+	 * In-flight API request XMLHttpRequest dummy "proxy" instances.
+	 */
+	var requests = {};
+	
+	/**
+	 * Are HTML5 XMLHttpRequest2 "progress" events supported?
+	 * See: http://goo.gl/xxYf6D
+	 */
+	var supportsProgress = !!window.ProgressEvent && !!window.FormData;
+	
+	debug('using "origin": %o', origin);
+	
+	/**
+	 * Performs a "proxied REST API request". This happens by calling
+	 * `iframe.postMessage()` on the proxy iframe instance, which from there
+	 * takes care of WordPress.com user authentication (via the currently
+	 * logged-in user's cookies).
+	 *
+	 * @param {Object|String} originalParams - request parameters
+	 * @param {Function} [fn] - callback response
+	 * @return {XMLHttpRequest} XMLHttpRequest instance
+	 * @api public
+	 */
+	var request = function request(originalParams, fn) {
+		var params = (0, _assign2.default)({}, originalParams);
+	
+		debug('request(%o)', params);
+	
+		// inject the <iframe> upon the first proxied API request
+		if (!iframe) {
+			install();
 		}
 	
-		// Add Req instance
-		this.req = new _request2.default(this);
+		if ('string' === typeof params) {
+			params = { path: params };
+		}
 	
-		// Add Pinghub instance
-		this.pinghub = new _pinghub2.default(this);
+		// generate a uid for this API request
+		var id = (0, _uid2.default)();
+		params.callback = id;
+		params.supports_args = true; // supports receiving variable amount of arguments
+		params.supports_error_obj = true; // better Error object info
+		params.supports_progress = supportsProgress; // supports receiving XHR "progress" events
 	
-		// Default api version;
-		this.apiVersion = '1.1';
+		// force uppercase "method" since that's what the <iframe> is expecting
+		params.method = String(params.method || 'GET').toUpperCase();
+	
+		debug('params object: %o', params);
+	
+		var xhr = new XMLHttpRequest();
+		xhr.params = params;
+	
+		// store the `XMLHttpRequest` instance so that "onmessage" can access it again
+		requests[id] = xhr;
+	
+		if ('function' === typeof fn) {
+			(function () {
+				var xhrOnLoad = function xhrOnLoad(e) {
+					if (called) {
+						return;
+					}
+	
+					called = true;
+					var body = e.response || xhr.response;
+					debug('body: ', body);
+					debug('headers: ', e.headers);
+					fn(null, body, e.headers);
+				};
+	
+				var xhrOnError = function xhrOnError(e) {
+					if (called) {
+						return;
+					}
+	
+					called = true;
+					var error = e.error || e.err || e;
+					debug('error: ', error);
+					debug('headers: ', e.headers);
+					fn(error, null, e.headers);
+				};
+	
+				// a callback function was provided
+				var called = false;
+	
+	
+				_componentEvent2.default.bind(xhr, 'load', xhrOnLoad);
+				_componentEvent2.default.bind(xhr, 'abort', xhrOnError);
+				_componentEvent2.default.bind(xhr, 'error', xhrOnError);
+			})();
+		}
+	
+		if (loaded) {
+			submitRequest(params);
+		} else {
+			debug('buffering API request since proxying <iframe> is not yet loaded');
+			buffered.push(params);
+		}
+	
+		return xhr;
+	};
+	
+	/**
+	 * Calls the `postMessage()` function on the <iframe>.
+	 *
+	 * @param {Object} params
+	 * @api private
+	 */
+	
+	function submitRequest(params) {
+		debug('sending API request to proxy <iframe> %o', params);
+	
+		if (hasFileSerializationBug && hasFile(params)) {
+			postAsArrayBuffer(params);
+		} else {
+			try {
+				iframe.contentWindow.postMessage(postStrings ? (0, _stringify2.default)(params) : params, proxyOrigin);
+			} catch (e) {
+				// were we trying to serialize a `File`?
+				if (hasFile(params)) {
+					debug('this browser has the File serialization bug');
+					// cache this check for the next API request
+					hasFileSerializationBug = true;
+					postAsArrayBuffer(params);
+				} else {
+					// not interested, rethrow
+					throw e;
+				}
+			}
+		}
 	}
 	
 	/**
-	 * Return `Marketing` object instance
+	 * Returns `true` if there's a `File` instance in the `params`, or `false`
+	 * otherwise.
 	 *
-	 * @return {Marketing} Marketing instance
+	 * @param {Object} params - request parameter
+	 * @return {Boolean} `true` if there's a `File`
+	 * @private
 	 */
-	WPCOM.prototype.marketing = function () {
-		return new _marketing2.default(this);
-	};
+	function hasFile(params) {
+		var formData = params.formData;
+		if (formData && formData.length > 0) {
+			for (var i = 0; i < formData.length; i++) {
+				if (isFile(formData[i][1])) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	/**
-	 * Return `Me` object instance
+	 * Returns `true` if `v` is a DOM File instance, `false` otherwise.
 	 *
-	 * @return {Me} Me instance
+	 * @param {Mixed} v - instance to analize
+	 * @return {Boolean} `true` if `v` is a DOM File instance
+	 * @private
 	 */
-	WPCOM.prototype.me = function () {
-		return new _me2.default(this);
-	};
+	function isFile(v) {
+		return v && Object.prototype.toString.call(v) === '[object File]';
+	}
 	
 	/**
-	 * Return `Domains` object instance
+	 * Turns all `File` instances into `ArrayBuffer` objects in order to serialize
+	 * the data over the iframe `postMessage()` call.
 	 *
-	 * @return {Domains} Domains instance
+	 * @param {Object} params
+	 * @private
 	 */
-	WPCOM.prototype.domains = function () {
-		return new _domains2.default(this);
-	};
 	
-	/**
-	 * Return `Domain` object instance
-	 *
-	 * @param {String} domainId - domain identifier
-	 * @return {Domain} Domain instance
-	 */
-	WPCOM.prototype.domain = function (domainId) {
-		return new _domain2.default(domainId, this);
-	};
+	function postAsArrayBuffer(params) {
+		debug('converting File instances to ArrayBuffer before invoking postMessage()');
 	
-	/**
-	 * Return `Site` object instance
-	 *
-	 * @param {String} id - site identifier
-	 * @return {Site} Site instance
-	 */
-	WPCOM.prototype.site = function (id) {
-		return new _site2.default(id, this);
-	};
-	
-	/**
-	 * Return `Users` object instance
-	 *
-	 * @return {Users} Users instance
-	 */
-	WPCOM.prototype.users = function () {
-		return new _users2.default(this);
-	};
-	
-	/**
-	 * Return `Plans` object instance
-	 *
-	 * @return {Plans} Plans instance
-	 */
-	WPCOM.prototype.plans = function () {
-		return new _plans2.default(this);
-	};
-	
-	/**
-	* Return `Batch` object instance
-	*
-	* @return {Batch} Batch instance
-	*/
-	WPCOM.prototype.batch = function () {
-		return new _batch2.default(this);
-	};
-	
-	/**
-	 * List Freshly Pressed Posts
-	 *
-	 * @param {Object} [query] - query object
-	 * @param {Function} fn - callback function
-	 * @return {Function} request handler
-	 */
-	WPCOM.prototype.freshlyPressed = function (query, fn) {
-		return this.req.get('/freshly-pressed', query, fn);
-	};
-	
-	/**
-	 * Expose send-request
-	 * @TODO: use `this.req` instead of this method
-	 */
-	WPCOM.prototype.sendRequest = function (params, query, body, fn) {
-		var msg = 'WARN! Don use `sendRequest() anymore. Use `this.req` method.';
-	
-		if (console && console.warn) {
-			console.warn(msg);
-		} else {
-			console.log(msg);
+		var formData = params.formData;
+		var count = 0;
+		var called = false;
+		for (var i = 0; i < formData.length; i++) {
+			var val = formData[i][1];
+			if (isFile(val)) {
+				count++;
+				fileToArrayBuffer(val, i, onLoadFile);
+			}
 		}
 	
-		return _sendRequest2.default.call(this, params, query, body, fn);
-	};
+		if (0 === count) {
+			postMessage();
+		}
+	
+		function onLoadFile(err, file, j) {
+			if (called) {
+				return;
+			}
+	
+			if (err) {
+				called = true;
+				reject(err);
+				return;
+			}
+	
+			formData[j][1] = file;
+	
+			count--;
+			if (0 === count) {
+				postMessage();
+			}
+		}
+	
+		function postMessage() {
+			debug('finished reading all Files');
+			iframe.contentWindow.postMessage(params, proxyOrigin);
+		}
+	}
 	
 	/**
-	 * Re-export all the class types.
-	 */
-	WPCOM.Batch = _batch2.default;
-	WPCOM.Domain = _domain2.default;
-	WPCOM.Domains = _domains2.default;
-	WPCOM.Marketing = _marketing2.default;
-	WPCOM.Me = _me2.default;
-	WPCOM.Pinghub = _pinghub2.default;
-	WPCOM.Plans = _plans2.default;
-	WPCOM.Request = _request2.default;
-	WPCOM.Site = _site2.default;
-	WPCOM.Users = _users2.default;
-	
-	if (!_promise2.default.prototype.timeout) {
-		/**
-	 * Returns a new promise with a deadline
+	 * Turns a `File` instance into a regular JavaScript object with `fileContents`
+	 * as an ArrayBuffer, and `fileName` and `mimeTypes`.
 	 *
-	 * After the timeout interval, the promise will
-	 * reject. If the actual promise settles before
-	 * the deadline, the timer is cancelled.
-	 *
-	 * @param {number} delay how many ms to wait
-	 * @return {Promise} promise
+	 * @param {File} file
+	 * @param {Number} index
+	 * @param {Function} fn
+	 * @private
 	 */
-		_promise2.default.prototype.timeout = function () {
-			var _this = this;
 	
-			var delay = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : DEFAULT_ASYNC_TIMEOUT;
+	function fileToArrayBuffer(file, index, fn) {
+		var reader = new FileReader();
 	
-			var cancelTimeout = void 0,
-			    timer = void 0,
-			    timeout = void 0;
+		reader.onload = function (e) {
+			var arrayBuffer = e.target.result;
+			debug('finished reading file %o (%o bytes)', file.name, arrayBuffer.byteLength);
 	
-			timeout = new _promise2.default(function (resolve, reject) {
-				timer = setTimeout(function () {
-					reject(new Error('Action timed out while waiting for response.'));
-				}, delay);
-			});
-	
-			cancelTimeout = function cancelTimeout() {
-				clearTimeout(timer);
-				return _this;
-			};
-	
-			return _promise2.default.race([this.then(cancelTimeout).catch(cancelTimeout), timeout]);
+			fn(null, {
+				fileContents: arrayBuffer,
+				fileName: file.name,
+				mimeType: file.type
+			}, index);
 		};
+	
+		reader.onerror = function (err) {
+			debug('got error reading file %o (%o bytes)', file.name, err);
+			fn(err);
+		};
+	
+		reader.readAsArrayBuffer(file);
 	}
+	
+	/**
+	 * Injects the proxy <iframe> instance in the <body> of the current
+	 * HTML page.
+	 *
+	 * @api private
+	 */
+	
+	function install() {
+		debug('install()');
+		if (iframe) {
+			uninstall();
+		}
+	
+		buffered = [];
+	
+		// listen to messages sent to `window`
+		_componentEvent2.default.bind(window, 'message', onmessage);
+	
+		// create the <iframe>
+		iframe = document.createElement('iframe');
+	
+		// set `loaded` to true once the "load" event happens
+		_componentEvent2.default.bind(iframe, 'load', onload);
+	
+		// set `src` and hide the iframe
+		iframe.src = proxyOrigin + '/wp-admin/rest-proxy/#' + origin;
+		iframe.style.display = 'none';
+	
+		// inject the <iframe> into the <body>
+		document.body.appendChild(iframe);
+	}
+	
+	/**
+	 * Removes the <iframe> proxy instance from the <body> of the page.
+	 *
+	 * @api private
+	 */
+	function uninstall() {
+		debug('uninstall()');
+		document.body.removeChild(iframe);
+		iframe = null;
+	}
+	
+	/**
+	 * The proxy <iframe> instance's "load" event callback function.
+	 *
+	 * @api private
+	 */
+	
+	function onload() {
+		debug('proxy <iframe> "load" event');
+		loaded = true;
+	
+		// flush any buffered API calls
+		if (buffered) {
+			for (var i = 0; i < buffered.length; i++) {
+				submitRequest(buffered[i]);
+			}
+			buffered = null;
+		}
+	}
+	
+	/**
+	 * The main `window` object's "message" event callback function.
+	 *
+	 * @param {Event} e
+	 * @api private
+	 */
+	
+	function onmessage(e) {
+		debug('onmessage');
+	
+		// safeguard...
+		if (e.origin !== proxyOrigin) {
+			debug('ignoring message... %o !== %o', e.origin, proxyOrigin);
+			return;
+		}
+	
+		var data = e.data;
+	
+		if (!data) {
+			return debug('no `data`, bailing');
+		}
+	
+		if (postStrings && 'string' === typeof data) {
+			data = JSON.parse(data);
+		}
+	
+		// check if we're receiving a "progress" event
+		if (data.upload || data.download) {
+			return onprogress(data);
+		}
+	
+		if (!data.length) {
+			return debug('`e.data` doesn\'t appear to be an Array, bailing...');
+		}
+	
+		// first get the `xhr` instance that we're interested in
+		var id = data[data.length - 1];
+		if (!(id in requests)) {
+			return debug('bailing, no matching request with callback: %o', id);
+		}
+	
+		var xhr = requests[id];
+	
+		// Build `error` and `body` object from the `data` object
+		var params = xhr.params;
+	
+		var body = void 0,
+		    statusCode = void 0,
+		    headers = void 0;
+	
+		// apiNamespace (WP-API)
+		var apiNamespace = params.apiNamespace;
+	
+		// is REST-API api?
+	
+		var isRestAPI = apiNamespace === undefined;
+	
+		if (isRestAPI) {
+			debug('REST-API detected');
+			body = data[0];
+			statusCode = data[1];
+			headers = data[2];
+		} else {
+			debug('WP-API detected');
+			body = data[0];
+			headers = data[2];
+	
+			// Identify error response in `envelope` mode in function of the response fields
+			// and try to make the same error structure for both APIs
+			if (body.code && body.data && body.data.status && body.message) {
+				body.error = body.code;
+				statusCode = body.data.status;
+				delete body.code;
+				delete body.data;
+			}
+		}
+	
+		if (statusCode === 207) {
+			// 207 is a signal from rest-proxy. It means, "this isn't the final
+			// response to the query." The proxy supports WebSocket connections
+			// by invoking the original success callback for each message received.
+		} else {
+			// this is the final response to this query
+			delete requests[id];
+		}
+	
+		if (!params.metaAPI) {
+			debug('got %o status code for URL: %o', statusCode, params.path);
+		}
+	
+		// add statusCode into headers object
+		if ((typeof headers === 'undefined' ? 'undefined' : (0, _typeof3.default)(headers)) === 'object') {
+			headers.status = statusCode;
+		}
+	
+		if (null == statusCode || 2 === Math.floor(statusCode / 100)) {
+			// 2xx status code, success
+			resolve(xhr, body, headers);
+		} else {
+			// any other status code is a failure
+			var wpe = (0, _wpError2.default)(params, statusCode, body);
+			reject(xhr, wpe, headers);
+		}
+	}
+	
+	/**
+	 * Handles a "progress" event being proxied back from the iframe page.
+	 *
+	 * @param {Object} data
+	 * @private
+	 */
+	
+	function onprogress(data) {
+		debug('got "progress" event: %o', data);
+		var xhr = requests[data.callbackId];
+		if (xhr) {
+			var prog = new _progressEvent2.default('progress', data);
+			var target = data.upload ? xhr.upload : xhr;
+			target.dispatchEvent(prog);
+		}
+	}
+	
+	/**
+	 * Emits the "load" event on the `xhr`.
+	 *
+	 * @param {XMLHttpRequest} xhr
+	 * @param {Object} body
+	 * @private
+	 */
+	
+	function resolve(xhr, body, headers) {
+		var e = new _progressEvent2.default('load');
+		e.data = e.body = e.response = body;
+		e.headers = headers;
+		xhr.dispatchEvent(e);
+	}
+	
+	/**
+	 * Emits the "error" event on the `xhr`.
+	 *
+	 * @param {XMLHttpRequest} xhr
+	 * @param {Error} err
+	 * @private
+	 */
+	
+	function reject(xhr, err, headers) {
+		var e = new _progressEvent2.default('error');
+		e.error = e.err = err;
+		e.headers = headers;
+		xhr.dispatchEvent(e);
+	}
+	
+	/**
+	 * Export `request` function.
+	 */
+	exports.default = request;
 	module.exports = exports['default'];
 	
 	//# sourceMappingURL=index.js.map
@@ -2592,23 +2898,41 @@ var WPCOM =
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(13), __esModule: true };
+	"use strict";
+	
+	exports.__esModule = true;
+	
+	var _iterator = __webpack_require__(13);
+	
+	var _iterator2 = _interopRequireDefault(_iterator);
+	
+	var _symbol = __webpack_require__(64);
+	
+	var _symbol2 = _interopRequireDefault(_symbol);
+	
+	var _typeof = typeof _symbol2.default === "function" && typeof _iterator2.default === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default ? "symbol" : typeof obj; };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = typeof _symbol2.default === "function" && _typeof(_iterator2.default) === "symbol" ? function (obj) {
+	  return typeof obj === "undefined" ? "undefined" : _typeof(obj);
+	} : function (obj) {
+	  return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof(obj);
+	};
 
 /***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(14);
-	__webpack_require__(15);
-	__webpack_require__(59);
-	__webpack_require__(63);
-	module.exports = __webpack_require__(23).Promise;
+	module.exports = { "default": __webpack_require__(14), __esModule: true };
 
 /***/ },
 /* 14 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-
+	__webpack_require__(15);
+	__webpack_require__(59);
+	module.exports = __webpack_require__(63).f('iterator');
 
 /***/ },
 /* 15 */
@@ -3390,19 +3714,1893 @@ var WPCOM =
 /* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
+	exports.f = __webpack_require__(56);
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(65), __esModule: true };
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(66);
+	__webpack_require__(77);
+	__webpack_require__(78);
+	__webpack_require__(79);
+	module.exports = __webpack_require__(23).Symbol;
+
+/***/ },
+/* 66 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	// ECMAScript 6 symbols shim
+	var global         = __webpack_require__(22)
+	  , has            = __webpack_require__(37)
+	  , DESCRIPTORS    = __webpack_require__(31)
+	  , $export        = __webpack_require__(21)
+	  , redefine       = __webpack_require__(36)
+	  , META           = __webpack_require__(67).KEY
+	  , $fails         = __webpack_require__(32)
+	  , shared         = __webpack_require__(51)
+	  , setToStringTag = __webpack_require__(55)
+	  , uid            = __webpack_require__(52)
+	  , wks            = __webpack_require__(56)
+	  , wksExt         = __webpack_require__(63)
+	  , wksDefine      = __webpack_require__(68)
+	  , keyOf          = __webpack_require__(69)
+	  , enumKeys       = __webpack_require__(70)
+	  , isArray        = __webpack_require__(73)
+	  , anObject       = __webpack_require__(28)
+	  , toIObject      = __webpack_require__(44)
+	  , toPrimitive    = __webpack_require__(34)
+	  , createDesc     = __webpack_require__(35)
+	  , _create        = __webpack_require__(40)
+	  , gOPNExt        = __webpack_require__(74)
+	  , $GOPD          = __webpack_require__(76)
+	  , $DP            = __webpack_require__(27)
+	  , $keys          = __webpack_require__(42)
+	  , gOPD           = $GOPD.f
+	  , dP             = $DP.f
+	  , gOPN           = gOPNExt.f
+	  , $Symbol        = global.Symbol
+	  , $JSON          = global.JSON
+	  , _stringify     = $JSON && $JSON.stringify
+	  , PROTOTYPE      = 'prototype'
+	  , HIDDEN         = wks('_hidden')
+	  , TO_PRIMITIVE   = wks('toPrimitive')
+	  , isEnum         = {}.propertyIsEnumerable
+	  , SymbolRegistry = shared('symbol-registry')
+	  , AllSymbols     = shared('symbols')
+	  , OPSymbols      = shared('op-symbols')
+	  , ObjectProto    = Object[PROTOTYPE]
+	  , USE_NATIVE     = typeof $Symbol == 'function'
+	  , QObject        = global.QObject;
+	// Don't use setters in Qt Script, https://github.com/zloirock/core-js/issues/173
+	var setter = !QObject || !QObject[PROTOTYPE] || !QObject[PROTOTYPE].findChild;
+	
+	// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
+	var setSymbolDesc = DESCRIPTORS && $fails(function(){
+	  return _create(dP({}, 'a', {
+	    get: function(){ return dP(this, 'a', {value: 7}).a; }
+	  })).a != 7;
+	}) ? function(it, key, D){
+	  var protoDesc = gOPD(ObjectProto, key);
+	  if(protoDesc)delete ObjectProto[key];
+	  dP(it, key, D);
+	  if(protoDesc && it !== ObjectProto)dP(ObjectProto, key, protoDesc);
+	} : dP;
+	
+	var wrap = function(tag){
+	  var sym = AllSymbols[tag] = _create($Symbol[PROTOTYPE]);
+	  sym._k = tag;
+	  return sym;
+	};
+	
+	var isSymbol = USE_NATIVE && typeof $Symbol.iterator == 'symbol' ? function(it){
+	  return typeof it == 'symbol';
+	} : function(it){
+	  return it instanceof $Symbol;
+	};
+	
+	var $defineProperty = function defineProperty(it, key, D){
+	  if(it === ObjectProto)$defineProperty(OPSymbols, key, D);
+	  anObject(it);
+	  key = toPrimitive(key, true);
+	  anObject(D);
+	  if(has(AllSymbols, key)){
+	    if(!D.enumerable){
+	      if(!has(it, HIDDEN))dP(it, HIDDEN, createDesc(1, {}));
+	      it[HIDDEN][key] = true;
+	    } else {
+	      if(has(it, HIDDEN) && it[HIDDEN][key])it[HIDDEN][key] = false;
+	      D = _create(D, {enumerable: createDesc(0, false)});
+	    } return setSymbolDesc(it, key, D);
+	  } return dP(it, key, D);
+	};
+	var $defineProperties = function defineProperties(it, P){
+	  anObject(it);
+	  var keys = enumKeys(P = toIObject(P))
+	    , i    = 0
+	    , l = keys.length
+	    , key;
+	  while(l > i)$defineProperty(it, key = keys[i++], P[key]);
+	  return it;
+	};
+	var $create = function create(it, P){
+	  return P === undefined ? _create(it) : $defineProperties(_create(it), P);
+	};
+	var $propertyIsEnumerable = function propertyIsEnumerable(key){
+	  var E = isEnum.call(this, key = toPrimitive(key, true));
+	  if(this === ObjectProto && has(AllSymbols, key) && !has(OPSymbols, key))return false;
+	  return E || !has(this, key) || !has(AllSymbols, key) || has(this, HIDDEN) && this[HIDDEN][key] ? E : true;
+	};
+	var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(it, key){
+	  it  = toIObject(it);
+	  key = toPrimitive(key, true);
+	  if(it === ObjectProto && has(AllSymbols, key) && !has(OPSymbols, key))return;
+	  var D = gOPD(it, key);
+	  if(D && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key]))D.enumerable = true;
+	  return D;
+	};
+	var $getOwnPropertyNames = function getOwnPropertyNames(it){
+	  var names  = gOPN(toIObject(it))
+	    , result = []
+	    , i      = 0
+	    , key;
+	  while(names.length > i){
+	    if(!has(AllSymbols, key = names[i++]) && key != HIDDEN && key != META)result.push(key);
+	  } return result;
+	};
+	var $getOwnPropertySymbols = function getOwnPropertySymbols(it){
+	  var IS_OP  = it === ObjectProto
+	    , names  = gOPN(IS_OP ? OPSymbols : toIObject(it))
+	    , result = []
+	    , i      = 0
+	    , key;
+	  while(names.length > i){
+	    if(has(AllSymbols, key = names[i++]) && (IS_OP ? has(ObjectProto, key) : true))result.push(AllSymbols[key]);
+	  } return result;
+	};
+	
+	// 19.4.1.1 Symbol([description])
+	if(!USE_NATIVE){
+	  $Symbol = function Symbol(){
+	    if(this instanceof $Symbol)throw TypeError('Symbol is not a constructor!');
+	    var tag = uid(arguments.length > 0 ? arguments[0] : undefined);
+	    var $set = function(value){
+	      if(this === ObjectProto)$set.call(OPSymbols, value);
+	      if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
+	      setSymbolDesc(this, tag, createDesc(1, value));
+	    };
+	    if(DESCRIPTORS && setter)setSymbolDesc(ObjectProto, tag, {configurable: true, set: $set});
+	    return wrap(tag);
+	  };
+	  redefine($Symbol[PROTOTYPE], 'toString', function toString(){
+	    return this._k;
+	  });
+	
+	  $GOPD.f = $getOwnPropertyDescriptor;
+	  $DP.f   = $defineProperty;
+	  __webpack_require__(75).f = gOPNExt.f = $getOwnPropertyNames;
+	  __webpack_require__(72).f  = $propertyIsEnumerable;
+	  __webpack_require__(71).f = $getOwnPropertySymbols;
+	
+	  if(DESCRIPTORS && !__webpack_require__(20)){
+	    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
+	  }
+	
+	  wksExt.f = function(name){
+	    return wrap(wks(name));
+	  }
+	}
+	
+	$export($export.G + $export.W + $export.F * !USE_NATIVE, {Symbol: $Symbol});
+	
+	for(var symbols = (
+	  // 19.4.2.2, 19.4.2.3, 19.4.2.4, 19.4.2.6, 19.4.2.8, 19.4.2.9, 19.4.2.10, 19.4.2.11, 19.4.2.12, 19.4.2.13, 19.4.2.14
+	  'hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables'
+	).split(','), i = 0; symbols.length > i; )wks(symbols[i++]);
+	
+	for(var symbols = $keys(wks.store), i = 0; symbols.length > i; )wksDefine(symbols[i++]);
+	
+	$export($export.S + $export.F * !USE_NATIVE, 'Symbol', {
+	  // 19.4.2.1 Symbol.for(key)
+	  'for': function(key){
+	    return has(SymbolRegistry, key += '')
+	      ? SymbolRegistry[key]
+	      : SymbolRegistry[key] = $Symbol(key);
+	  },
+	  // 19.4.2.5 Symbol.keyFor(sym)
+	  keyFor: function keyFor(key){
+	    if(isSymbol(key))return keyOf(SymbolRegistry, key);
+	    throw TypeError(key + ' is not a symbol!');
+	  },
+	  useSetter: function(){ setter = true; },
+	  useSimple: function(){ setter = false; }
+	});
+	
+	$export($export.S + $export.F * !USE_NATIVE, 'Object', {
+	  // 19.1.2.2 Object.create(O [, Properties])
+	  create: $create,
+	  // 19.1.2.4 Object.defineProperty(O, P, Attributes)
+	  defineProperty: $defineProperty,
+	  // 19.1.2.3 Object.defineProperties(O, Properties)
+	  defineProperties: $defineProperties,
+	  // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
+	  getOwnPropertyDescriptor: $getOwnPropertyDescriptor,
+	  // 19.1.2.7 Object.getOwnPropertyNames(O)
+	  getOwnPropertyNames: $getOwnPropertyNames,
+	  // 19.1.2.8 Object.getOwnPropertySymbols(O)
+	  getOwnPropertySymbols: $getOwnPropertySymbols
+	});
+	
+	// 24.3.2 JSON.stringify(value [, replacer [, space]])
+	$JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function(){
+	  var S = $Symbol();
+	  // MS Edge converts symbol values to JSON as {}
+	  // WebKit converts symbol values to JSON as null
+	  // V8 throws on boxed symbols
+	  return _stringify([S]) != '[null]' || _stringify({a: S}) != '{}' || _stringify(Object(S)) != '{}';
+	})), 'JSON', {
+	  stringify: function stringify(it){
+	    if(it === undefined || isSymbol(it))return; // IE8 returns string on undefined
+	    var args = [it]
+	      , i    = 1
+	      , replacer, $replacer;
+	    while(arguments.length > i)args.push(arguments[i++]);
+	    replacer = args[1];
+	    if(typeof replacer == 'function')$replacer = replacer;
+	    if($replacer || !isArray(replacer))replacer = function(key, value){
+	      if($replacer)value = $replacer.call(this, key, value);
+	      if(!isSymbol(value))return value;
+	    };
+	    args[1] = replacer;
+	    return _stringify.apply($JSON, args);
+	  }
+	});
+	
+	// 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
+	$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(26)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
+	// 19.4.3.5 Symbol.prototype[@@toStringTag]
+	setToStringTag($Symbol, 'Symbol');
+	// 20.2.1.9 Math[@@toStringTag]
+	setToStringTag(Math, 'Math', true);
+	// 24.3.3 JSON[@@toStringTag]
+	setToStringTag(global.JSON, 'JSON', true);
+
+/***/ },
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var META     = __webpack_require__(52)('meta')
+	  , isObject = __webpack_require__(29)
+	  , has      = __webpack_require__(37)
+	  , setDesc  = __webpack_require__(27).f
+	  , id       = 0;
+	var isExtensible = Object.isExtensible || function(){
+	  return true;
+	};
+	var FREEZE = !__webpack_require__(32)(function(){
+	  return isExtensible(Object.preventExtensions({}));
+	});
+	var setMeta = function(it){
+	  setDesc(it, META, {value: {
+	    i: 'O' + ++id, // object ID
+	    w: {}          // weak collections IDs
+	  }});
+	};
+	var fastKey = function(it, create){
+	  // return primitive with prefix
+	  if(!isObject(it))return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
+	  if(!has(it, META)){
+	    // can't set metadata to uncaught frozen object
+	    if(!isExtensible(it))return 'F';
+	    // not necessary to add metadata
+	    if(!create)return 'E';
+	    // add missing metadata
+	    setMeta(it);
+	  // return object ID
+	  } return it[META].i;
+	};
+	var getWeak = function(it, create){
+	  if(!has(it, META)){
+	    // can't set metadata to uncaught frozen object
+	    if(!isExtensible(it))return true;
+	    // not necessary to add metadata
+	    if(!create)return false;
+	    // add missing metadata
+	    setMeta(it);
+	  // return hash weak collections IDs
+	  } return it[META].w;
+	};
+	// add metadata on freeze-family methods calling
+	var onFreeze = function(it){
+	  if(FREEZE && meta.NEED && isExtensible(it) && !has(it, META))setMeta(it);
+	  return it;
+	};
+	var meta = module.exports = {
+	  KEY:      META,
+	  NEED:     false,
+	  fastKey:  fastKey,
+	  getWeak:  getWeak,
+	  onFreeze: onFreeze
+	};
+
+/***/ },
+/* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var global         = __webpack_require__(22)
+	  , core           = __webpack_require__(23)
+	  , LIBRARY        = __webpack_require__(20)
+	  , wksExt         = __webpack_require__(63)
+	  , defineProperty = __webpack_require__(27).f;
+	module.exports = function(name){
+	  var $Symbol = core.Symbol || (core.Symbol = LIBRARY ? {} : global.Symbol || {});
+	  if(name.charAt(0) != '_' && !(name in $Symbol))defineProperty($Symbol, name, {value: wksExt.f(name)});
+	};
+
+/***/ },
+/* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var getKeys   = __webpack_require__(42)
+	  , toIObject = __webpack_require__(44);
+	module.exports = function(object, el){
+	  var O      = toIObject(object)
+	    , keys   = getKeys(O)
+	    , length = keys.length
+	    , index  = 0
+	    , key;
+	  while(length > index)if(O[key = keys[index++]] === el)return key;
+	};
+
+/***/ },
+/* 70 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// all enumerable object keys, includes symbols
+	var getKeys = __webpack_require__(42)
+	  , gOPS    = __webpack_require__(71)
+	  , pIE     = __webpack_require__(72);
+	module.exports = function(it){
+	  var result     = getKeys(it)
+	    , getSymbols = gOPS.f;
+	  if(getSymbols){
+	    var symbols = getSymbols(it)
+	      , isEnum  = pIE.f
+	      , i       = 0
+	      , key;
+	    while(symbols.length > i)if(isEnum.call(it, key = symbols[i++]))result.push(key);
+	  } return result;
+	};
+
+/***/ },
+/* 71 */
+/***/ function(module, exports) {
+
+	exports.f = Object.getOwnPropertySymbols;
+
+/***/ },
+/* 72 */
+/***/ function(module, exports) {
+
+	exports.f = {}.propertyIsEnumerable;
+
+/***/ },
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.2.2 IsArray(argument)
+	var cof = __webpack_require__(46);
+	module.exports = Array.isArray || function isArray(arg){
+	  return cof(arg) == 'Array';
+	};
+
+/***/ },
+/* 74 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
+	var toIObject = __webpack_require__(44)
+	  , gOPN      = __webpack_require__(75).f
+	  , toString  = {}.toString;
+	
+	var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
+	  ? Object.getOwnPropertyNames(window) : [];
+	
+	var getWindowNames = function(it){
+	  try {
+	    return gOPN(it);
+	  } catch(e){
+	    return windowNames.slice();
+	  }
+	};
+	
+	module.exports.f = function getOwnPropertyNames(it){
+	  return windowNames && toString.call(it) == '[object Window]' ? getWindowNames(it) : gOPN(toIObject(it));
+	};
+
+
+/***/ },
+/* 75 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
+	var $keys      = __webpack_require__(43)
+	  , hiddenKeys = __webpack_require__(53).concat('length', 'prototype');
+	
+	exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O){
+	  return $keys(O, hiddenKeys);
+	};
+
+/***/ },
+/* 76 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var pIE            = __webpack_require__(72)
+	  , createDesc     = __webpack_require__(35)
+	  , toIObject      = __webpack_require__(44)
+	  , toPrimitive    = __webpack_require__(34)
+	  , has            = __webpack_require__(37)
+	  , IE8_DOM_DEFINE = __webpack_require__(30)
+	  , gOPD           = Object.getOwnPropertyDescriptor;
+	
+	exports.f = __webpack_require__(31) ? gOPD : function getOwnPropertyDescriptor(O, P){
+	  O = toIObject(O);
+	  P = toPrimitive(P, true);
+	  if(IE8_DOM_DEFINE)try {
+	    return gOPD(O, P);
+	  } catch(e){ /* empty */ }
+	  if(has(O, P))return createDesc(!pIE.f.call(O, P), O[P]);
+	};
+
+/***/ },
+/* 77 */
+/***/ function(module, exports) {
+
+
+
+/***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(68)('asyncIterator');
+
+/***/ },
+/* 79 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(68)('observable');
+
+/***/ },
+/* 80 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(81), __esModule: true };
+
+/***/ },
+/* 81 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var core  = __webpack_require__(23)
+	  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
+	module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
+	  return $JSON.stringify.apply($JSON, arguments);
+	};
+
+/***/ },
+/* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(83), __esModule: true };
+
+/***/ },
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(84);
+	module.exports = __webpack_require__(23).Object.assign;
+
+/***/ },
+/* 84 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.1 Object.assign(target, source)
+	var $export = __webpack_require__(21);
+	
+	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(85)});
+
+/***/ },
+/* 85 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	// 19.1.2.1 Object.assign(target, source, ...)
+	var getKeys  = __webpack_require__(42)
+	  , gOPS     = __webpack_require__(71)
+	  , pIE      = __webpack_require__(72)
+	  , toObject = __webpack_require__(58)
+	  , IObject  = __webpack_require__(45)
+	  , $assign  = Object.assign;
+	
+	// should work with symbols and should have deterministic property order (V8 bug)
+	module.exports = !$assign || __webpack_require__(32)(function(){
+	  var A = {}
+	    , B = {}
+	    , S = Symbol()
+	    , K = 'abcdefghijklmnopqrst';
+	  A[S] = 7;
+	  K.split('').forEach(function(k){ B[k] = k; });
+	  return $assign({}, A)[S] != 7 || Object.keys($assign({}, B)).join('') != K;
+	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+	  var T     = toObject(target)
+	    , aLen  = arguments.length
+	    , index = 1
+	    , getSymbols = gOPS.f
+	    , isEnum     = pIE.f;
+	  while(aLen > index){
+	    var S      = IObject(arguments[index++])
+	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
+	      , length = keys.length
+	      , j      = 0
+	      , key;
+	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
+	  } return T;
+	} : $assign;
+
+/***/ },
+/* 86 */
+/***/ function(module, exports) {
+
+	/**
+	 * Export `uid`
+	 */
+	
+	module.exports = uid;
+	
+	/**
+	 * Create a `uid`
+	 *
+	 * @param {String} len
+	 * @return {String} uid
+	 */
+	
+	function uid(len) {
+	  len = len || 7;
+	  return Math.random().toString(35).substr(2, len);
+	}
+
+
+/***/ },
+/* 87 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {var uppercamelcase = __webpack_require__(89);
+	var statusCodes = __webpack_require__(91);
+	
+	module.exports = WPError;
+	
+	function WPError () {
+	  var self = new Error();
+	
+	  for (var i = 0; i < arguments.length; i++) {
+	    process(self, arguments[i]);
+	  }
+	
+	  if (typeof Error.captureStackTrace === 'function') {
+	    Error.captureStackTrace(self, WPError);
+	  }
+	
+	  return self;
+	}
+	
+	function process ( self, data ) {
+	  if ( ! data ) { 
+	    return;
+	  }
+	  
+	  if (typeof data === 'number') {
+	    setStatusCode( self, data );
+	
+	  } else {
+	    // assume it's a plain 'ol Object with some props to copy over
+	    if ( data.status_code ) {
+	      setStatusCode( self, data.status_code );
+	    }
+	
+	    if ( data.error ) {
+	      self.name = toName( data.error );
+	    }
+	
+	    if ( data.error_description ) {
+	      self.message = data.error_description;
+	    }
+	
+	    var errors = data.errors;
+	    if ( errors ) {
+	      var first = errors.length ? errors[0] : errors;
+	      process( self, first );
+	    }
+	
+	    for ( var i in data ) {
+	      self[i] = data[i];
+	    }
+	
+	    if ( self.status && ( data.method || data.path ) ) {
+	      setStatusCodeMessage( self );
+	    }
+	  }
+	}
+	
+	function setStatusCode ( self, code ) {
+	  self.name = toName( statusCodes[ code ] );
+	  self.status = self.statusCode = code;
+	  setStatusCodeMessage( self );
+	}
+	
+	function setStatusCodeMessage ( self ) {
+	  var code = self.status;
+	  var method = self.method;
+	  var path = self.path;
+	
+	  var m = code + ' status code';
+	  var extended = method || path;
+	
+	  if ( extended ) m += ' for "';
+	  if ( method ) m += method;
+	  if ( extended ) m += ' ';
+	  if ( path ) m += path;
+	  if ( extended ) m += '"';
+	
+	  self.message = m;
+	}
+	
+	function toName ( str ) {
+	  return uppercamelcase( String(str).replace(/error$/i, ''), 'error' );
+	}
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(88)))
+
+/***/ },
+/* 88 */
+/***/ function(module, exports) {
+
+	// shim for using process in browser
+	var process = module.exports = {};
+	
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+	
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+	
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+	
+	
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+	
+	
+	
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+	
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+	
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+	
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+	
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+	
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+	
+	function noop() {}
+	
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+	
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+	
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 89 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var camelCase = __webpack_require__(90);
+	
+	module.exports = function () {
+		var cased = camelCase.apply(camelCase, arguments);
+		return cased.charAt(0).toUpperCase() + cased.slice(1);
+	};
+
+
+/***/ },
+/* 90 */
+/***/ function(module, exports) {
+
+	'use strict';
+	module.exports = function () {
+		var str = [].map.call(arguments, function (str) {
+			return str.trim();
+		}).filter(function (str) {
+			return str.length;
+		}).join('-');
+	
+		if (!str.length) {
+			return '';
+		}
+	
+		if (str.length === 1 || !(/[_.\- ]+/).test(str) ) {
+			if (str[0] === str[0].toLowerCase() && str.slice(1) !== str.slice(1).toLowerCase()) {
+				return str;
+			}
+	
+			return str.toLowerCase();
+		}
+	
+		return str
+		.replace(/^[_.\- ]+/, '')
+		.toLowerCase()
+		.replace(/[_.\- ]+(\w|$)/g, function (m, p1) {
+			return p1.toUpperCase();
+		});
+	};
+
+
+/***/ },
+/* 91 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  "100": "Continue",
+	  "101": "Switching Protocols",
+	  "102": "Processing",
+	  "200": "OK",
+	  "201": "Created",
+	  "202": "Accepted",
+	  "203": "Non-Authoritative Information",
+	  "204": "No Content",
+	  "205": "Reset Content",
+	  "206": "Partial Content",
+	  "207": "Multi-Status",
+	  "208": "Already Reported",
+	  "226": "IM Used",
+	  "300": "Multiple Choices",
+	  "301": "Moved Permanently",
+	  "302": "Found",
+	  "303": "See Other",
+	  "304": "Not Modified",
+	  "305": "Use Proxy",
+	  "307": "Temporary Redirect",
+	  "308": "Permanent Redirect",
+	  "400": "Bad Request",
+	  "401": "Unauthorized",
+	  "402": "Payment Required",
+	  "403": "Forbidden",
+	  "404": "Not Found",
+	  "405": "Method Not Allowed",
+	  "406": "Not Acceptable",
+	  "407": "Proxy Authentication Required",
+	  "408": "Request Timeout",
+	  "409": "Conflict",
+	  "410": "Gone",
+	  "411": "Length Required",
+	  "412": "Precondition Failed",
+	  "413": "Payload Too Large",
+	  "414": "URI Too Long",
+	  "415": "Unsupported Media Type",
+	  "416": "Range Not Satisfiable",
+	  "417": "Expectation Failed",
+	  "418": "I'm a teapot",
+	  "421": "Misdirected Request",
+	  "422": "Unprocessable Entity",
+	  "423": "Locked",
+	  "424": "Failed Dependency",
+	  "425": "Unordered Collection",
+	  "426": "Upgrade Required",
+	  "428": "Precondition Required",
+	  "429": "Too Many Requests",
+	  "431": "Request Header Fields Too Large",
+	  "500": "Internal Server Error",
+	  "501": "Not Implemented",
+	  "502": "Bad Gateway",
+	  "503": "Service Unavailable",
+	  "504": "Gateway Timeout",
+	  "505": "HTTP Version Not Supported",
+	  "506": "Variant Also Negotiates",
+	  "507": "Insufficient Storage",
+	  "508": "Loop Detected",
+	  "509": "Bandwidth Limit Exceeded",
+	  "510": "Not Extended",
+	  "511": "Network Authentication Required"
+	}
+
+
+/***/ },
+/* 92 */
+/***/ function(module, exports) {
+
+	var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
+	    unbind = window.removeEventListener ? 'removeEventListener' : 'detachEvent',
+	    prefix = bind !== 'addEventListener' ? 'on' : '';
+	
+	/**
+	 * Bind `el` event `type` to `fn`.
+	 *
+	 * @param {Element} el
+	 * @param {String} type
+	 * @param {Function} fn
+	 * @param {Boolean} capture
+	 * @return {Function}
+	 * @api public
+	 */
+	
+	exports.bind = function(el, type, fn, capture){
+	  el[bind](prefix + type, fn, capture || false);
+	  return fn;
+	};
+	
+	/**
+	 * Unbind `el` event `type`'s callback `fn`.
+	 *
+	 * @param {Element} el
+	 * @param {String} type
+	 * @param {Function} fn
+	 * @param {Boolean} capture
+	 * @return {Function}
+	 * @api public
+	 */
+	
+	exports.unbind = function(el, type, fn, capture){
+	  el[unbind](prefix + type, fn, capture || false);
+	  return fn;
+	};
+
+/***/ },
+/* 93 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {
+	var NativeProgressEvent = global.ProgressEvent;
+	var useNative = !!NativeProgressEvent;
+	
+	try {
+	  (function () {
+	    var p = new NativeProgressEvent('loaded');
+	    useNative = 'loaded' === p.type;
+	    p = null;
+	  })();
+	} catch (e) {
+	  useNative = false;
+	}
+	
+	/**
+	 * Cross-browser `ProgressEvent` constructor.
+	 *
+	 * https://developer.mozilla.org/en-US/docs/Web/API/ProgressEvent.ProgressEvent
+	 *
+	 * @public
+	 */
+	
+	module.exports = useNative ? NativeProgressEvent :
+	
+	// IE >= 9
+	'function' === typeof document.createEvent ? function ProgressEvent (type, props) {
+	  var e = document.createEvent('Event');
+	  e.initEvent(type, false, false);
+	  if (props) {
+	    e.lengthComputable = Boolean(props.lengthComputable);
+	    e.loaded = Number(props.loaded) || 0;
+	    e.total = Number(props.total) || 0;
+	  } else {
+	    e.lengthComputable = false;
+	    e.loaded = e.total = 0;
+	  }
+	  return e;
+	} :
+	
+	// IE <= 8
+	function ProgressEvent (type, props) {
+	  var e = document.createEventObject();
+	  e.type = type;
+	  if (props) {
+	    e.lengthComputable = Boolean(props.lengthComputable);
+	    e.loaded = Number(props.loaded) || 0;
+	    e.total = Number(props.total) || 0;
+	  } else {
+	    e.lengthComputable = false;
+	    e.loaded = e.total = 0;
+	  }
+	  return e;
+	}
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 * This is the web browser implementation of `debug()`.
+	 *
+	 * Expose `debug()` as the module.
+	 */
+	
+	exports = module.exports = __webpack_require__(95);
+	exports.log = log;
+	exports.formatArgs = formatArgs;
+	exports.save = save;
+	exports.load = load;
+	exports.useColors = useColors;
+	exports.storage = 'undefined' != typeof chrome
+	               && 'undefined' != typeof chrome.storage
+	                  ? chrome.storage.local
+	                  : localstorage();
+	
+	/**
+	 * Colors.
+	 */
+	
+	exports.colors = [
+	  'lightseagreen',
+	  'forestgreen',
+	  'goldenrod',
+	  'dodgerblue',
+	  'darkorchid',
+	  'crimson'
+	];
+	
+	/**
+	 * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+	 * and the Firebug extension (any Firefox version) are known
+	 * to support "%c" CSS customizations.
+	 *
+	 * TODO: add a `localStorage` variable to explicitly enable/disable colors
+	 */
+	
+	function useColors() {
+	  // is webkit? http://stackoverflow.com/a/16459606/376773
+	  return ('WebkitAppearance' in document.documentElement.style) ||
+	    // is firebug? http://stackoverflow.com/a/398120/376773
+	    (window.console && (console.firebug || (console.exception && console.table))) ||
+	    // is firefox >= v31?
+	    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+	    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+	}
+	
+	/**
+	 * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+	 */
+	
+	exports.formatters.j = function(v) {
+	  return JSON.stringify(v);
+	};
+	
+	
+	/**
+	 * Colorize log arguments if enabled.
+	 *
+	 * @api public
+	 */
+	
+	function formatArgs() {
+	  var args = arguments;
+	  var useColors = this.useColors;
+	
+	  args[0] = (useColors ? '%c' : '')
+	    + this.namespace
+	    + (useColors ? ' %c' : ' ')
+	    + args[0]
+	    + (useColors ? '%c ' : ' ')
+	    + '+' + exports.humanize(this.diff);
+	
+	  if (!useColors) return args;
+	
+	  var c = 'color: ' + this.color;
+	  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+	
+	  // the final "%c" is somewhat tricky, because there could be other
+	  // arguments passed either before or after the %c, so we need to
+	  // figure out the correct index to insert the CSS into
+	  var index = 0;
+	  var lastC = 0;
+	  args[0].replace(/%[a-z%]/g, function(match) {
+	    if ('%%' === match) return;
+	    index++;
+	    if ('%c' === match) {
+	      // we only are interested in the *last* %c
+	      // (the user may have provided their own)
+	      lastC = index;
+	    }
+	  });
+	
+	  args.splice(lastC, 0, c);
+	  return args;
+	}
+	
+	/**
+	 * Invokes `console.log()` when available.
+	 * No-op when `console.log` is not a "function".
+	 *
+	 * @api public
+	 */
+	
+	function log() {
+	  // this hackery is required for IE8/9, where
+	  // the `console.log` function doesn't have 'apply'
+	  return 'object' === typeof console
+	    && console.log
+	    && Function.prototype.apply.call(console.log, console, arguments);
+	}
+	
+	/**
+	 * Save `namespaces`.
+	 *
+	 * @param {String} namespaces
+	 * @api private
+	 */
+	
+	function save(namespaces) {
+	  try {
+	    if (null == namespaces) {
+	      exports.storage.removeItem('debug');
+	    } else {
+	      exports.storage.debug = namespaces;
+	    }
+	  } catch(e) {}
+	}
+	
+	/**
+	 * Load `namespaces`.
+	 *
+	 * @return {String} returns the previously persisted debug modes
+	 * @api private
+	 */
+	
+	function load() {
+	  var r;
+	  try {
+	    r = exports.storage.debug;
+	  } catch(e) {}
+	  return r;
+	}
+	
+	/**
+	 * Enable namespaces listed in `localStorage.debug` initially.
+	 */
+	
+	exports.enable(load());
+	
+	/**
+	 * Localstorage attempts to return the localstorage.
+	 *
+	 * This is necessary because safari throws
+	 * when a user disables cookies/localstorage
+	 * and you attempt to access it.
+	 *
+	 * @return {LocalStorage}
+	 * @api private
+	 */
+	
+	function localstorage(){
+	  try {
+	    return window.localStorage;
+	  } catch (e) {}
+	}
+
+
+/***/ },
+/* 95 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 * This is the common logic for both the Node.js and web browser
+	 * implementations of `debug()`.
+	 *
+	 * Expose `debug()` as the module.
+	 */
+	
+	exports = module.exports = debug;
+	exports.coerce = coerce;
+	exports.disable = disable;
+	exports.enable = enable;
+	exports.enabled = enabled;
+	exports.humanize = __webpack_require__(96);
+	
+	/**
+	 * The currently active debug mode names, and names to skip.
+	 */
+	
+	exports.names = [];
+	exports.skips = [];
+	
+	/**
+	 * Map of special "%n" handling functions, for the debug "format" argument.
+	 *
+	 * Valid key names are a single, lowercased letter, i.e. "n".
+	 */
+	
+	exports.formatters = {};
+	
+	/**
+	 * Previously assigned color.
+	 */
+	
+	var prevColor = 0;
+	
+	/**
+	 * Previous log timestamp.
+	 */
+	
+	var prevTime;
+	
+	/**
+	 * Select a color.
+	 *
+	 * @return {Number}
+	 * @api private
+	 */
+	
+	function selectColor() {
+	  return exports.colors[prevColor++ % exports.colors.length];
+	}
+	
+	/**
+	 * Create a debugger with the given `namespace`.
+	 *
+	 * @param {String} namespace
+	 * @return {Function}
+	 * @api public
+	 */
+	
+	function debug(namespace) {
+	
+	  // define the `disabled` version
+	  function disabled() {
+	  }
+	  disabled.enabled = false;
+	
+	  // define the `enabled` version
+	  function enabled() {
+	
+	    var self = enabled;
+	
+	    // set `diff` timestamp
+	    var curr = +new Date();
+	    var ms = curr - (prevTime || curr);
+	    self.diff = ms;
+	    self.prev = prevTime;
+	    self.curr = curr;
+	    prevTime = curr;
+	
+	    // add the `color` if not set
+	    if (null == self.useColors) self.useColors = exports.useColors();
+	    if (null == self.color && self.useColors) self.color = selectColor();
+	
+	    var args = Array.prototype.slice.call(arguments);
+	
+	    args[0] = exports.coerce(args[0]);
+	
+	    if ('string' !== typeof args[0]) {
+	      // anything else let's inspect with %o
+	      args = ['%o'].concat(args);
+	    }
+	
+	    // apply any `formatters` transformations
+	    var index = 0;
+	    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+	      // if we encounter an escaped % then don't increase the array index
+	      if (match === '%%') return match;
+	      index++;
+	      var formatter = exports.formatters[format];
+	      if ('function' === typeof formatter) {
+	        var val = args[index];
+	        match = formatter.call(self, val);
+	
+	        // now we need to remove `args[index]` since it's inlined in the `format`
+	        args.splice(index, 1);
+	        index--;
+	      }
+	      return match;
+	    });
+	
+	    if ('function' === typeof exports.formatArgs) {
+	      args = exports.formatArgs.apply(self, args);
+	    }
+	    var logFn = enabled.log || exports.log || console.log.bind(console);
+	    logFn.apply(self, args);
+	  }
+	  enabled.enabled = true;
+	
+	  var fn = exports.enabled(namespace) ? enabled : disabled;
+	
+	  fn.namespace = namespace;
+	
+	  return fn;
+	}
+	
+	/**
+	 * Enables a debug mode by namespaces. This can include modes
+	 * separated by a colon and wildcards.
+	 *
+	 * @param {String} namespaces
+	 * @api public
+	 */
+	
+	function enable(namespaces) {
+	  exports.save(namespaces);
+	
+	  var split = (namespaces || '').split(/[\s,]+/);
+	  var len = split.length;
+	
+	  for (var i = 0; i < len; i++) {
+	    if (!split[i]) continue; // ignore empty strings
+	    namespaces = split[i].replace(/\*/g, '.*?');
+	    if (namespaces[0] === '-') {
+	      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+	    } else {
+	      exports.names.push(new RegExp('^' + namespaces + '$'));
+	    }
+	  }
+	}
+	
+	/**
+	 * Disable debug output.
+	 *
+	 * @api public
+	 */
+	
+	function disable() {
+	  exports.enable('');
+	}
+	
+	/**
+	 * Returns true if the given mode name is enabled, false otherwise.
+	 *
+	 * @param {String} name
+	 * @return {Boolean}
+	 * @api public
+	 */
+	
+	function enabled(name) {
+	  var i, len;
+	  for (i = 0, len = exports.skips.length; i < len; i++) {
+	    if (exports.skips[i].test(name)) {
+	      return false;
+	    }
+	  }
+	  for (i = 0, len = exports.names.length; i < len; i++) {
+	    if (exports.names[i].test(name)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+	
+	/**
+	 * Coerce `val`.
+	 *
+	 * @param {Mixed} val
+	 * @return {Mixed}
+	 * @api private
+	 */
+	
+	function coerce(val) {
+	  if (val instanceof Error) return val.stack || val.message;
+	  return val;
+	}
+
+
+/***/ },
+/* 96 */
+/***/ function(module, exports) {
+
+	/**
+	 * Helpers.
+	 */
+	
+	var s = 1000;
+	var m = s * 60;
+	var h = m * 60;
+	var d = h * 24;
+	var y = d * 365.25;
+	
+	/**
+	 * Parse or format the given `val`.
+	 *
+	 * Options:
+	 *
+	 *  - `long` verbose formatting [false]
+	 *
+	 * @param {String|Number} val
+	 * @param {Object} options
+	 * @return {String|Number}
+	 * @api public
+	 */
+	
+	module.exports = function(val, options){
+	  options = options || {};
+	  if ('string' == typeof val) return parse(val);
+	  return options.long
+	    ? long(val)
+	    : short(val);
+	};
+	
+	/**
+	 * Parse the given `str` and return milliseconds.
+	 *
+	 * @param {String} str
+	 * @return {Number}
+	 * @api private
+	 */
+	
+	function parse(str) {
+	  str = '' + str;
+	  if (str.length > 10000) return;
+	  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
+	  if (!match) return;
+	  var n = parseFloat(match[1]);
+	  var type = (match[2] || 'ms').toLowerCase();
+	  switch (type) {
+	    case 'years':
+	    case 'year':
+	    case 'yrs':
+	    case 'yr':
+	    case 'y':
+	      return n * y;
+	    case 'days':
+	    case 'day':
+	    case 'd':
+	      return n * d;
+	    case 'hours':
+	    case 'hour':
+	    case 'hrs':
+	    case 'hr':
+	    case 'h':
+	      return n * h;
+	    case 'minutes':
+	    case 'minute':
+	    case 'mins':
+	    case 'min':
+	    case 'm':
+	      return n * m;
+	    case 'seconds':
+	    case 'second':
+	    case 'secs':
+	    case 'sec':
+	    case 's':
+	      return n * s;
+	    case 'milliseconds':
+	    case 'millisecond':
+	    case 'msecs':
+	    case 'msec':
+	    case 'ms':
+	      return n;
+	  }
+	}
+	
+	/**
+	 * Short format for `ms`.
+	 *
+	 * @param {Number} ms
+	 * @return {String}
+	 * @api private
+	 */
+	
+	function short(ms) {
+	  if (ms >= d) return Math.round(ms / d) + 'd';
+	  if (ms >= h) return Math.round(ms / h) + 'h';
+	  if (ms >= m) return Math.round(ms / m) + 'm';
+	  if (ms >= s) return Math.round(ms / s) + 's';
+	  return ms + 'ms';
+	}
+	
+	/**
+	 * Long format for `ms`.
+	 *
+	 * @param {Number} ms
+	 * @return {String}
+	 * @api private
+	 */
+	
+	function long(ms) {
+	  return plural(ms, d, 'day')
+	    || plural(ms, h, 'hour')
+	    || plural(ms, m, 'minute')
+	    || plural(ms, s, 'second')
+	    || ms + ' ms';
+	}
+	
+	/**
+	 * Pluralization helper.
+	 */
+	
+	function plural(ms, n, name) {
+	  if (ms < n) return;
+	  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
+	  return Math.ceil(ms / n) + ' ' + name + 's';
+	}
+
+
+/***/ },
+/* 97 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _promise = __webpack_require__(98);
+	
+	var _promise2 = _interopRequireDefault(_promise);
+	
+	exports.default = WPCOM;
+	
+	var _wpcomXhrRequest = __webpack_require__(114);
+	
+	var _wpcomXhrRequest2 = _interopRequireDefault(_wpcomXhrRequest);
+	
+	var _debug = __webpack_require__(94);
+	
+	var _debug2 = _interopRequireDefault(_debug);
+	
+	var _batch = __webpack_require__(120);
+	
+	var _batch2 = _interopRequireDefault(_batch);
+	
+	var _domain = __webpack_require__(126);
+	
+	var _domain2 = _interopRequireDefault(_domain);
+	
+	var _domains = __webpack_require__(129);
+	
+	var _domains2 = _interopRequireDefault(_domains);
+	
+	var _marketing = __webpack_require__(130);
+	
+	var _marketing2 = _interopRequireDefault(_marketing);
+	
+	var _me = __webpack_require__(133);
+	
+	var _me2 = _interopRequireDefault(_me);
+	
+	var _pinghub = __webpack_require__(142);
+	
+	var _pinghub2 = _interopRequireDefault(_pinghub);
+	
+	var _plans = __webpack_require__(143);
+	
+	var _plans2 = _interopRequireDefault(_plans);
+	
+	var _request = __webpack_require__(144);
+	
+	var _request2 = _interopRequireDefault(_request);
+	
+	var _site = __webpack_require__(150);
+	
+	var _site2 = _interopRequireDefault(_site);
+	
+	var _users = __webpack_require__(177);
+	
+	var _users2 = _interopRequireDefault(_users);
+	
+	var _sendRequest = __webpack_require__(145);
+	
+	var _sendRequest2 = _interopRequireDefault(_sendRequest);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/**
+	 * Local module constants
+	 */
+	var debug = (0, _debug2.default)('wpcom');
+	
+	/**
+	 * Local module dependencies.
+	 */
+	/**
+	 * Module dependencies.
+	 */
+	
+	var DEFAULT_ASYNC_TIMEOUT = 30000;
+	
+	/**
+	 * XMLHttpRequest (and CORS) API access method.
+	 *
+	 * API authentication is done via an (optional) access `token`,
+	 * which needs to be retrieved via OAuth.
+	 *
+	 * Request Handler is optional and XHR is defined as default.
+	 *
+	 * @param {String} [token] - OAuth API access token
+	 * @param {Function} [reqHandler] - function Request Handler
+	 * @return {WPCOM} wpcom instance
+	 */
+	function WPCOM(token, reqHandler) {
+		if (!(this instanceof WPCOM)) {
+			return new WPCOM(token, reqHandler);
+		}
+	
+		// `token` is optional
+		if ('function' === typeof token) {
+			reqHandler = token;
+			token = null;
+		}
+	
+		if (token) {
+			debug('Token defined: %s…', token.substring(0, 6));
+			this.token = token;
+		}
+	
+		// Set default request handler
+		if (!reqHandler) {
+			debug('No request handler. Adding default XHR request handler');
+	
+			this.request = function (params, fn) {
+				params = params || {};
+	
+				// token is optional
+				if (token) {
+					params.authToken = token;
+				}
+	
+				return (0, _wpcomXhrRequest2.default)(params, fn);
+			};
+		} else {
+			this.request = reqHandler;
+		}
+	
+		// Add Req instance
+		this.req = new _request2.default(this);
+	
+		// Add Pinghub instance
+		this.pinghub = new _pinghub2.default(this);
+	
+		// Default api version;
+		this.apiVersion = '1.1';
+	}
+	
+	/**
+	 * Return `Marketing` object instance
+	 *
+	 * @return {Marketing} Marketing instance
+	 */
+	WPCOM.prototype.marketing = function () {
+		return new _marketing2.default(this);
+	};
+	
+	/**
+	 * Return `Me` object instance
+	 *
+	 * @return {Me} Me instance
+	 */
+	WPCOM.prototype.me = function () {
+		return new _me2.default(this);
+	};
+	
+	/**
+	 * Return `Domains` object instance
+	 *
+	 * @return {Domains} Domains instance
+	 */
+	WPCOM.prototype.domains = function () {
+		return new _domains2.default(this);
+	};
+	
+	/**
+	 * Return `Domain` object instance
+	 *
+	 * @param {String} domainId - domain identifier
+	 * @return {Domain} Domain instance
+	 */
+	WPCOM.prototype.domain = function (domainId) {
+		return new _domain2.default(domainId, this);
+	};
+	
+	/**
+	 * Return `Site` object instance
+	 *
+	 * @param {String} id - site identifier
+	 * @return {Site} Site instance
+	 */
+	WPCOM.prototype.site = function (id) {
+		return new _site2.default(id, this);
+	};
+	
+	/**
+	 * Return `Users` object instance
+	 *
+	 * @return {Users} Users instance
+	 */
+	WPCOM.prototype.users = function () {
+		return new _users2.default(this);
+	};
+	
+	/**
+	 * Return `Plans` object instance
+	 *
+	 * @return {Plans} Plans instance
+	 */
+	WPCOM.prototype.plans = function () {
+		return new _plans2.default(this);
+	};
+	
+	/**
+	* Return `Batch` object instance
+	*
+	* @return {Batch} Batch instance
+	*/
+	WPCOM.prototype.batch = function () {
+		return new _batch2.default(this);
+	};
+	
+	/**
+	 * List Freshly Pressed Posts
+	 *
+	 * @param {Object} [query] - query object
+	 * @param {Function} fn - callback function
+	 * @return {Function} request handler
+	 */
+	WPCOM.prototype.freshlyPressed = function (query, fn) {
+		return this.req.get('/freshly-pressed', query, fn);
+	};
+	
+	/**
+	 * Expose send-request
+	 * @TODO: use `this.req` instead of this method
+	 */
+	WPCOM.prototype.sendRequest = function (params, query, body, fn) {
+		var msg = 'WARN! Don use `sendRequest() anymore. Use `this.req` method.';
+	
+		if (console && console.warn) {
+			console.warn(msg);
+		} else {
+			console.log(msg);
+		}
+	
+		return _sendRequest2.default.call(this, params, query, body, fn);
+	};
+	
+	/**
+	 * Re-export all the class types.
+	 */
+	WPCOM.Batch = _batch2.default;
+	WPCOM.Domain = _domain2.default;
+	WPCOM.Domains = _domains2.default;
+	WPCOM.Marketing = _marketing2.default;
+	WPCOM.Me = _me2.default;
+	WPCOM.Pinghub = _pinghub2.default;
+	WPCOM.Plans = _plans2.default;
+	WPCOM.Request = _request2.default;
+	WPCOM.Site = _site2.default;
+	WPCOM.Users = _users2.default;
+	
+	if (!_promise2.default.prototype.timeout) {
+		/**
+	 * Returns a new promise with a deadline
+	 *
+	 * After the timeout interval, the promise will
+	 * reject. If the actual promise settles before
+	 * the deadline, the timer is cancelled.
+	 *
+	 * @param {number} delay how many ms to wait
+	 * @return {Promise} promise
+	 */
+		_promise2.default.prototype.timeout = function () {
+			var _this = this;
+	
+			var delay = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : DEFAULT_ASYNC_TIMEOUT;
+	
+			var cancelTimeout = void 0,
+			    timer = void 0,
+			    timeout = void 0;
+	
+			timeout = new _promise2.default(function (resolve, reject) {
+				timer = setTimeout(function () {
+					reject(new Error('Action timed out while waiting for response.'));
+				}, delay);
+			});
+	
+			cancelTimeout = function cancelTimeout() {
+				clearTimeout(timer);
+				return _this;
+			};
+	
+			return _promise2.default.race([this.then(cancelTimeout).catch(cancelTimeout), timeout]);
+		};
+	}
+	module.exports = exports['default'];
+	
+	//# sourceMappingURL=index.js.map
+
+/***/ },
+/* 98 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(99), __esModule: true };
+
+/***/ },
+/* 99 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(77);
+	__webpack_require__(15);
+	__webpack_require__(59);
+	__webpack_require__(100);
+	module.exports = __webpack_require__(23).Promise;
+
+/***/ },
+/* 100 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 	var LIBRARY            = __webpack_require__(20)
 	  , global             = __webpack_require__(22)
 	  , ctx                = __webpack_require__(24)
-	  , classof            = __webpack_require__(64)
+	  , classof            = __webpack_require__(101)
 	  , $export            = __webpack_require__(21)
 	  , isObject           = __webpack_require__(29)
 	  , aFunction          = __webpack_require__(25)
-	  , anInstance         = __webpack_require__(65)
-	  , forOf              = __webpack_require__(66)
-	  , speciesConstructor = __webpack_require__(70)
-	  , task               = __webpack_require__(71).set
-	  , microtask          = __webpack_require__(73)()
+	  , anInstance         = __webpack_require__(102)
+	  , forOf              = __webpack_require__(103)
+	  , speciesConstructor = __webpack_require__(107)
+	  , task               = __webpack_require__(108).set
+	  , microtask          = __webpack_require__(110)()
 	  , PROMISE            = 'Promise'
 	  , TypeError          = global.TypeError
 	  , process            = global.process
@@ -3594,7 +5792,7 @@ var WPCOM =
 	    this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
 	    this._n = false;          // <- notify
 	  };
-	  Internal.prototype = __webpack_require__(74)($Promise.prototype, {
+	  Internal.prototype = __webpack_require__(111)($Promise.prototype, {
 	    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
 	    then: function then(onFulfilled, onRejected){
 	      var reaction    = newPromiseCapability(speciesConstructor(this, $Promise));
@@ -3621,7 +5819,7 @@ var WPCOM =
 	
 	$export($export.G + $export.W + $export.F * !USE_NATIVE, {Promise: $Promise});
 	__webpack_require__(55)($Promise, PROMISE);
-	__webpack_require__(75)(PROMISE);
+	__webpack_require__(112)(PROMISE);
 	Wrapper = __webpack_require__(23)[PROMISE];
 	
 	// statics
@@ -3645,7 +5843,7 @@ var WPCOM =
 	    return capability.promise;
 	  }
 	});
-	$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(76)(function(iter){
+	$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(113)(function(iter){
 	  $Promise.all(iter)['catch'](empty);
 	})), PROMISE, {
 	  // 25.4.4.1 Promise.all(iterable)
@@ -3691,7 +5889,7 @@ var WPCOM =
 	});
 
 /***/ },
-/* 64 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// getting tag from 19.1.3.6 Object.prototype.toString()
@@ -3719,7 +5917,7 @@ var WPCOM =
 	};
 
 /***/ },
-/* 65 */
+/* 102 */
 /***/ function(module, exports) {
 
 	module.exports = function(it, Constructor, name, forbiddenField){
@@ -3729,15 +5927,15 @@ var WPCOM =
 	};
 
 /***/ },
-/* 66 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ctx         = __webpack_require__(24)
-	  , call        = __webpack_require__(67)
-	  , isArrayIter = __webpack_require__(68)
+	  , call        = __webpack_require__(104)
+	  , isArrayIter = __webpack_require__(105)
 	  , anObject    = __webpack_require__(28)
 	  , toLength    = __webpack_require__(48)
-	  , getIterFn   = __webpack_require__(69)
+	  , getIterFn   = __webpack_require__(106)
 	  , BREAK       = {}
 	  , RETURN      = {};
 	var exports = module.exports = function(iterable, entries, fn, that, ITERATOR){
@@ -3759,7 +5957,7 @@ var WPCOM =
 	exports.RETURN = RETURN;
 
 /***/ },
-/* 67 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// call something on iterator step with safe closing on error
@@ -3776,7 +5974,7 @@ var WPCOM =
 	};
 
 /***/ },
-/* 68 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// check on default Array iterator
@@ -3789,10 +5987,10 @@ var WPCOM =
 	};
 
 /***/ },
-/* 69 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(64)
+	var classof   = __webpack_require__(101)
 	  , ITERATOR  = __webpack_require__(56)('iterator')
 	  , Iterators = __webpack_require__(38);
 	module.exports = __webpack_require__(23).getIteratorMethod = function(it){
@@ -3802,7 +6000,7 @@ var WPCOM =
 	};
 
 /***/ },
-/* 70 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 7.3.20 SpeciesConstructor(O, defaultConstructor)
@@ -3815,11 +6013,11 @@ var WPCOM =
 	};
 
 /***/ },
-/* 71 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ctx                = __webpack_require__(24)
-	  , invoke             = __webpack_require__(72)
+	  , invoke             = __webpack_require__(109)
 	  , html               = __webpack_require__(54)
 	  , cel                = __webpack_require__(33)
 	  , global             = __webpack_require__(22)
@@ -3895,7 +6093,7 @@ var WPCOM =
 	};
 
 /***/ },
-/* 72 */
+/* 109 */
 /***/ function(module, exports) {
 
 	// fast apply, http://jsperf.lnkit.com/fast-apply/5
@@ -3916,11 +6114,11 @@ var WPCOM =
 	};
 
 /***/ },
-/* 73 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var global    = __webpack_require__(22)
-	  , macrotask = __webpack_require__(71).set
+	  , macrotask = __webpack_require__(108).set
 	  , Observer  = global.MutationObserver || global.WebKitMutationObserver
 	  , process   = global.process
 	  , Promise   = global.Promise
@@ -3989,7 +6187,7 @@ var WPCOM =
 	};
 
 /***/ },
-/* 74 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var hide = __webpack_require__(26);
@@ -4001,7 +6199,7 @@ var WPCOM =
 	};
 
 /***/ },
-/* 75 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4020,7 +6218,7 @@ var WPCOM =
 	};
 
 /***/ },
-/* 76 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ITERATOR     = __webpack_require__(56)('iterator')
@@ -4046,7 +6244,7 @@ var WPCOM =
 	};
 
 /***/ },
-/* 77 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4055,17 +6253,17 @@ var WPCOM =
 		value: true
 	});
 	
-	var _assign = __webpack_require__(78);
+	var _assign = __webpack_require__(82);
 	
 	var _assign2 = _interopRequireDefault(_assign);
 	
 	exports.default = request;
 	
-	var _wpError = __webpack_require__(84);
+	var _wpError = __webpack_require__(87);
 	
 	var _wpError2 = _interopRequireDefault(_wpError);
 	
-	var _superagent = __webpack_require__(89);
+	var _superagent = __webpack_require__(115);
 	
 	var _superagent2 = _interopRequireDefault(_superagent);
 	
@@ -4264,470 +6462,7 @@ var WPCOM =
 	//# sourceMappingURL=index.js.map
 
 /***/ },
-/* 78 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(79), __esModule: true };
-
-/***/ },
-/* 79 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(80);
-	module.exports = __webpack_require__(23).Object.assign;
-
-/***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.3.1 Object.assign(target, source)
-	var $export = __webpack_require__(21);
-	
-	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(81)});
-
-/***/ },
-/* 81 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	// 19.1.2.1 Object.assign(target, source, ...)
-	var getKeys  = __webpack_require__(42)
-	  , gOPS     = __webpack_require__(82)
-	  , pIE      = __webpack_require__(83)
-	  , toObject = __webpack_require__(58)
-	  , IObject  = __webpack_require__(45)
-	  , $assign  = Object.assign;
-	
-	// should work with symbols and should have deterministic property order (V8 bug)
-	module.exports = !$assign || __webpack_require__(32)(function(){
-	  var A = {}
-	    , B = {}
-	    , S = Symbol()
-	    , K = 'abcdefghijklmnopqrst';
-	  A[S] = 7;
-	  K.split('').forEach(function(k){ B[k] = k; });
-	  return $assign({}, A)[S] != 7 || Object.keys($assign({}, B)).join('') != K;
-	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
-	  var T     = toObject(target)
-	    , aLen  = arguments.length
-	    , index = 1
-	    , getSymbols = gOPS.f
-	    , isEnum     = pIE.f;
-	  while(aLen > index){
-	    var S      = IObject(arguments[index++])
-	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
-	      , length = keys.length
-	      , j      = 0
-	      , key;
-	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
-	  } return T;
-	} : $assign;
-
-/***/ },
-/* 82 */
-/***/ function(module, exports) {
-
-	exports.f = Object.getOwnPropertySymbols;
-
-/***/ },
-/* 83 */
-/***/ function(module, exports) {
-
-	exports.f = {}.propertyIsEnumerable;
-
-/***/ },
-/* 84 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {var uppercamelcase = __webpack_require__(86);
-	var statusCodes = __webpack_require__(88);
-	
-	module.exports = WPError;
-	
-	function WPError () {
-	  var self = new Error();
-	
-	  for (var i = 0; i < arguments.length; i++) {
-	    process(self, arguments[i]);
-	  }
-	
-	  if (typeof Error.captureStackTrace === 'function') {
-	    Error.captureStackTrace(self, WPError);
-	  }
-	
-	  return self;
-	}
-	
-	function process ( self, data ) {
-	  if ( ! data ) { 
-	    return;
-	  }
-	  
-	  if (typeof data === 'number') {
-	    setStatusCode( self, data );
-	
-	  } else {
-	    // assume it's a plain 'ol Object with some props to copy over
-	    if ( data.status_code ) {
-	      setStatusCode( self, data.status_code );
-	    }
-	
-	    if ( data.error ) {
-	      self.name = toName( data.error );
-	    }
-	
-	    if ( data.error_description ) {
-	      self.message = data.error_description;
-	    }
-	
-	    var errors = data.errors;
-	    if ( errors ) {
-	      var first = errors.length ? errors[0] : errors;
-	      process( self, first );
-	    }
-	
-	    for ( var i in data ) {
-	      self[i] = data[i];
-	    }
-	
-	    if ( self.status && ( data.method || data.path ) ) {
-	      setStatusCodeMessage( self );
-	    }
-	  }
-	}
-	
-	function setStatusCode ( self, code ) {
-	  self.name = toName( statusCodes[ code ] );
-	  self.status = self.statusCode = code;
-	  setStatusCodeMessage( self );
-	}
-	
-	function setStatusCodeMessage ( self ) {
-	  var code = self.status;
-	  var method = self.method;
-	  var path = self.path;
-	
-	  var m = code + ' status code';
-	  var extended = method || path;
-	
-	  if ( extended ) m += ' for "';
-	  if ( method ) m += method;
-	  if ( extended ) m += ' ';
-	  if ( path ) m += path;
-	  if ( extended ) m += '"';
-	
-	  self.message = m;
-	}
-	
-	function toName ( str ) {
-	  return uppercamelcase( String(str).replace(/error$/i, ''), 'error' );
-	}
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(85)))
-
-/***/ },
-/* 85 */
-/***/ function(module, exports) {
-
-	// shim for using process in browser
-	var process = module.exports = {};
-	
-	// cached from whatever global is present so that test runners that stub it
-	// don't break things.  But we need to wrap it in a try catch in case it is
-	// wrapped in strict mode code which doesn't define any globals.  It's inside a
-	// function because try/catches deoptimize in certain engines.
-	
-	var cachedSetTimeout;
-	var cachedClearTimeout;
-	
-	function defaultSetTimout() {
-	    throw new Error('setTimeout has not been defined');
-	}
-	function defaultClearTimeout () {
-	    throw new Error('clearTimeout has not been defined');
-	}
-	(function () {
-	    try {
-	        if (typeof setTimeout === 'function') {
-	            cachedSetTimeout = setTimeout;
-	        } else {
-	            cachedSetTimeout = defaultSetTimout;
-	        }
-	    } catch (e) {
-	        cachedSetTimeout = defaultSetTimout;
-	    }
-	    try {
-	        if (typeof clearTimeout === 'function') {
-	            cachedClearTimeout = clearTimeout;
-	        } else {
-	            cachedClearTimeout = defaultClearTimeout;
-	        }
-	    } catch (e) {
-	        cachedClearTimeout = defaultClearTimeout;
-	    }
-	} ())
-	function runTimeout(fun) {
-	    if (cachedSetTimeout === setTimeout) {
-	        //normal enviroments in sane situations
-	        return setTimeout(fun, 0);
-	    }
-	    // if setTimeout wasn't available but was latter defined
-	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-	        cachedSetTimeout = setTimeout;
-	        return setTimeout(fun, 0);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedSetTimeout(fun, 0);
-	    } catch(e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-	            return cachedSetTimeout.call(null, fun, 0);
-	        } catch(e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-	            return cachedSetTimeout.call(this, fun, 0);
-	        }
-	    }
-	
-	
-	}
-	function runClearTimeout(marker) {
-	    if (cachedClearTimeout === clearTimeout) {
-	        //normal enviroments in sane situations
-	        return clearTimeout(marker);
-	    }
-	    // if clearTimeout wasn't available but was latter defined
-	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-	        cachedClearTimeout = clearTimeout;
-	        return clearTimeout(marker);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedClearTimeout(marker);
-	    } catch (e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-	            return cachedClearTimeout.call(null, marker);
-	        } catch (e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-	            return cachedClearTimeout.call(this, marker);
-	        }
-	    }
-	
-	
-	
-	}
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-	
-	function cleanUpNextTick() {
-	    if (!draining || !currentQueue) {
-	        return;
-	    }
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-	
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = runTimeout(cleanUpNextTick);
-	    draining = true;
-	
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    runClearTimeout(timeout);
-	}
-	
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        runTimeout(drainQueue);
-	    }
-	};
-	
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-	
-	function noop() {}
-	
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-	
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-	
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
-
-/***/ },
-/* 86 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var camelCase = __webpack_require__(87);
-	
-	module.exports = function () {
-		var cased = camelCase.apply(camelCase, arguments);
-		return cased.charAt(0).toUpperCase() + cased.slice(1);
-	};
-
-
-/***/ },
-/* 87 */
-/***/ function(module, exports) {
-
-	'use strict';
-	module.exports = function () {
-		var str = [].map.call(arguments, function (str) {
-			return str.trim();
-		}).filter(function (str) {
-			return str.length;
-		}).join('-');
-	
-		if (!str.length) {
-			return '';
-		}
-	
-		if (str.length === 1 || !(/[_.\- ]+/).test(str) ) {
-			if (str[0] === str[0].toLowerCase() && str.slice(1) !== str.slice(1).toLowerCase()) {
-				return str;
-			}
-	
-			return str.toLowerCase();
-		}
-	
-		return str
-		.replace(/^[_.\- ]+/, '')
-		.toLowerCase()
-		.replace(/[_.\- ]+(\w|$)/g, function (m, p1) {
-			return p1.toUpperCase();
-		});
-	};
-
-
-/***/ },
-/* 88 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  "100": "Continue",
-	  "101": "Switching Protocols",
-	  "102": "Processing",
-	  "200": "OK",
-	  "201": "Created",
-	  "202": "Accepted",
-	  "203": "Non-Authoritative Information",
-	  "204": "No Content",
-	  "205": "Reset Content",
-	  "206": "Partial Content",
-	  "207": "Multi-Status",
-	  "208": "Already Reported",
-	  "226": "IM Used",
-	  "300": "Multiple Choices",
-	  "301": "Moved Permanently",
-	  "302": "Found",
-	  "303": "See Other",
-	  "304": "Not Modified",
-	  "305": "Use Proxy",
-	  "307": "Temporary Redirect",
-	  "308": "Permanent Redirect",
-	  "400": "Bad Request",
-	  "401": "Unauthorized",
-	  "402": "Payment Required",
-	  "403": "Forbidden",
-	  "404": "Not Found",
-	  "405": "Method Not Allowed",
-	  "406": "Not Acceptable",
-	  "407": "Proxy Authentication Required",
-	  "408": "Request Timeout",
-	  "409": "Conflict",
-	  "410": "Gone",
-	  "411": "Length Required",
-	  "412": "Precondition Failed",
-	  "413": "Payload Too Large",
-	  "414": "URI Too Long",
-	  "415": "Unsupported Media Type",
-	  "416": "Range Not Satisfiable",
-	  "417": "Expectation Failed",
-	  "418": "I'm a teapot",
-	  "421": "Misdirected Request",
-	  "422": "Unprocessable Entity",
-	  "423": "Locked",
-	  "424": "Failed Dependency",
-	  "425": "Unordered Collection",
-	  "426": "Upgrade Required",
-	  "428": "Precondition Required",
-	  "429": "Too Many Requests",
-	  "431": "Request Header Fields Too Large",
-	  "500": "Internal Server Error",
-	  "501": "Not Implemented",
-	  "502": "Bad Gateway",
-	  "503": "Service Unavailable",
-	  "504": "Gateway Timeout",
-	  "505": "HTTP Version Not Supported",
-	  "506": "Variant Also Negotiates",
-	  "507": "Insufficient Storage",
-	  "508": "Loop Detected",
-	  "509": "Bandwidth Limit Exceeded",
-	  "510": "Not Extended",
-	  "511": "Network Authentication Required"
-	}
-
-
-/***/ },
-/* 89 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4744,9 +6479,9 @@ var WPCOM =
 	  root = this;
 	}
 	
-	var Emitter = __webpack_require__(90);
-	var requestBase = __webpack_require__(91);
-	var isObject = __webpack_require__(92);
+	var Emitter = __webpack_require__(116);
+	var requestBase = __webpack_require__(117);
+	var isObject = __webpack_require__(118);
 	
 	/**
 	 * Noop.
@@ -4758,7 +6493,7 @@ var WPCOM =
 	 * Expose `request`.
 	 */
 	
-	var request = module.exports = __webpack_require__(93).bind(null, Request);
+	var request = module.exports = __webpack_require__(119).bind(null, Request);
 	
 	/**
 	 * Determine XHR.
@@ -5709,7 +7444,7 @@ var WPCOM =
 
 
 /***/ },
-/* 90 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -5878,13 +7613,13 @@ var WPCOM =
 
 
 /***/ },
-/* 91 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module of mixed-in functions shared between node and client code
 	 */
-	var isObject = __webpack_require__(92);
+	var isObject = __webpack_require__(118);
 	
 	/**
 	 * Clear previous timeout.
@@ -6256,7 +7991,7 @@ var WPCOM =
 
 
 /***/ },
-/* 92 */
+/* 118 */
 /***/ function(module, exports) {
 
 	/**
@@ -6275,7 +8010,7 @@ var WPCOM =
 
 
 /***/ },
-/* 93 */
+/* 119 */
 /***/ function(module, exports) {
 
 	// The node and browser modules expose versions of this with the
@@ -6313,515 +8048,7 @@ var WPCOM =
 
 
 /***/ },
-/* 94 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/**
-	 * This is the web browser implementation of `debug()`.
-	 *
-	 * Expose `debug()` as the module.
-	 */
-	
-	exports = module.exports = __webpack_require__(95);
-	exports.log = log;
-	exports.formatArgs = formatArgs;
-	exports.save = save;
-	exports.load = load;
-	exports.useColors = useColors;
-	exports.storage = 'undefined' != typeof chrome
-	               && 'undefined' != typeof chrome.storage
-	                  ? chrome.storage.local
-	                  : localstorage();
-	
-	/**
-	 * Colors.
-	 */
-	
-	exports.colors = [
-	  'lightseagreen',
-	  'forestgreen',
-	  'goldenrod',
-	  'dodgerblue',
-	  'darkorchid',
-	  'crimson'
-	];
-	
-	/**
-	 * Currently only WebKit-based Web Inspectors, Firefox >= v31,
-	 * and the Firebug extension (any Firefox version) are known
-	 * to support "%c" CSS customizations.
-	 *
-	 * TODO: add a `localStorage` variable to explicitly enable/disable colors
-	 */
-	
-	function useColors() {
-	  // is webkit? http://stackoverflow.com/a/16459606/376773
-	  return ('WebkitAppearance' in document.documentElement.style) ||
-	    // is firebug? http://stackoverflow.com/a/398120/376773
-	    (window.console && (console.firebug || (console.exception && console.table))) ||
-	    // is firefox >= v31?
-	    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-	    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
-	}
-	
-	/**
-	 * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
-	 */
-	
-	exports.formatters.j = function(v) {
-	  return JSON.stringify(v);
-	};
-	
-	
-	/**
-	 * Colorize log arguments if enabled.
-	 *
-	 * @api public
-	 */
-	
-	function formatArgs() {
-	  var args = arguments;
-	  var useColors = this.useColors;
-	
-	  args[0] = (useColors ? '%c' : '')
-	    + this.namespace
-	    + (useColors ? ' %c' : ' ')
-	    + args[0]
-	    + (useColors ? '%c ' : ' ')
-	    + '+' + exports.humanize(this.diff);
-	
-	  if (!useColors) return args;
-	
-	  var c = 'color: ' + this.color;
-	  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
-	
-	  // the final "%c" is somewhat tricky, because there could be other
-	  // arguments passed either before or after the %c, so we need to
-	  // figure out the correct index to insert the CSS into
-	  var index = 0;
-	  var lastC = 0;
-	  args[0].replace(/%[a-z%]/g, function(match) {
-	    if ('%%' === match) return;
-	    index++;
-	    if ('%c' === match) {
-	      // we only are interested in the *last* %c
-	      // (the user may have provided their own)
-	      lastC = index;
-	    }
-	  });
-	
-	  args.splice(lastC, 0, c);
-	  return args;
-	}
-	
-	/**
-	 * Invokes `console.log()` when available.
-	 * No-op when `console.log` is not a "function".
-	 *
-	 * @api public
-	 */
-	
-	function log() {
-	  // this hackery is required for IE8/9, where
-	  // the `console.log` function doesn't have 'apply'
-	  return 'object' === typeof console
-	    && console.log
-	    && Function.prototype.apply.call(console.log, console, arguments);
-	}
-	
-	/**
-	 * Save `namespaces`.
-	 *
-	 * @param {String} namespaces
-	 * @api private
-	 */
-	
-	function save(namespaces) {
-	  try {
-	    if (null == namespaces) {
-	      exports.storage.removeItem('debug');
-	    } else {
-	      exports.storage.debug = namespaces;
-	    }
-	  } catch(e) {}
-	}
-	
-	/**
-	 * Load `namespaces`.
-	 *
-	 * @return {String} returns the previously persisted debug modes
-	 * @api private
-	 */
-	
-	function load() {
-	  var r;
-	  try {
-	    r = exports.storage.debug;
-	  } catch(e) {}
-	  return r;
-	}
-	
-	/**
-	 * Enable namespaces listed in `localStorage.debug` initially.
-	 */
-	
-	exports.enable(load());
-	
-	/**
-	 * Localstorage attempts to return the localstorage.
-	 *
-	 * This is necessary because safari throws
-	 * when a user disables cookies/localstorage
-	 * and you attempt to access it.
-	 *
-	 * @return {LocalStorage}
-	 * @api private
-	 */
-	
-	function localstorage(){
-	  try {
-	    return window.localStorage;
-	  } catch (e) {}
-	}
-
-
-/***/ },
-/* 95 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/**
-	 * This is the common logic for both the Node.js and web browser
-	 * implementations of `debug()`.
-	 *
-	 * Expose `debug()` as the module.
-	 */
-	
-	exports = module.exports = debug;
-	exports.coerce = coerce;
-	exports.disable = disable;
-	exports.enable = enable;
-	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(96);
-	
-	/**
-	 * The currently active debug mode names, and names to skip.
-	 */
-	
-	exports.names = [];
-	exports.skips = [];
-	
-	/**
-	 * Map of special "%n" handling functions, for the debug "format" argument.
-	 *
-	 * Valid key names are a single, lowercased letter, i.e. "n".
-	 */
-	
-	exports.formatters = {};
-	
-	/**
-	 * Previously assigned color.
-	 */
-	
-	var prevColor = 0;
-	
-	/**
-	 * Previous log timestamp.
-	 */
-	
-	var prevTime;
-	
-	/**
-	 * Select a color.
-	 *
-	 * @return {Number}
-	 * @api private
-	 */
-	
-	function selectColor() {
-	  return exports.colors[prevColor++ % exports.colors.length];
-	}
-	
-	/**
-	 * Create a debugger with the given `namespace`.
-	 *
-	 * @param {String} namespace
-	 * @return {Function}
-	 * @api public
-	 */
-	
-	function debug(namespace) {
-	
-	  // define the `disabled` version
-	  function disabled() {
-	  }
-	  disabled.enabled = false;
-	
-	  // define the `enabled` version
-	  function enabled() {
-	
-	    var self = enabled;
-	
-	    // set `diff` timestamp
-	    var curr = +new Date();
-	    var ms = curr - (prevTime || curr);
-	    self.diff = ms;
-	    self.prev = prevTime;
-	    self.curr = curr;
-	    prevTime = curr;
-	
-	    // add the `color` if not set
-	    if (null == self.useColors) self.useColors = exports.useColors();
-	    if (null == self.color && self.useColors) self.color = selectColor();
-	
-	    var args = Array.prototype.slice.call(arguments);
-	
-	    args[0] = exports.coerce(args[0]);
-	
-	    if ('string' !== typeof args[0]) {
-	      // anything else let's inspect with %o
-	      args = ['%o'].concat(args);
-	    }
-	
-	    // apply any `formatters` transformations
-	    var index = 0;
-	    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
-	      // if we encounter an escaped % then don't increase the array index
-	      if (match === '%%') return match;
-	      index++;
-	      var formatter = exports.formatters[format];
-	      if ('function' === typeof formatter) {
-	        var val = args[index];
-	        match = formatter.call(self, val);
-	
-	        // now we need to remove `args[index]` since it's inlined in the `format`
-	        args.splice(index, 1);
-	        index--;
-	      }
-	      return match;
-	    });
-	
-	    if ('function' === typeof exports.formatArgs) {
-	      args = exports.formatArgs.apply(self, args);
-	    }
-	    var logFn = enabled.log || exports.log || console.log.bind(console);
-	    logFn.apply(self, args);
-	  }
-	  enabled.enabled = true;
-	
-	  var fn = exports.enabled(namespace) ? enabled : disabled;
-	
-	  fn.namespace = namespace;
-	
-	  return fn;
-	}
-	
-	/**
-	 * Enables a debug mode by namespaces. This can include modes
-	 * separated by a colon and wildcards.
-	 *
-	 * @param {String} namespaces
-	 * @api public
-	 */
-	
-	function enable(namespaces) {
-	  exports.save(namespaces);
-	
-	  var split = (namespaces || '').split(/[\s,]+/);
-	  var len = split.length;
-	
-	  for (var i = 0; i < len; i++) {
-	    if (!split[i]) continue; // ignore empty strings
-	    namespaces = split[i].replace(/\*/g, '.*?');
-	    if (namespaces[0] === '-') {
-	      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-	    } else {
-	      exports.names.push(new RegExp('^' + namespaces + '$'));
-	    }
-	  }
-	}
-	
-	/**
-	 * Disable debug output.
-	 *
-	 * @api public
-	 */
-	
-	function disable() {
-	  exports.enable('');
-	}
-	
-	/**
-	 * Returns true if the given mode name is enabled, false otherwise.
-	 *
-	 * @param {String} name
-	 * @return {Boolean}
-	 * @api public
-	 */
-	
-	function enabled(name) {
-	  var i, len;
-	  for (i = 0, len = exports.skips.length; i < len; i++) {
-	    if (exports.skips[i].test(name)) {
-	      return false;
-	    }
-	  }
-	  for (i = 0, len = exports.names.length; i < len; i++) {
-	    if (exports.names[i].test(name)) {
-	      return true;
-	    }
-	  }
-	  return false;
-	}
-	
-	/**
-	 * Coerce `val`.
-	 *
-	 * @param {Mixed} val
-	 * @return {Mixed}
-	 * @api private
-	 */
-	
-	function coerce(val) {
-	  if (val instanceof Error) return val.stack || val.message;
-	  return val;
-	}
-
-
-/***/ },
-/* 96 */
-/***/ function(module, exports) {
-
-	/**
-	 * Helpers.
-	 */
-	
-	var s = 1000;
-	var m = s * 60;
-	var h = m * 60;
-	var d = h * 24;
-	var y = d * 365.25;
-	
-	/**
-	 * Parse or format the given `val`.
-	 *
-	 * Options:
-	 *
-	 *  - `long` verbose formatting [false]
-	 *
-	 * @param {String|Number} val
-	 * @param {Object} options
-	 * @return {String|Number}
-	 * @api public
-	 */
-	
-	module.exports = function(val, options){
-	  options = options || {};
-	  if ('string' == typeof val) return parse(val);
-	  return options.long
-	    ? long(val)
-	    : short(val);
-	};
-	
-	/**
-	 * Parse the given `str` and return milliseconds.
-	 *
-	 * @param {String} str
-	 * @return {Number}
-	 * @api private
-	 */
-	
-	function parse(str) {
-	  str = '' + str;
-	  if (str.length > 10000) return;
-	  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
-	  if (!match) return;
-	  var n = parseFloat(match[1]);
-	  var type = (match[2] || 'ms').toLowerCase();
-	  switch (type) {
-	    case 'years':
-	    case 'year':
-	    case 'yrs':
-	    case 'yr':
-	    case 'y':
-	      return n * y;
-	    case 'days':
-	    case 'day':
-	    case 'd':
-	      return n * d;
-	    case 'hours':
-	    case 'hour':
-	    case 'hrs':
-	    case 'hr':
-	    case 'h':
-	      return n * h;
-	    case 'minutes':
-	    case 'minute':
-	    case 'mins':
-	    case 'min':
-	    case 'm':
-	      return n * m;
-	    case 'seconds':
-	    case 'second':
-	    case 'secs':
-	    case 'sec':
-	    case 's':
-	      return n * s;
-	    case 'milliseconds':
-	    case 'millisecond':
-	    case 'msecs':
-	    case 'msec':
-	    case 'ms':
-	      return n;
-	  }
-	}
-	
-	/**
-	 * Short format for `ms`.
-	 *
-	 * @param {Number} ms
-	 * @return {String}
-	 * @api private
-	 */
-	
-	function short(ms) {
-	  if (ms >= d) return Math.round(ms / d) + 'd';
-	  if (ms >= h) return Math.round(ms / h) + 'h';
-	  if (ms >= m) return Math.round(ms / m) + 'm';
-	  if (ms >= s) return Math.round(ms / s) + 's';
-	  return ms + 'ms';
-	}
-	
-	/**
-	 * Long format for `ms`.
-	 *
-	 * @param {Number} ms
-	 * @return {String}
-	 * @api private
-	 */
-	
-	function long(ms) {
-	  return plural(ms, d, 'day')
-	    || plural(ms, h, 'hour')
-	    || plural(ms, m, 'minute')
-	    || plural(ms, s, 'second')
-	    || ms + ' ms';
-	}
-	
-	/**
-	 * Pluralization helper.
-	 */
-	
-	function plural(ms, n, name) {
-	  if (ms < n) return;
-	  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
-	  return Math.ceil(ms / n) + ' ' + name + 's';
-	}
-
-
-/***/ },
-/* 97 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6830,11 +8057,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -6912,7 +8139,7 @@ var WPCOM =
 	//# sourceMappingURL=batch.js.map
 
 /***/ },
-/* 98 */
+/* 121 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6926,14 +8153,14 @@ var WPCOM =
 	};
 
 /***/ },
-/* 99 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	exports.__esModule = true;
 	
-	var _defineProperty = __webpack_require__(100);
+	var _defineProperty = __webpack_require__(123);
 	
 	var _defineProperty2 = _interopRequireDefault(_defineProperty);
 	
@@ -6958,23 +8185,23 @@ var WPCOM =
 	}();
 
 /***/ },
-/* 100 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(101), __esModule: true };
+	module.exports = { "default": __webpack_require__(124), __esModule: true };
 
 /***/ },
-/* 101 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(102);
+	__webpack_require__(125);
 	var $Object = __webpack_require__(23).Object;
 	module.exports = function defineProperty(it, key, desc){
 	  return $Object.defineProperty(it, key, desc);
 	};
 
 /***/ },
-/* 102 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $export = __webpack_require__(21);
@@ -6982,7 +8209,7 @@ var WPCOM =
 	$export($export.S + $export.F * !__webpack_require__(31), 'Object', {defineProperty: __webpack_require__(27).f});
 
 /***/ },
-/* 103 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6991,19 +8218,19 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
-	var _domain = __webpack_require__(104);
+	var _domain = __webpack_require__(127);
 	
 	var _domain2 = _interopRequireDefault(_domain);
 	
-	var _domain3 = __webpack_require__(105);
+	var _domain3 = __webpack_require__(128);
 	
 	var _domain4 = _interopRequireDefault(_domain3);
 	
@@ -7217,7 +8444,7 @@ var WPCOM =
 	//# sourceMappingURL=domain.js.map
 
 /***/ },
-/* 104 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7226,11 +8453,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -7334,7 +8561,7 @@ var WPCOM =
 	//# sourceMappingURL=domain.email.js.map
 
 /***/ },
-/* 105 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7343,11 +8570,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -7425,7 +8652,7 @@ var WPCOM =
 	//# sourceMappingURL=domain.dns.js.map
 
 /***/ },
-/* 106 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7434,11 +8661,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -7539,7 +8766,7 @@ var WPCOM =
 	//# sourceMappingURL=domains.js.map
 
 /***/ },
-/* 107 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7548,15 +8775,15 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
-	var _marketing = __webpack_require__(108);
+	var _marketing = __webpack_require__(131);
 	
 	var _marketing2 = _interopRequireDefault(_marketing);
 	
@@ -7605,7 +8832,7 @@ var WPCOM =
 	//# sourceMappingURL=marketing.js.map
 
 /***/ },
-/* 108 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7614,23 +8841,23 @@ var WPCOM =
 		value: true
 	});
 	
-	var _defineProperty2 = __webpack_require__(109);
+	var _defineProperty2 = __webpack_require__(132);
 	
 	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 	
-	var _assign = __webpack_require__(78);
+	var _assign = __webpack_require__(82);
 	
 	var _assign2 = _interopRequireDefault(_assign);
 	
-	var _typeof2 = __webpack_require__(110);
+	var _typeof2 = __webpack_require__(12);
 	
 	var _typeof3 = _interopRequireDefault(_typeof2);
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -7722,14 +8949,14 @@ var WPCOM =
 	//# sourceMappingURL=marketing.survey.js.map
 
 /***/ },
-/* 109 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	exports.__esModule = true;
 	
-	var _defineProperty = __webpack_require__(100);
+	var _defineProperty = __webpack_require__(123);
 	
 	var _defineProperty2 = _interopRequireDefault(_defineProperty);
 	
@@ -7751,496 +8978,7 @@ var WPCOM =
 	};
 
 /***/ },
-/* 110 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	exports.__esModule = true;
-	
-	var _iterator = __webpack_require__(111);
-	
-	var _iterator2 = _interopRequireDefault(_iterator);
-	
-	var _symbol = __webpack_require__(114);
-	
-	var _symbol2 = _interopRequireDefault(_symbol);
-	
-	var _typeof = typeof _symbol2.default === "function" && typeof _iterator2.default === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default ? "symbol" : typeof obj; };
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = typeof _symbol2.default === "function" && _typeof(_iterator2.default) === "symbol" ? function (obj) {
-	  return typeof obj === "undefined" ? "undefined" : _typeof(obj);
-	} : function (obj) {
-	  return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof(obj);
-	};
-
-/***/ },
-/* 111 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(112), __esModule: true };
-
-/***/ },
-/* 112 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(15);
-	__webpack_require__(59);
-	module.exports = __webpack_require__(113).f('iterator');
-
-/***/ },
-/* 113 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports.f = __webpack_require__(56);
-
-/***/ },
-/* 114 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(115), __esModule: true };
-
-/***/ },
-/* 115 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(116);
-	__webpack_require__(14);
-	__webpack_require__(125);
-	__webpack_require__(126);
-	module.exports = __webpack_require__(23).Symbol;
-
-/***/ },
-/* 116 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	// ECMAScript 6 symbols shim
-	var global         = __webpack_require__(22)
-	  , has            = __webpack_require__(37)
-	  , DESCRIPTORS    = __webpack_require__(31)
-	  , $export        = __webpack_require__(21)
-	  , redefine       = __webpack_require__(36)
-	  , META           = __webpack_require__(117).KEY
-	  , $fails         = __webpack_require__(32)
-	  , shared         = __webpack_require__(51)
-	  , setToStringTag = __webpack_require__(55)
-	  , uid            = __webpack_require__(52)
-	  , wks            = __webpack_require__(56)
-	  , wksExt         = __webpack_require__(113)
-	  , wksDefine      = __webpack_require__(118)
-	  , keyOf          = __webpack_require__(119)
-	  , enumKeys       = __webpack_require__(120)
-	  , isArray        = __webpack_require__(121)
-	  , anObject       = __webpack_require__(28)
-	  , toIObject      = __webpack_require__(44)
-	  , toPrimitive    = __webpack_require__(34)
-	  , createDesc     = __webpack_require__(35)
-	  , _create        = __webpack_require__(40)
-	  , gOPNExt        = __webpack_require__(122)
-	  , $GOPD          = __webpack_require__(124)
-	  , $DP            = __webpack_require__(27)
-	  , $keys          = __webpack_require__(42)
-	  , gOPD           = $GOPD.f
-	  , dP             = $DP.f
-	  , gOPN           = gOPNExt.f
-	  , $Symbol        = global.Symbol
-	  , $JSON          = global.JSON
-	  , _stringify     = $JSON && $JSON.stringify
-	  , PROTOTYPE      = 'prototype'
-	  , HIDDEN         = wks('_hidden')
-	  , TO_PRIMITIVE   = wks('toPrimitive')
-	  , isEnum         = {}.propertyIsEnumerable
-	  , SymbolRegistry = shared('symbol-registry')
-	  , AllSymbols     = shared('symbols')
-	  , OPSymbols      = shared('op-symbols')
-	  , ObjectProto    = Object[PROTOTYPE]
-	  , USE_NATIVE     = typeof $Symbol == 'function'
-	  , QObject        = global.QObject;
-	// Don't use setters in Qt Script, https://github.com/zloirock/core-js/issues/173
-	var setter = !QObject || !QObject[PROTOTYPE] || !QObject[PROTOTYPE].findChild;
-	
-	// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
-	var setSymbolDesc = DESCRIPTORS && $fails(function(){
-	  return _create(dP({}, 'a', {
-	    get: function(){ return dP(this, 'a', {value: 7}).a; }
-	  })).a != 7;
-	}) ? function(it, key, D){
-	  var protoDesc = gOPD(ObjectProto, key);
-	  if(protoDesc)delete ObjectProto[key];
-	  dP(it, key, D);
-	  if(protoDesc && it !== ObjectProto)dP(ObjectProto, key, protoDesc);
-	} : dP;
-	
-	var wrap = function(tag){
-	  var sym = AllSymbols[tag] = _create($Symbol[PROTOTYPE]);
-	  sym._k = tag;
-	  return sym;
-	};
-	
-	var isSymbol = USE_NATIVE && typeof $Symbol.iterator == 'symbol' ? function(it){
-	  return typeof it == 'symbol';
-	} : function(it){
-	  return it instanceof $Symbol;
-	};
-	
-	var $defineProperty = function defineProperty(it, key, D){
-	  if(it === ObjectProto)$defineProperty(OPSymbols, key, D);
-	  anObject(it);
-	  key = toPrimitive(key, true);
-	  anObject(D);
-	  if(has(AllSymbols, key)){
-	    if(!D.enumerable){
-	      if(!has(it, HIDDEN))dP(it, HIDDEN, createDesc(1, {}));
-	      it[HIDDEN][key] = true;
-	    } else {
-	      if(has(it, HIDDEN) && it[HIDDEN][key])it[HIDDEN][key] = false;
-	      D = _create(D, {enumerable: createDesc(0, false)});
-	    } return setSymbolDesc(it, key, D);
-	  } return dP(it, key, D);
-	};
-	var $defineProperties = function defineProperties(it, P){
-	  anObject(it);
-	  var keys = enumKeys(P = toIObject(P))
-	    , i    = 0
-	    , l = keys.length
-	    , key;
-	  while(l > i)$defineProperty(it, key = keys[i++], P[key]);
-	  return it;
-	};
-	var $create = function create(it, P){
-	  return P === undefined ? _create(it) : $defineProperties(_create(it), P);
-	};
-	var $propertyIsEnumerable = function propertyIsEnumerable(key){
-	  var E = isEnum.call(this, key = toPrimitive(key, true));
-	  if(this === ObjectProto && has(AllSymbols, key) && !has(OPSymbols, key))return false;
-	  return E || !has(this, key) || !has(AllSymbols, key) || has(this, HIDDEN) && this[HIDDEN][key] ? E : true;
-	};
-	var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(it, key){
-	  it  = toIObject(it);
-	  key = toPrimitive(key, true);
-	  if(it === ObjectProto && has(AllSymbols, key) && !has(OPSymbols, key))return;
-	  var D = gOPD(it, key);
-	  if(D && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key]))D.enumerable = true;
-	  return D;
-	};
-	var $getOwnPropertyNames = function getOwnPropertyNames(it){
-	  var names  = gOPN(toIObject(it))
-	    , result = []
-	    , i      = 0
-	    , key;
-	  while(names.length > i){
-	    if(!has(AllSymbols, key = names[i++]) && key != HIDDEN && key != META)result.push(key);
-	  } return result;
-	};
-	var $getOwnPropertySymbols = function getOwnPropertySymbols(it){
-	  var IS_OP  = it === ObjectProto
-	    , names  = gOPN(IS_OP ? OPSymbols : toIObject(it))
-	    , result = []
-	    , i      = 0
-	    , key;
-	  while(names.length > i){
-	    if(has(AllSymbols, key = names[i++]) && (IS_OP ? has(ObjectProto, key) : true))result.push(AllSymbols[key]);
-	  } return result;
-	};
-	
-	// 19.4.1.1 Symbol([description])
-	if(!USE_NATIVE){
-	  $Symbol = function Symbol(){
-	    if(this instanceof $Symbol)throw TypeError('Symbol is not a constructor!');
-	    var tag = uid(arguments.length > 0 ? arguments[0] : undefined);
-	    var $set = function(value){
-	      if(this === ObjectProto)$set.call(OPSymbols, value);
-	      if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
-	      setSymbolDesc(this, tag, createDesc(1, value));
-	    };
-	    if(DESCRIPTORS && setter)setSymbolDesc(ObjectProto, tag, {configurable: true, set: $set});
-	    return wrap(tag);
-	  };
-	  redefine($Symbol[PROTOTYPE], 'toString', function toString(){
-	    return this._k;
-	  });
-	
-	  $GOPD.f = $getOwnPropertyDescriptor;
-	  $DP.f   = $defineProperty;
-	  __webpack_require__(123).f = gOPNExt.f = $getOwnPropertyNames;
-	  __webpack_require__(83).f  = $propertyIsEnumerable;
-	  __webpack_require__(82).f = $getOwnPropertySymbols;
-	
-	  if(DESCRIPTORS && !__webpack_require__(20)){
-	    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
-	  }
-	
-	  wksExt.f = function(name){
-	    return wrap(wks(name));
-	  }
-	}
-	
-	$export($export.G + $export.W + $export.F * !USE_NATIVE, {Symbol: $Symbol});
-	
-	for(var symbols = (
-	  // 19.4.2.2, 19.4.2.3, 19.4.2.4, 19.4.2.6, 19.4.2.8, 19.4.2.9, 19.4.2.10, 19.4.2.11, 19.4.2.12, 19.4.2.13, 19.4.2.14
-	  'hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables'
-	).split(','), i = 0; symbols.length > i; )wks(symbols[i++]);
-	
-	for(var symbols = $keys(wks.store), i = 0; symbols.length > i; )wksDefine(symbols[i++]);
-	
-	$export($export.S + $export.F * !USE_NATIVE, 'Symbol', {
-	  // 19.4.2.1 Symbol.for(key)
-	  'for': function(key){
-	    return has(SymbolRegistry, key += '')
-	      ? SymbolRegistry[key]
-	      : SymbolRegistry[key] = $Symbol(key);
-	  },
-	  // 19.4.2.5 Symbol.keyFor(sym)
-	  keyFor: function keyFor(key){
-	    if(isSymbol(key))return keyOf(SymbolRegistry, key);
-	    throw TypeError(key + ' is not a symbol!');
-	  },
-	  useSetter: function(){ setter = true; },
-	  useSimple: function(){ setter = false; }
-	});
-	
-	$export($export.S + $export.F * !USE_NATIVE, 'Object', {
-	  // 19.1.2.2 Object.create(O [, Properties])
-	  create: $create,
-	  // 19.1.2.4 Object.defineProperty(O, P, Attributes)
-	  defineProperty: $defineProperty,
-	  // 19.1.2.3 Object.defineProperties(O, Properties)
-	  defineProperties: $defineProperties,
-	  // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
-	  getOwnPropertyDescriptor: $getOwnPropertyDescriptor,
-	  // 19.1.2.7 Object.getOwnPropertyNames(O)
-	  getOwnPropertyNames: $getOwnPropertyNames,
-	  // 19.1.2.8 Object.getOwnPropertySymbols(O)
-	  getOwnPropertySymbols: $getOwnPropertySymbols
-	});
-	
-	// 24.3.2 JSON.stringify(value [, replacer [, space]])
-	$JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function(){
-	  var S = $Symbol();
-	  // MS Edge converts symbol values to JSON as {}
-	  // WebKit converts symbol values to JSON as null
-	  // V8 throws on boxed symbols
-	  return _stringify([S]) != '[null]' || _stringify({a: S}) != '{}' || _stringify(Object(S)) != '{}';
-	})), 'JSON', {
-	  stringify: function stringify(it){
-	    if(it === undefined || isSymbol(it))return; // IE8 returns string on undefined
-	    var args = [it]
-	      , i    = 1
-	      , replacer, $replacer;
-	    while(arguments.length > i)args.push(arguments[i++]);
-	    replacer = args[1];
-	    if(typeof replacer == 'function')$replacer = replacer;
-	    if($replacer || !isArray(replacer))replacer = function(key, value){
-	      if($replacer)value = $replacer.call(this, key, value);
-	      if(!isSymbol(value))return value;
-	    };
-	    args[1] = replacer;
-	    return _stringify.apply($JSON, args);
-	  }
-	});
-	
-	// 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
-	$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(26)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
-	// 19.4.3.5 Symbol.prototype[@@toStringTag]
-	setToStringTag($Symbol, 'Symbol');
-	// 20.2.1.9 Math[@@toStringTag]
-	setToStringTag(Math, 'Math', true);
-	// 24.3.3 JSON[@@toStringTag]
-	setToStringTag(global.JSON, 'JSON', true);
-
-/***/ },
-/* 117 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var META     = __webpack_require__(52)('meta')
-	  , isObject = __webpack_require__(29)
-	  , has      = __webpack_require__(37)
-	  , setDesc  = __webpack_require__(27).f
-	  , id       = 0;
-	var isExtensible = Object.isExtensible || function(){
-	  return true;
-	};
-	var FREEZE = !__webpack_require__(32)(function(){
-	  return isExtensible(Object.preventExtensions({}));
-	});
-	var setMeta = function(it){
-	  setDesc(it, META, {value: {
-	    i: 'O' + ++id, // object ID
-	    w: {}          // weak collections IDs
-	  }});
-	};
-	var fastKey = function(it, create){
-	  // return primitive with prefix
-	  if(!isObject(it))return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
-	  if(!has(it, META)){
-	    // can't set metadata to uncaught frozen object
-	    if(!isExtensible(it))return 'F';
-	    // not necessary to add metadata
-	    if(!create)return 'E';
-	    // add missing metadata
-	    setMeta(it);
-	  // return object ID
-	  } return it[META].i;
-	};
-	var getWeak = function(it, create){
-	  if(!has(it, META)){
-	    // can't set metadata to uncaught frozen object
-	    if(!isExtensible(it))return true;
-	    // not necessary to add metadata
-	    if(!create)return false;
-	    // add missing metadata
-	    setMeta(it);
-	  // return hash weak collections IDs
-	  } return it[META].w;
-	};
-	// add metadata on freeze-family methods calling
-	var onFreeze = function(it){
-	  if(FREEZE && meta.NEED && isExtensible(it) && !has(it, META))setMeta(it);
-	  return it;
-	};
-	var meta = module.exports = {
-	  KEY:      META,
-	  NEED:     false,
-	  fastKey:  fastKey,
-	  getWeak:  getWeak,
-	  onFreeze: onFreeze
-	};
-
-/***/ },
-/* 118 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var global         = __webpack_require__(22)
-	  , core           = __webpack_require__(23)
-	  , LIBRARY        = __webpack_require__(20)
-	  , wksExt         = __webpack_require__(113)
-	  , defineProperty = __webpack_require__(27).f;
-	module.exports = function(name){
-	  var $Symbol = core.Symbol || (core.Symbol = LIBRARY ? {} : global.Symbol || {});
-	  if(name.charAt(0) != '_' && !(name in $Symbol))defineProperty($Symbol, name, {value: wksExt.f(name)});
-	};
-
-/***/ },
-/* 119 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var getKeys   = __webpack_require__(42)
-	  , toIObject = __webpack_require__(44);
-	module.exports = function(object, el){
-	  var O      = toIObject(object)
-	    , keys   = getKeys(O)
-	    , length = keys.length
-	    , index  = 0
-	    , key;
-	  while(length > index)if(O[key = keys[index++]] === el)return key;
-	};
-
-/***/ },
-/* 120 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// all enumerable object keys, includes symbols
-	var getKeys = __webpack_require__(42)
-	  , gOPS    = __webpack_require__(82)
-	  , pIE     = __webpack_require__(83);
-	module.exports = function(it){
-	  var result     = getKeys(it)
-	    , getSymbols = gOPS.f;
-	  if(getSymbols){
-	    var symbols = getSymbols(it)
-	      , isEnum  = pIE.f
-	      , i       = 0
-	      , key;
-	    while(symbols.length > i)if(isEnum.call(it, key = symbols[i++]))result.push(key);
-	  } return result;
-	};
-
-/***/ },
-/* 121 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 7.2.2 IsArray(argument)
-	var cof = __webpack_require__(46);
-	module.exports = Array.isArray || function isArray(arg){
-	  return cof(arg) == 'Array';
-	};
-
-/***/ },
-/* 122 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-	var toIObject = __webpack_require__(44)
-	  , gOPN      = __webpack_require__(123).f
-	  , toString  = {}.toString;
-	
-	var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
-	  ? Object.getOwnPropertyNames(window) : [];
-	
-	var getWindowNames = function(it){
-	  try {
-	    return gOPN(it);
-	  } catch(e){
-	    return windowNames.slice();
-	  }
-	};
-	
-	module.exports.f = function getOwnPropertyNames(it){
-	  return windowNames && toString.call(it) == '[object Window]' ? getWindowNames(it) : gOPN(toIObject(it));
-	};
-
-
-/***/ },
-/* 123 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
-	var $keys      = __webpack_require__(43)
-	  , hiddenKeys = __webpack_require__(53).concat('length', 'prototype');
-	
-	exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O){
-	  return $keys(O, hiddenKeys);
-	};
-
-/***/ },
-/* 124 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var pIE            = __webpack_require__(83)
-	  , createDesc     = __webpack_require__(35)
-	  , toIObject      = __webpack_require__(44)
-	  , toPrimitive    = __webpack_require__(34)
-	  , has            = __webpack_require__(37)
-	  , IE8_DOM_DEFINE = __webpack_require__(30)
-	  , gOPD           = Object.getOwnPropertyDescriptor;
-	
-	exports.f = __webpack_require__(31) ? gOPD : function getOwnPropertyDescriptor(O, P){
-	  O = toIObject(O);
-	  P = toPrimitive(P, true);
-	  if(IE8_DOM_DEFINE)try {
-	    return gOPD(O, P);
-	  } catch(e){ /* empty */ }
-	  if(has(O, P))return createDesc(!pIE.f.call(O, P), O[P]);
-	};
-
-/***/ },
-/* 125 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(118)('asyncIterator');
-
-/***/ },
-/* 126 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(118)('observable');
-
-/***/ },
-/* 127 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8250,23 +8988,23 @@ var WPCOM =
 	});
 	exports.default = Me;
 	
-	var _me = __webpack_require__(128);
+	var _me = __webpack_require__(134);
 	
 	var _me2 = _interopRequireDefault(_me);
 	
-	var _me3 = __webpack_require__(129);
+	var _me3 = __webpack_require__(135);
 	
 	var _me4 = _interopRequireDefault(_me3);
 	
-	var _me5 = __webpack_require__(130);
+	var _me5 = __webpack_require__(136);
 	
 	var _me6 = _interopRequireDefault(_me5);
 	
-	var _me7 = __webpack_require__(131);
+	var _me7 = __webpack_require__(137);
 	
 	var _me8 = _interopRequireDefault(_me7);
 	
-	var _me9 = __webpack_require__(134);
+	var _me9 = __webpack_require__(140);
 	
 	var _me10 = _interopRequireDefault(_me9);
 	
@@ -8450,7 +9188,7 @@ var WPCOM =
 	//# sourceMappingURL=me.js.map
 
 /***/ },
-/* 128 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8459,11 +9197,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -8529,7 +9267,7 @@ var WPCOM =
 	//# sourceMappingURL=me.keyring-connection.js.map
 
 /***/ },
-/* 129 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8538,11 +9276,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -8608,7 +9346,7 @@ var WPCOM =
 	//# sourceMappingURL=me.connected-application.js.map
 
 /***/ },
-/* 130 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8617,11 +9355,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -8716,7 +9454,7 @@ var WPCOM =
 	//# sourceMappingURL=me.publicize-connection.js.map
 
 /***/ },
-/* 131 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8726,11 +9464,11 @@ var WPCOM =
 	});
 	exports.default = MeSettings;
 	
-	var _meSettings = __webpack_require__(132);
+	var _meSettings = __webpack_require__(138);
 	
 	var _meSettings2 = _interopRequireDefault(_meSettings);
 	
-	var _meSettings3 = __webpack_require__(133);
+	var _meSettings3 = __webpack_require__(139);
 	
 	var _meSettings4 = _interopRequireDefault(_meSettings3);
 	
@@ -8813,7 +9551,7 @@ var WPCOM =
 	//# sourceMappingURL=me.settings.js.map
 
 /***/ },
-/* 132 */
+/* 138 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -8935,7 +9673,7 @@ var WPCOM =
 	//# sourceMappingURL=me.settings.profile-links.js.map
 
 /***/ },
-/* 133 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8944,11 +9682,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -8998,7 +9736,7 @@ var WPCOM =
 	//# sourceMappingURL=me.settings.password.js.map
 
 /***/ },
-/* 134 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9007,15 +9745,15 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
-	var _meTwoStep = __webpack_require__(135);
+	var _meTwoStep = __webpack_require__(141);
 	
 	var _meTwoStep2 = _interopRequireDefault(_meTwoStep);
 	
@@ -9078,7 +9816,7 @@ var WPCOM =
 	//# sourceMappingURL=me.two-step.js.map
 
 /***/ },
-/* 135 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9087,11 +9825,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -9140,7 +9878,7 @@ var WPCOM =
 	//# sourceMappingURL=me.two-step.sms.js.map
 
 /***/ },
-/* 136 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9236,7 +9974,7 @@ var WPCOM =
 	//# sourceMappingURL=pinghub.js.map
 
 /***/ },
-/* 137 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9245,11 +9983,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -9311,7 +10049,7 @@ var WPCOM =
 	//# sourceMappingURL=plans.js.map
 
 /***/ },
-/* 138 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9321,7 +10059,7 @@ var WPCOM =
 	});
 	exports.default = Req;
 	
-	var _sendRequest = __webpack_require__(139);
+	var _sendRequest = __webpack_require__(145);
 	
 	var _sendRequest2 = _interopRequireDefault(_sendRequest);
 	
@@ -9406,7 +10144,7 @@ var WPCOM =
 	//# sourceMappingURL=request.js.map
 
 /***/ },
-/* 139 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9415,13 +10153,13 @@ var WPCOM =
 		value: true
 	});
 	
-	var _promise = __webpack_require__(12);
+	var _promise = __webpack_require__(98);
 	
 	var _promise2 = _interopRequireDefault(_promise);
 	
 	exports.default = sendRequest;
 	
-	var _qs = __webpack_require__(140);
+	var _qs = __webpack_require__(146);
 	
 	var _qs2 = _interopRequireDefault(_qs);
 	
@@ -9529,13 +10267,13 @@ var WPCOM =
 	//# sourceMappingURL=send-request.js.map
 
 /***/ },
-/* 140 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Load modules
 	
-	var Stringify = __webpack_require__(141);
-	var Parse = __webpack_require__(143);
+	var Stringify = __webpack_require__(147);
+	var Parse = __webpack_require__(149);
 	
 	
 	// Declare internals
@@ -9550,12 +10288,12 @@ var WPCOM =
 
 
 /***/ },
-/* 141 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Load modules
 	
-	var Utils = __webpack_require__(142);
+	var Utils = __webpack_require__(148);
 	
 	
 	// Declare internals
@@ -9677,7 +10415,7 @@ var WPCOM =
 
 
 /***/ },
-/* 142 */
+/* 148 */
 /***/ function(module, exports) {
 
 	// Load modules
@@ -9873,12 +10611,12 @@ var WPCOM =
 
 
 /***/ },
-/* 143 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Load modules
 	
-	var Utils = __webpack_require__(142);
+	var Utils = __webpack_require__(148);
 	
 	
 	// Declare internals
@@ -10065,7 +10803,7 @@ var WPCOM =
 
 
 /***/ },
-/* 144 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10074,75 +10812,75 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
-	var _site = __webpack_require__(145);
+	var _site = __webpack_require__(151);
 	
 	var _site2 = _interopRequireDefault(_site);
 	
-	var _site3 = __webpack_require__(146);
+	var _site3 = __webpack_require__(152);
 	
 	var _site4 = _interopRequireDefault(_site3);
 	
-	var _site5 = __webpack_require__(148);
+	var _site5 = __webpack_require__(154);
 	
 	var _site6 = _interopRequireDefault(_site5);
 	
-	var _site7 = __webpack_require__(149);
+	var _site7 = __webpack_require__(155);
 	
 	var _site8 = _interopRequireDefault(_site7);
 	
-	var _site9 = __webpack_require__(151);
+	var _site9 = __webpack_require__(157);
 	
 	var _site10 = _interopRequireDefault(_site9);
 	
-	var _site11 = __webpack_require__(157);
+	var _site11 = __webpack_require__(163);
 	
 	var _site12 = _interopRequireDefault(_site11);
 	
-	var _site13 = __webpack_require__(158);
+	var _site13 = __webpack_require__(164);
 	
 	var _site14 = _interopRequireDefault(_site13);
 	
-	var _site15 = __webpack_require__(159);
+	var _site15 = __webpack_require__(165);
 	
 	var _site16 = _interopRequireDefault(_site15);
 	
-	var _site17 = __webpack_require__(160);
+	var _site17 = __webpack_require__(166);
 	
 	var _site18 = _interopRequireDefault(_site17);
 	
-	var _site19 = __webpack_require__(161);
+	var _site19 = __webpack_require__(167);
 	
 	var _site20 = _interopRequireDefault(_site19);
 	
-	var _site21 = __webpack_require__(162);
+	var _site21 = __webpack_require__(168);
 	
 	var _site22 = _interopRequireDefault(_site21);
 	
-	var _site23 = __webpack_require__(164);
+	var _site23 = __webpack_require__(170);
 	
 	var _site24 = _interopRequireDefault(_site23);
 	
-	var _site25 = __webpack_require__(165);
+	var _site25 = __webpack_require__(171);
 	
 	var _site26 = _interopRequireDefault(_site25);
 	
-	var _site27 = __webpack_require__(169);
+	var _site27 = __webpack_require__(175);
 	
 	var _site28 = _interopRequireDefault(_site27);
 	
-	var _site29 = __webpack_require__(170);
+	var _site29 = __webpack_require__(176);
 	
 	var _site30 = _interopRequireDefault(_site29);
 	
-	var _runtimeBuilder = __webpack_require__(155);
+	var _runtimeBuilder = __webpack_require__(161);
 	
 	var _runtimeBuilder2 = _interopRequireDefault(_runtimeBuilder);
 	
@@ -10644,7 +11382,7 @@ var WPCOM =
 	//# sourceMappingURL=site.js.map
 
 /***/ },
-/* 145 */
+/* 151 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -10738,7 +11476,7 @@ var WPCOM =
 	//# sourceMappingURL=site.category.js.map
 
 /***/ },
-/* 146 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10748,7 +11486,7 @@ var WPCOM =
 	});
 	exports.default = Comment;
 	
-	var _siteComment = __webpack_require__(147);
+	var _siteComment = __webpack_require__(153);
 	
 	var _siteComment2 = _interopRequireDefault(_siteComment);
 	
@@ -10910,7 +11648,7 @@ var WPCOM =
 	//# sourceMappingURL=site.comment.js.map
 
 /***/ },
-/* 147 */
+/* 153 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -10985,7 +11723,7 @@ var WPCOM =
 	//# sourceMappingURL=site.comment.like.js.map
 
 /***/ },
-/* 148 */
+/* 154 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -11055,7 +11793,7 @@ var WPCOM =
 	//# sourceMappingURL=site.follow.js.map
 
 /***/ },
-/* 149 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11074,7 +11812,7 @@ var WPCOM =
 	/**
 	 * Module dependencies.
 	 */
-	var fs = __webpack_require__(150);
+	var fs = __webpack_require__(156);
 	
 	
 	var debug = (0, _debug2.default)('wpcom:media');
@@ -11160,7 +11898,6 @@ var WPCOM =
 		var fn = arguments[1];
 	
 		query.apiVersion = query.apiVersion || '1.2';
-	
 		var path = '/sites/' + this._sid + '/media/' + this._id;
 		return this.wpcom.req.get(path, query, fn);
 	};
@@ -11192,6 +11929,8 @@ var WPCOM =
 			body = query;
 			query = {};
 		}
+	
+		query.apiVersion = query.apiVersion || '1.2';
 	
 		var media = void 0;
 		var params = { path: '/sites/' + this._sid + '/media/' + this._id + '/edit' };
@@ -11316,13 +12055,13 @@ var WPCOM =
 	//# sourceMappingURL=site.media.js.map
 
 /***/ },
-/* 150 */
+/* 156 */
 /***/ function(module, exports) {
 
 
 
 /***/ },
-/* 151 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11331,43 +12070,43 @@ var WPCOM =
 		value: true
 	});
 	
-	var _promise = __webpack_require__(12);
+	var _promise = __webpack_require__(98);
 	
 	var _promise2 = _interopRequireDefault(_promise);
 	
-	var _typeof2 = __webpack_require__(110);
+	var _typeof2 = __webpack_require__(12);
 	
 	var _typeof3 = _interopRequireDefault(_typeof2);
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
-	var _sitePost = __webpack_require__(152);
+	var _sitePost = __webpack_require__(158);
 	
 	var _sitePost2 = _interopRequireDefault(_sitePost);
 	
-	var _sitePost3 = __webpack_require__(153);
+	var _sitePost3 = __webpack_require__(159);
 	
 	var _sitePost4 = _interopRequireDefault(_sitePost3);
 	
-	var _site = __webpack_require__(146);
+	var _site = __webpack_require__(152);
 	
 	var _site2 = _interopRequireDefault(_site);
 	
-	var _sitePost5 = __webpack_require__(154);
+	var _sitePost5 = __webpack_require__(160);
 	
 	var _sitePost6 = _interopRequireDefault(_sitePost5);
 	
-	var _runtimeBuilder = __webpack_require__(155);
+	var _runtimeBuilder = __webpack_require__(161);
 	
 	var _runtimeBuilder2 = _interopRequireDefault(_runtimeBuilder);
 	
-	var _sitePost7 = __webpack_require__(156);
+	var _sitePost7 = __webpack_require__(162);
 	
 	var _sitePost8 = _interopRequireDefault(_sitePost7);
 	
@@ -11693,7 +12432,7 @@ var WPCOM =
 	//# sourceMappingURL=site.post.js.map
 
 /***/ },
-/* 152 */
+/* 158 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -11766,7 +12505,7 @@ var WPCOM =
 	//# sourceMappingURL=site.post.like.js.map
 
 /***/ },
-/* 153 */
+/* 159 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -11862,7 +12601,7 @@ var WPCOM =
 	//# sourceMappingURL=site.post.reblog.js.map
 
 /***/ },
-/* 154 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11871,11 +12610,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -12000,7 +12739,7 @@ var WPCOM =
 	//# sourceMappingURL=site.post.subscriber.js.map
 
 /***/ },
-/* 155 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12009,7 +12748,7 @@ var WPCOM =
 	  value: true
 	});
 	
-	var _typeof2 = __webpack_require__(110);
+	var _typeof2 = __webpack_require__(12);
 	
 	var _typeof3 = _interopRequireDefault(_typeof2);
 	
@@ -12064,7 +12803,7 @@ var WPCOM =
 	//# sourceMappingURL=runtime-builder.js.map
 
 /***/ },
-/* 156 */
+/* 162 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12078,7 +12817,7 @@ var WPCOM =
 	//# sourceMappingURL=site.post.get.js.map
 
 /***/ },
-/* 157 */
+/* 163 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12172,7 +12911,7 @@ var WPCOM =
 	//# sourceMappingURL=site.tag.js.map
 
 /***/ },
-/* 158 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12181,11 +12920,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -12250,7 +12989,7 @@ var WPCOM =
 	//# sourceMappingURL=site.post-type.js.map
 
 /***/ },
-/* 159 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12259,11 +12998,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -12368,7 +13107,7 @@ var WPCOM =
 	//# sourceMappingURL=site.domain.js.map
 
 /***/ },
-/* 160 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12377,11 +13116,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -12567,7 +13306,7 @@ var WPCOM =
 	//# sourceMappingURL=site.plugin.js.map
 
 /***/ },
-/* 161 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12576,19 +13315,19 @@ var WPCOM =
 		value: true
 	});
 	
-	var _defineProperty2 = __webpack_require__(109);
+	var _defineProperty2 = __webpack_require__(132);
 	
 	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 	
-	var _promise = __webpack_require__(12);
+	var _promise = __webpack_require__(98);
 	
 	var _promise2 = _interopRequireDefault(_promise);
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -12713,7 +13452,7 @@ var WPCOM =
 	//# sourceMappingURL=site.settings.js.map
 
 /***/ },
-/* 162 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12722,15 +13461,15 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
-	var _siteTaxonomy = __webpack_require__(163);
+	var _siteTaxonomy = __webpack_require__(169);
 	
 	var _siteTaxonomy2 = _interopRequireDefault(_siteTaxonomy);
 	
@@ -12811,7 +13550,7 @@ var WPCOM =
 	//# sourceMappingURL=site.taxonomy.js.map
 
 /***/ },
-/* 163 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12820,11 +13559,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -12960,7 +13699,7 @@ var WPCOM =
 	//# sourceMappingURL=site.taxonomy.term.js.map
 
 /***/ },
-/* 164 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12969,11 +13708,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -13069,7 +13808,7 @@ var WPCOM =
 	//# sourceMappingURL=site.credit-vouchers.js.map
 
 /***/ },
-/* 165 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13079,15 +13818,15 @@ var WPCOM =
 	});
 	exports.default = SiteWordAds;
 	
-	var _siteWordads = __webpack_require__(166);
+	var _siteWordads = __webpack_require__(172);
 	
 	var _siteWordads2 = _interopRequireDefault(_siteWordads);
 	
-	var _siteWordads3 = __webpack_require__(167);
+	var _siteWordads3 = __webpack_require__(173);
 	
 	var _siteWordads4 = _interopRequireDefault(_siteWordads3);
 	
-	var _siteWordads5 = __webpack_require__(168);
+	var _siteWordads5 = __webpack_require__(174);
 	
 	var _siteWordads6 = _interopRequireDefault(_siteWordads5);
 	
@@ -13171,7 +13910,7 @@ var WPCOM =
 	//# sourceMappingURL=site.wordads.js.map
 
 /***/ },
-/* 166 */
+/* 172 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -13246,7 +13985,7 @@ var WPCOM =
 	//# sourceMappingURL=site.wordads.settings.js.map
 
 /***/ },
-/* 167 */
+/* 173 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -13296,7 +14035,7 @@ var WPCOM =
 	//# sourceMappingURL=site.wordads.earnings.js.map
 
 /***/ },
-/* 168 */
+/* 174 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -13391,7 +14130,7 @@ var WPCOM =
 	//# sourceMappingURL=site.wordads.tos.js.map
 
 /***/ },
-/* 169 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13400,11 +14139,11 @@ var WPCOM =
 		value: true
 	});
 	
-	var _classCallCheck2 = __webpack_require__(98);
+	var _classCallCheck2 = __webpack_require__(121);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _createClass2 = __webpack_require__(99);
+	var _createClass2 = __webpack_require__(122);
 	
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
@@ -13504,7 +14243,7 @@ var WPCOM =
 	//# sourceMappingURL=site.wpcom-plugin.js.map
 
 /***/ },
-/* 170 */
+/* 176 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -13518,7 +14257,7 @@ var WPCOM =
 	//# sourceMappingURL=site.get.js.map
 
 /***/ },
-/* 171 */
+/* 177 */
 /***/ function(module, exports) {
 
 	'use strict';

@@ -87,7 +87,7 @@
 
 			.image-container {
 				position: relative;
-				width: 400px;
+				width: 300px;
 			}
 
 			.image-container .image-summary {
@@ -113,9 +113,14 @@
 			    text-align: center;
 			}
 
-			.image-container img {
+			#image-node {
+				border: 1px solid #f0f0f0;
+				background-position: 50% 50%;
 				width: 100%;
-				min-height: 100px;
+			    height: 300px;
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-color: white;
 			}
 		</style>
 	</head>
@@ -165,7 +170,7 @@
 
 		<div class="image-container" id="image-container">
 			<h3>Current media</h3>
-			<img id="image-node" />
+			<div id="image-node"></div>
 			<div id="image-details"></div>
 			<div id="image-actions">
 				<a href="#" id="image-delete">delete</a>
