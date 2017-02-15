@@ -8,7 +8,7 @@ import fixture from './fixture';
 var configFactory;
 
 try {
-	configFactory = require( './config' );
+	configFactory = require( './config' ).default;
 } catch ( ex ) {
 	configFactory = {};
 }
@@ -27,17 +27,13 @@ const env = isClientSide && (
 		? 'production'
 		: 'development';
 
-console.log( 'environment: %j', env );
-
 const config = configFactory[ env ] || {};
 
 if ( isClientSide ) {
 	const clientId = config.oauth.client_id;
-	console.log( 'clientId: %o', clientId );
 
 	qryString = qs.parse( document.location.search.replace( /^\?/, '' ) );
 	reqHandler = qryString.handler || 'wpcom-proxy-request';
-	console.log( `reqHandler: %o`, reqHandler );
 
 	if (
 		'wpcom-xhr-request' === reqHandler ||
@@ -73,7 +69,6 @@ function wpcom() {
 		reqHandler = qryString.handler || 'wpcom-proxy-request';
 
 		if ( 'wpcom-proxy-request' === reqHandler ) {
-			console.log( 'PROXY request handler' );
 			let proxy = require( 'wpcom-proxy-request' );
 			_wpcom = wpcomFactory( proxy );
 			_wpcom.request( {
