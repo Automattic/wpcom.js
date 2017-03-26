@@ -6,7 +6,7 @@
 Create a new instance of WPCOM. `token` parameter is optional but it's needed to
 make admin actions or to access to protected resources.
 
-**Note**: You can use the [node-wpcom-oauth][] module to get an _access token_.
+**Note**: You can use the [node-wpcom-oauth](https://github.com/Automattic/node-wpcom-oauth) module to get an _access token_.
 
 ### WPCOM#me(fn)
 
