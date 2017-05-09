@@ -14,6 +14,13 @@ describe( 'wpcom.site.follow', function() {
 	var follow = site.follow();
 
 	describe( 'wpcom.site.follow.follow', function() {
+		// Unfollow site before trying to follow
+		before(done => {
+			// this bind makes it ignore any error
+			done = done.bind(null, null);
+			follow.unfollow().then(done).catch(done);
+		} );
+
 		it( 'should follow site', done => {
 			follow.follow()
 				.then( data => {
