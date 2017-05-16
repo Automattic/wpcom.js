@@ -8,6 +8,3 @@ dependencies:
 machine:
   node:
     version: 5.11.1
-test:
-  override:
-    - DEBUG=wpcom* make test
