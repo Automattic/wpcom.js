@@ -179,7 +179,7 @@ WPCOM.prototype.sendRequest = function( params, query, body, fn ) {
 		console.log( msg );
 	}
 
-	return sendRequest.call( this, params, query, body, fn );
+	return sendRequest.call( this, params, { ...query }, body, fn );
 };
 
 /**
