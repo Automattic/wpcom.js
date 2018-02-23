@@ -13,7 +13,8 @@
     "Nathan Rajlich <nathan@automattic.com>",
     "Matt Sherman <matt.sherman@automattic.com>",
     "Timmy Crawford <timmy.crawford@automattic.com>",
-    "Benoit Person <benoit.person@gmail.com>"
+    "Benoit Person <benoit.person@gmail.com>",
+    "Jake Fried <jake.fried@automattic.com>"
   ],
   "keywords": [
     "wordpress",
@@ -36,6 +37,9 @@
     "History.md",
     "README.md"
   ],
+  "browser": {
+    "site.media.buildForm-node.js": "site.media.buildForm-browser.js"
+  },
   "dependencies": {
     "babel-runtime": "^6.9.2",
     "debug": "^2.2.0",
