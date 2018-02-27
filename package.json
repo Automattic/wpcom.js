@@ -38,7 +38,7 @@
     "README.md"
   ],
   "browser": {
-    "./build/lib/site.media.buildForm-node.js": "./build/lib/site.media.buildForm-browser.js"
+    "./build/lib/util/node-utils.js": "./build/lib/util/node-utils-mock.js"
   },
   "dependencies": {
     "babel-runtime": "^6.9.2",
