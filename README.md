@@ -109,9 +109,30 @@ config.json file into `test/` folder like bellow:
 
 ```json
 {
-	"site": "<site-id>",
-	"token": "<token>"
+	"development": {
+		"site": "<site-id>",
+		"token": "<token>"
+	},
+	"production": {
+		"site": "<site-id>",
+		"token": "<token>"
+	}
 }
+```
+
+You can get your token using [the example app bundled with `wpcom-oauth`](https://github.com/Automattic/node-wpcom-oauth/tree/master/example) but make sure to edit the example to request the `global` scope (required by some tests).
+
+```diff
+--- a/example/index.js
++++ b/example/index.js
+@@ -30,7 +30,7 @@ app.set('view engine', 'jade');
+ app.get('/', function(req, res){
+   res.render('home', {
+     settings: settings,
+-    url: wpoauth.urlToConnect()
++    url: wpoauth.urlToConnect(undefined, { scope: 'global' })
+   });
+ });
 ```
 
 Run tests:
